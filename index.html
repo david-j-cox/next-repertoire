@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Next Repertoire</title>
+<meta name="description" content="Companion site for the SDABA 2026 workshop.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#14213D; --paper:#F2F4F8; --surface:#FFFFFF; --surface-2:#E9EDF4;
+  --line:#D3DAE5; --muted:#5B6B82; --accent:#2F5D9E; --accent-ink:#FFFFFF;
+  --foil:#B26E3A; --foil-soft:#F6EBE0; --lock:#8A96A8; --ok:#2E7D5B; --ok-soft:#E3F1EA;
+  --warn:#A3471F; --warn-soft:#F9E8DF; --shadow:0 1px 2px rgba(20,33,61,.06),0 8px 24px rgba(20,33,61,.06);
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E6ECF5; --paper:#0F1726; --surface:#172238; --surface-2:#1E2B45;
+    --line:#2C3B56; --muted:#9AA9BF; --accent:#82A9E3; --accent-ink:#0F1726;
+    --foil:#D89A62; --foil-soft:#33261A; --lock:#6C7A92; --ok:#6CC39A; --ok-soft:#173226;
+    --warn:#E0906B; --warn-soft:#3A2418; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E6ECF5; --paper:#0F1726; --surface:#172238; --surface-2:#1E2B45;
+  --line:#2C3B56; --muted:#9AA9BF; --accent:#82A9E3; --accent-ink:#0F1726;
+  --foil:#D89A62; --foil-soft:#33261A; --lock:#6C7A92; --ok:#6CC39A; --ok-soft:#173226;
+  --warn:#E0906B; --warn-soft:#3A2418; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+a{color:var(--accent)}
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-variation-settings:"opsz" 144}
+h2{font-size:clamp(1.5rem,3vw,2rem)}
+h3{font-size:1.2rem;margin-top:1.75rem;margin-bottom:.5rem}
+h4{font-family:var(--body);font-size:.95rem;font-weight:600;margin-top:1.25rem;margin-bottom:.35rem}
+p{margin:.6rem 0;max-width:68ch}
+ul,ol{max-width:68ch;padding-left:1.3rem}
+li{margin:.25rem 0}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.code{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Shell */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px}
+.topbar-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;min-height:56px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand b{font-family:var(--display);font-weight:600;font-size:1.05rem}
+.brand span{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.topbar .spacer{flex:1}
+.now-chip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}
+.now-chip i{width:8px;height:8px;border-radius:50%;background:var(--foil);flex:none}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:.45rem .8rem;font-size:.85rem;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:disabled{opacity:.5;cursor:default}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.small{padding:.3rem .6rem;font-size:.78rem}
+.menu-btn{display:none}
+.layout{max-width:1180px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:40px}
+.rail{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));align-self:start;max-height:calc(100vh - 56px);overflow:auto;padding-block:24px 40px}
+.rail-block{margin-bottom:18px}
+.rail-block > .eyebrow{padding:0 10px 6px}
+.rail a{display:flex;align-items:center;gap:8px;padding:.4rem 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.88rem;line-height:1.3}
+.rail a .rc{font-family:var(--mono);font-size:.7rem;color:var(--muted);width:2.4rem;flex:none}
+.rail a:hover{background:var(--surface-2)}
+.rail a.active{background:var(--surface);box-shadow:inset 3px 0 0 var(--accent)}
+.rail a.locked{color:var(--lock);cursor:default}
+.rail a.locked:hover{background:transparent}
+.rail a .lk{margin-left:auto;font-size:.7rem;color:var(--lock)}
+.rail a .nowdot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--foil);flex:none}
+.rail a.locked .rc{color:var(--lock)}
+.main{padding-block:28px 80px;min-width:0}
+.section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:clamp(20px,3vw,36px);box-shadow:var(--shadow)}
+.section-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-bottom:.5rem}
+.section-head .code{font-size:.85rem}
+.section .lede{color:var(--muted);font-style:italic;font-family:var(--display);font-size:1.05rem;margin-top:.25rem}
+.who{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--surface-2);color:var(--muted);vertical-align:middle;margin-left:4px}
+.who.rec{background:var(--foil-soft);color:var(--foil)}
+.output{border-left:3px solid var(--accent);padding:.35rem .9rem;margin:1rem 0;background:var(--surface-2);border-radius:0 6px 6px 0;font-size:.95rem}
+.callout{border:1px solid var(--line);border-left:4px solid var(--foil);background:var(--foil-soft);border-radius:0 8px 8px 0;padding:.75rem 1rem;margin:1.1rem 0;font-size:.93rem}
+.callout b{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.2rem;color:var(--foil)}
+.callout.rule{border-left-color:var(--warn);background:var(--warn-soft)}
+.callout.rule b{color:var(--warn)}
+.field{margin:.9rem 0}
+.field label{display:block;font-weight:500;font-size:.92rem;margin-bottom:.3rem}
+textarea,input[type=text],select{width:100%;font:inherit;font-size:.95rem;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:.55rem .7rem}
+textarea{resize:vertical;min-height:2.6rem}
+textarea:focus,input[type=text]:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+input.inline{display:inline-block;width:auto;max-width:100%;padding:.15rem .45rem;margin:0 .15rem;border-radius:4px;border-bottom:2px solid var(--accent);border-top:none;border-left:none;border-right:none;background:transparent;font-size:.95rem}
+.stem{line-height:2.2;max-width:none}
+.check{display:flex;gap:.6rem;align-items:flex-start;padding:.3rem 0;font-size:.93rem;cursor:pointer}
+.check input{margin-top:.3rem;accent-color:var(--accent)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 24px;margin:.5rem 0}
+.tablewrap{overflow-x:auto;margin:.9rem 0;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
+th,td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px solid var(--line)}
+th{background:var(--surface-2);font-weight:600;font-size:.82rem}
+tr:last-child td{border-bottom:none}
+td.k{font-weight:500;white-space:nowrap}
+td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
+.quad{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;margin:1rem 0}
+.quad .qh{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);align-self:end;padding:4px}
+.quad .qr{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;padding:4px}
+.quad .qc{border:1px solid var(--line);border-radius:8px;padding:.6rem;background:var(--paper)}
+.quad .qc small{display:block;color:var(--muted);margin-bottom:.35rem;font-size:.78rem}
+.quad .qc textarea{background:var(--surface)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:1rem 0}
+.card{border:1px solid var(--line);border-radius:8px;padding:.9rem 1rem;background:var(--paper)}
+.card .eyebrow{margin-bottom:.25rem}
+.card h4{margin-top:0}
+.card p{font-size:.9rem}
+details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background:var(--paper)}
+summary{cursor:pointer;padding:.7rem 1rem;font-weight:500;list-style:none;display:flex;align-items:center;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .15s}
+details[open] summary::before{transform:rotate(45deg)}
+details .in{padding:0 1rem 1rem}
+.route{list-style:none;padding:0;margin:1rem 0;display:grid;gap:0;max-width:none}
+.route li{display:grid;grid-template-columns:8.5rem 1fr;gap:12px;padding:.5rem 0;border-bottom:1px dashed var(--line);font-size:.93rem}
+.route li .t{font-family:var(--mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.route li.brk{color:var(--muted)}
+.steps{list-style:none;padding:0;margin:.8rem 0;max-width:none}
+.steps li{display:grid;grid-template-columns:5rem 6rem 1fr;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.steps li .t{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.steps li .n{font-weight:600}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
+.pager a{display:inline-flex;flex-direction:column;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:.6rem .9rem;background:var(--surface);min-width:180px;max-width:100%}
+.pager a small{color:var(--muted);font-size:.75rem}
+.pager a.next{margin-left:auto;text-align:right}
+.pager a.disabled{color:var(--lock);pointer-events:none}
+.locked-note{border:1px dashed var(--line);border-radius:10px;padding:2rem;text-align:center;color:var(--muted);background:var(--surface)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#14213D;color:#F2F4F8;padding:.6rem 1rem;border-radius:8px;font-size:.88rem;box-shadow:var(--shadow);z-index:50;max-width:calc(100vw - 32px)}
+.footer{color:var(--muted);font-size:.8rem;margin-top:36px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.footer a{color:var(--muted)}
+
+/* Landing */
+.hero{padding:clamp(28px,5vw,56px) clamp(20px,3vw,36px);background:#14213D;color:#F2F4F8;border-radius:12px;position:relative;overflow:hidden}
+.hero .eyebrow{color:#C9D3E3}
+.hero h1{margin:.35rem 0 .25rem;color:#FFFFFF}
+.hero .sub{font-family:var(--display);font-style:italic;font-size:clamp(1.05rem,2vw,1.35rem);color:#C9D3E3;margin:0 0 1.2rem}
+.hero .premise{border-left:3px solid #D89A62;padding:.4rem 1rem;color:#F2F4F8;max-width:60ch;font-size:1rem}
+.hero .premise b{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#D89A62;display:block;margin-bottom:.2rem}
+.hero .meta{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.88rem;color:#C9D3E3}
+.blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:.8rem 0}
+.blk{border:1px solid var(--line);border-radius:8px;padding:.8rem .95rem;background:var(--paper)}
+.blk .t{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.blk h4{margin:.15rem 0 .3rem}
+.blk p{font-size:.88rem;margin:0}
+.blk .st{margin-top:.5rem;font-size:.78rem;color:var(--muted)}
+.blk .st.open{color:var(--ok)}
+
+/* Admin */
+.admin{background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:clamp(16px,2.5vw,28px);margin-bottom:24px;box-shadow:var(--shadow)}
+.admin-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:.6rem}
+.admin-head h2{font-size:1.3rem}
+.admin .status{font-size:.9rem;color:var(--muted)}
+.admin .actions{display:flex;flex-wrap:wrap;gap:8px;margin:.9rem 0}
+.admin .pending{font-size:.85rem;color:var(--warn);font-weight:500}
+.gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px 24px;margin-top:.6rem}
+.gate{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:.35rem .5rem;border-radius:6px;font-size:.9rem}
+.gate:hover{background:var(--surface-2)}
+.gate .rc{font-family:var(--mono);font-size:.72rem;color:var(--muted);width:2.4rem}
+.gate .sw{position:relative;width:38px;height:22px;flex:none}
+.gate .sw input{opacity:0;width:0;height:0;position:absolute}
+.gate .sw i{position:absolute;inset:0;background:var(--lock);border-radius:22px;transition:.15s}
+.gate .sw i::after{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.15s}
+.gate .sw input:checked + i{background:var(--ok)}
+.gate .sw input:checked + i::after{transform:translateX(16px)}
+.gate .sw input:focus-visible + i{outline:2px solid var(--accent);outline-offset:2px}
+.gate .nowbtn{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:4px;padding:2px 7px}
+.gate .nowbtn.on{background:var(--foil);border-color:var(--foil);color:#fff}
+.gate-block{grid-column:1/-1;margin-top:.6rem}
+.admin .msg{margin-top:.6rem;font-size:.88rem;padding:.5rem .8rem;border-radius:6px;background:var(--surface-2)}
+.admin .msg.err{background:var(--warn-soft);color:var(--warn)}
+.lockchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--surface-2);color:var(--lock);margin-left:auto}
+.lockchip.open{background:var(--ok-soft);color:var(--ok)}
+
+@media (max-width: 860px){
+  .layout{grid-template-columns:1fr;gap:0}
+  .rail{position:static;max-height:none;padding-block:12px;border-bottom:1px solid var(--line);display:none}
+  .rail.open{display:block}
+  .menu-btn{display:inline-flex}
+  .now-chip{display:none}
+  .steps li{grid-template-columns:4.2rem 1fr;grid-template-areas:"t n" "t d"}
+  .steps li .t{grid-area:t}.steps li .n{grid-area:n}.steps li .d{grid-area:d}
+  .route li{grid-template-columns:1fr}
+  .quad{grid-template-columns:1fr}
+  .quad .qh,.quad .qr{display:none}
+}
+@media print{
+  .topbar,.rail,.pager,.admin,.footer,.menu-btn,.toast{display:none!important}
+  body{background:#fff;color:#000}
+  .layout{display:block}
+  .section{box-shadow:none;border:none;page-break-after:always;padding:0}
+  .hero{color:#000;background:none;border:1px solid #000}
+  .hero h1,.hero .sub,.hero .premise,.hero .meta,.hero .eyebrow{color:#000}
+  textarea{min-height:4rem}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+.submit{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:.9rem 0 .3rem;padding:.6rem .8rem;border:1px dashed var(--line);border-radius:8px}
+.submit-status{font-size:.85rem;color:var(--muted)}
+.banner{background:var(--warn-soft);color:var(--warn);font-size:.85rem;padding:.5rem 16px;text-align:center}
+.conn{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.conn.on{color:var(--ok)} .conn.off{color:var(--warn)}
+input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:.55rem .7rem}
+.live{border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0 1.2rem;background:var(--paper)}
+.live-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:.3rem}
+.live .tablewrap{background:var(--surface)}
+.live .card{background:var(--surface)}
+@media print{.submit,.banner,.conn,.live{display:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function(){
+"use strict";
+/* ---------- field helpers (register for export) ---------- */
+var FIELDS = [];
+var CUR_SECTION = "";
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function reg(id,label){ FIELDS.push({id:id,label:label,section:CUR_SECTION}); return id; }
+function ta(id,label,rows,ph){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><textarea id="'+id+'" rows="'+(rows||3)+'"'+(ph?' placeholder="'+esc(ph)+'"':'')+'></textarea></div>'; }
+function taBare(id,label,rows){ reg(id,label); return '<textarea id="'+id+'" rows="'+(rows||3)+'" aria-label="'+esc(label)+'"></textarea>'; }
+function line(id,label){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" type="text"></div>'; }
+function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input type="checkbox" id="'+id+'"><span>'+label+'</span></label>'; }
+function cell(id,label){ reg(id,label); return '<td><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
+function fill(id,label,size){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" size="'+(size||16)+'">'; }
+function callout(kicker,text,cls){ return '<aside class="callout'+(cls?' '+cls:'')+'"><b>'+kicker+'</b>'+text+'</aside>'; }
+function who(kind){ return kind==="rec" ? '<span class="who rec">Table recorder</span>' : '<span class="who">Everyone writes</span>'; }
+function twrap(html){ return '<div class="tablewrap"><table>'+html+'</table></div>'; }
+function thead(cols){ return '<thead><tr>'+cols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead>'; }
+function rowFill(prefix,label,cols){ /* one labeled row with editable cells */
+  return '<tr><td class="k">'+label+'</td>'+cols.map(function(c,i){return cell(prefix+'-'+i,label+' / '+c);}).join('')+'</tr>';
+}
+
+function sel(id,label,options){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><select id="'+id+'"><option value="">Select</option>'+options.map(function(o){ var v=Array.isArray(o)?o[0]:o, l=Array.isArray(o)?o[1]:o; return '<option value="'+esc(v)+'">'+esc(l)+'</option>'; }).join('')+'</select></div>'; }
+function scale(id,label){ return sel(id,label,[["1","1 - Not confident"],["2","2"],["3","3"],["4","4"],["5","5 - Very confident"]]); }
+var PNS = "Prefer not to say";
+/* ---------- content ---------- */
+var BLOCKS = {
+  1:{n:"Block 1",t:"See the system",time:"0:00–0:50",out:"A professional repertoire hypothesis"},
+  2:{n:"Block 2",t:"Use cases, governance, Define, Ideate",time:"1:00–1:50",out:"A defined use case and alternative options"},
+  3:{n:"Block 3",t:"Ideate, prototype, Field Lab, close",time:"2:00–3:00",out:"A tested workflow and practice plan"}
+};
+
+var SECTIONS = [
+{id:"orient",code:"01",nav:"Orient",title:"How to use this workbook",block:1,html:function(){ return ''
+ + callout("Privacy boundary","Use entirely fictional examples. Do not enter client, caregiver, employee, payer, or other identifying information into workshop tools. Optional polls use broad categories; facilitators do not retain individual responses.","rule")
+ + '<h3>By the end of the workshop, you will be able to …</h3><ol>'
+ + '<li>Differentiate descriptive, predictive, and generative AI by what each system receives, does, produces, and leaves for a professional to decide.</li>'
+ + '<li>Analyze an AI-augmented ABA workflow using an act-in-context canvas that makes stakeholders, data boundaries, scope, decision rights, and feedback loops explicit.</li>'
+ + '<li>Evaluate a likely use case against privacy and security, validation and generalizability, scope, monitoring and drift, training, vendor, payer, and build-or-buy considerations.</li>'
+ + '<li>Produce a 30-day prototype that combines at least one technical safeguard with one organizational-behavior-management contingency.</li></ol>'
+ + '<h3>CE structure</h3>'
+ + twrap(thead(["Time","Instructional block","What you produce"])+'<tbody>'
+   + '<tr><td class="k">0:00–0:50</td><td>1 • See the system</td><td>A professional repertoire hypothesis</td></tr>'
+   + '<tr><td class="k">0:50–1:00</td><td>Break 1</td><td>Return to your assigned interest table</td></tr>'
+   + '<tr><td class="k">1:00–1:50</td><td>2 • Use cases, governance, Define, Ideate</td><td>A defined use case and alternative options</td></tr>'
+   + '<tr><td class="k">1:50–2:00</td><td>Break 2</td><td>—</td></tr>'
+   + '<tr><td class="k">2:00–3:00</td><td>3 • Ideate, prototype, Field Lab, close</td><td>A tested workflow and practice plan</td></tr></tbody>')
+ + '<h3>The process we will practice <span class="code">01A • Design thinking</span></h3>'
+ + '<p>Design thinking is an iterative, human-centered approach to understanding a problem, generating alternatives, and learning from a tangible test. We use the familiar five modes; governance runs through all of them.</p>'
+ + '<div class="cards">'
+ + '<div class="card"><h4>Empathize</h4><p>Learn about people’s work, needs, and constraints through observation and conversation.</p></div>'
+ + '<div class="card"><h4>Define</h4><p>Synthesize a focused point of view and an open “How might we” question.</p></div>'
+ + '<div class="card"><h4>Ideate</h4><p>Generate alternatives before choosing against explicit criteria.</p></div>'
+ + '<div class="card"><h4>Prototype</h4><p>Make a small version of the workflow that people can inspect.</p></div>'
+ + '<div class="card"><h4>Test</h4><p>Observe what happens, revise, and revisit earlier modes when needed.</p></div>'
+ + '</div>'
+ + '<h4>What this workshop can and cannot establish</h4>'
+ + '<p>Peer interviews illuminate professional experience. They do not substitute for client, caregiver, or other stakeholder input. Label assumptions and identify whose perspective is missing. A table exercise can expose weaknesses in a design; it cannot establish clinical effectiveness or authorize deployment.</p>'
+ + '<h4>Our route</h4>'
+ + '<ul class="route">'
+ + '<li><span class="t">00:00–00:27</span><span>Introduction and AI overview</span></li>'
+ + '<li><span class="t">00:27–00:42</span><span>Capture, map, and compare professional repertoires</span></li>'
+ + '<li><span class="t">00:42–00:50</span><span>Use cases, examples, and table assignments</span></li>'
+ + '<li class="brk"><span class="t">00:50–01:00</span><span>Break 1; return to your assigned interest table</span></li>'
+ + '<li><span class="t">01:00–01:27</span><span>Use-case exercise and governance</span></li>'
+ + '<li><span class="t">01:27–01:41</span><span>Define</span></li>'
+ + '<li><span class="t">01:41–01:50</span><span>Ideate</span></li>'
+ + '<li class="brk"><span class="t">01:50–02:00</span><span>Break 2</span></li>'
+ + '<li><span class="t">02:00–02:25</span><span>Ideate and prototype</span></li>'
+ + '<li><span class="t">02:25–02:50</span><span>Chiron Field Lab</span></li>'
+ + '<li><span class="t">02:50–03:00</span><span>Commit and close</span></li>'
+ + '</ul>'
+ + '<p>'+who()+' is your own answer. '+who("rec")+' is one answer per table.</p>'
+ + '<p class="code">Source: Stanford d.school, Design thinking bootleg (see section 17).</p>';
+}},
+
+{id:"notice",code:"02",nav:"Notice",title:"AI by function (not by mystique)",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
+ + twrap(thead(["Function","Plain-language job","ABA-adjacent example","Professional obligation"])+'<tbody>'
+   + '<tr><td class="k">Descriptive</td><td>Organize or summarize what has already happened</td><td>Graph patterns; summarize notes</td><td>Check completeness, context, and representation</td></tr>'
+   + '<tr><td class="k">Predictive</td><td>Estimate a future value or category</td><td>Forecast attrition or outcome risk</td><td>Check local validity, uncertainty, scope, and consequences</td></tr>'
+   + '<tr><td class="k">Generative</td><td>Produce new text, images, code, or options</td><td>Draft goals, summaries, training examples</td><td>Verify facts, logic, fit, authorship, and confidential data handling</td></tr>'
+   + '<tr><td class="k">Workflow wrapper</td><td>Connect a model to forms, records, or actions</td><td>Route approvals; prefill documentation</td><td>Map the whole process, access controls, failure paths, and human override</td></tr></tbody>')
+ + callout("Watch the category error","A fluent output is not evidence that a recommendation is accurate, appropriate, ethical, or effective in this context.")
+ + '<h3>My current working definition of artificial intelligence '+who()+'</h3>'
+ + '<p>Write your current understanding in one or two sentences. You’ll have an opportunity to revise it after the overview.</p>'
+ + ta("f02-def1","Current working definition",3)
+ + '<h3>My revised working definition of artificial intelligence '+who()+'</h3>'
+ + ta("f02-def2","Revised working definition",3)
+ + '<h3>One example I want to test today '+who()+'</h3>'
+ + ta("f02-example","One example I want to test today",3)
+ + '<h3>Baseline '+who()+'</h3><p>How confident are you right now that you can do each of these?</p>'
+ + scale("fpre-c1","Differentiate descriptive, predictive, and generative AI")
+ + scale("fpre-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
+ + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
+ + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
+ + formBlock("pre",["f02-def1","f02-example","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{note:"Anonymous. Sends your definition, example, and ratings to the facilitators."})
+ + livePanel("confidence");
+}},
+
+{id:"literacy",code:"02A",nav:"AI literacy",title:"Terms and trade-offs worth keeping",block:1,html:function(){ return ''
+ + '<h3>Terms</h3>'
+ + '<p><strong>Model:</strong> a system with learned statistical relationships. A large language model (LLM) processes and generates language sequences. A token is a unit of input or output, sometimes only part of a word.</p>'
+ + '<p><strong>Prompt and context:</strong> the instructions and information supplied for a request. The context window limits the information available to that request.</p>'
+ + '<p>Training changes learned parameters. Inference uses a trained model. Input reuse, logging, retention, and further training depend on the service and contract.</p>'
+ + '<p>Retrieval supplies selected external material to a request. Fine-tuning changes parameters through further training. Neither guarantees accuracy.</p>'
+ + '<p>Generated content can contain unsupported claims, omissions, or fabricated citations. Fluency is not evidence of authority. Verify claims against appropriate sources and context.</p>'
+ + '<h3>Using, configuring, or building</h3>'
+ + '<p>Buying a product, configuring a workflow around a model, fine-tuning, and training from scratch are different undertakings. Compare ongoing review, security, integration, training, monitoring, and exit costs. Open weights or local hosting do not automatically establish privacy or fitness. Include a non-AI option.</p>'
+ + '<h3>Environmental and economic effects</h3>'
+ + '<p>Training and inference both use resources. Data centers also support non-AI workloads. Energy and water demands depend on the workload, hardware, location, and infrastructure; avoid a universal per-prompt claim. Ask whether the task warrants the system, its scale, and the frequency of calls (IEA, 2025).</p>'
+ + '<h3>Protecting professional skill</h3>'
+ + '<p>De-skilling means an established repertoire weakens; never-skilling means a needed repertoire is not acquired. These are possible effects of arrangements that remove meaningful practice and feedback, not inevitable outcomes of AI. Preserve opportunities to perform, observe, and receive feedback.</p>'
+ + '<h3>Trade-offs to examine</h3>'
+ + '<div class="cards">'
+ + '<div class="card"><h4>Speed &lt; &gt; verification</h4></div>'
+ + '<div class="card"><h4>Access &lt; &gt; privacy</h4></div>'
+ + '<div class="card"><h4>Scale &lt; &gt; local fit</h4></div>'
+ + '<div class="card"><h4>Automation &lt; &gt; skill practice</h4></div>'
+ + '</div>'
+ + ta("f02a-condition","What condition would change your answer? "+who(),4);
+}},
+
+{id:"empathize",code:"03A",nav:"Empathize",title:"Capture experience and compare conditions",block:1,html:function(){ return ''
+ + '<div class="output"><strong>Your output:</strong> one reported work need, one assumption, and one missing perspective.</div>'
+ + '<ul><li><strong>Optional role/setting snapshot (1 minute).</strong> Keep it broad and anonymous.</li>'
+ + '<li><strong>Partner interview (4 minutes).</strong> Switch who is speaking after 2 minutes.</li>'
+ + '<li><strong>Individual capture (2 minutes).</strong> Separate what was reported from what you inferred.</li></ul>'
+ + callout("Workshop rule","Use entirely fictional examples. Do not enter identifying or rare combinations of personal details.","rule")
+ + '<h3>Role and setting snapshot '+who()+'</h3><p>Optional. Anonymous. Broad categories only.</p>'
+ + sel("fdem-role","Role",["BCBA-D or BCBA","BCaBA","RBT or behavior technician","Student or trainee","Administrator or operations","Other",PNS])
+ + sel("fdem-setting","Primary setting",["Center or clinic","Home","School","Telehealth","Multiple settings","Other",PNS])
+ + sel("fdem-years","Years in the field",["0-2","3-5","6-10","11-20","More than 20",PNS])
+ + sel("fdem-org","Organization size",["Solo or independent","2-25 staff","26-100 staff","101-500 staff","More than 500 staff",PNS])
+ + sel("fdem-ai","Current AI use at work",["None","Personal use only","Organizationally approved tools","Building or configuring tools","Not sure",PNS])
+ + formBlock("demographics",["fdem-role","fdem-setting","fdem-years","fdem-org","fdem-ai"])
+ + livePanel("demographics")
+ + '<h3>Interview prompts</h3>'
+ + '<p>Describe a recurring professional task. Where does work get stuck? What does effective performance look like? Who experiences the consequences? Ask about work conditions rather than collecting case details.</p>'
+ + ta("f03a-need","One observed need or recurring work pattern "+who(),3)
+ + ta("f03a-assumption","One assumption and the stakeholder perspective still missing "+who(),3)
+ + '<h3>Compare after the quadrant exercise</h3>'
+ + '<p>Complete the repertoire map in section 03 before completing this part. The section 03 quadrants use the same dimensions as “good at / not yet good at” and “like / dislike doing.” Self-ratings are hypotheses, not competency assessments. Compare one difference with a partner. What changes across setting, role, workload, or feedback?</p>'
+ + ta("f03a-compare","What changes across setting, role, workload, or feedback? "+who(),3)
+ + '<p class="stem">To strengthen '+fill("f03a-stem1","To strengthen",22)+', I need '+fill("f03a-stem2","I need",22)+' in the context of '+fill("f03a-stem3","in the context of",34)+'.</p>'
+ + '<p>Possible roles overlap: Designer, Implementer, and Supporter. Disliking a task does not make it appropriate to automate; liking it does not mean the current arrangement works well.</p>';
+}},
+
+{id:"map",code:"03",nav:"Map",title:"Your professional repertoire",lede:"A useful role is not a permanent identity. It is a pattern of behavior supported by particular contexts, skills, and consequences.",block:1,html:function(){ return ''
+ + twrap(thead(["Role","What the repertoire includes","Useful question"])+'<tbody>'
+   + '<tr><td class="k">Designer</td><td>Build, configure, train, evaluate, or connect models and data pipelines</td><td>Can I make the system fit the task and its constraints?</td></tr>'
+   + '<tr><td class="k">Implementer</td><td>Integrate a system into clinical or operational work</td><td>Can I redesign the workflow and preserve accountable judgment?</td></tr>'
+   + '<tr><td class="k">Supporter</td><td>Define problems, contribute data, test, report failures, and shape requirements</td><td>Can I make the use case and feedback useful to builders?</td></tr></tbody>')
+ + '<p><strong>Governance is a responsibility across all three roles, not a separate role to hand off.</strong></p>'
+ + '<h3>Repertoire map '+who()+'</h3>'
+ + ''
+ + '<div class="quad">'
+ + '<span class="qh"></span><span class="qh">Energizing</span><span class="qh">Draining</span>'
+ + '<span class="qr">Strong now</span>'
+ + '<div class="qc"><small>Strong now · Energizing: behaviors I can contribute immediately</small>'+taBare("f03-q1","Strong now / Energizing",4)+'</div>'
+ + '<div class="qc"><small>Strong now · Draining: behaviors I can perform, but may not sustain</small>'+taBare("f03-q2","Strong now / Draining",4)+'</div>'
+ + '<span class="qr">Developing</span>'
+ + '<div class="qc"><small>Developing · Energizing: skills worth deliberately practicing</small>'+taBare("f03-q3","Developing / Energizing",4)+'</div>'
+ + '<div class="qc"><small>Developing · Draining: consider supports, practice, or redesign</small>'+taBare("f03-q4","Developing / Draining",4)+'</div>'
+ + '</div>'
+ + formBlock("quadrant",["f03-q1","f03-q2","f03-q3","f03-q4"],{note:"Optional. Anonymous."});
+}},
+
+{id:"choose",code:"04",nav:"Choose",title:"Select a problem worth working on",lede:"Choose the table where the outcome matters and the workflow is familiar enough to analyze.",block:1,html:function(){ return ''
+ + twrap(thead(["Table","Likely use case","First question"])+'<tbody>'
+   + TABLES.map(function(t){ return '<tr><td class="k">'+t.id+'</td><td>'+t.name+'</td><td>'+t.q+'</td></tr>'; }).join('')+'</tbody>')
+ + callout("Table round","Introduce yourself with role, setting, and a fictional workshop handle. Name one measurable work problem, not a favorite product.")
+ + '<h3>Interest poll '+who()+'</h3><p>Used to sort the room into tables.</p>'
+ + sel("fint-first","First choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
+ + sel("fint-second","Second choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
+ + sel("fint-role","Role you expect to play",["Designer","Implementer","Supporter","Not sure"])
+ + formBlock("interests",["fint-first","fint-second","fint-role"])
+ + livePanel("interests")
+ + '<h3>My table</h3>'
+ + '<div class="field"><label for="f04-table">Which table did you join?</label><select id="f04-table"><option value="">Choose a table</option>'
+ + TABLES.map(function(t){ return '<option value="'+t.id+'">Table '+t.id+' — '+t.name+'</option>'; }).join('')+'</select></div>'
+ + '<div id="table-card"></div>'
+ + '<h3>My table and problem statement '+who("rec")+'</h3>'
+ + '<p class="stem">In '+fill("f04-ctx","context",16)+', AI may '+fill("f04-action","bounded action",22)+' to support '+fill("f04-purpose","purpose",18)+'. '+fill("f04-role","human role",14)+' retains responsibility for '+fill("f04-decision","decision",18)+'.</p>'
+ + '<div class="checks">'+cb("f04-c1","The outcome is socially significant.")+cb("f04-c2","The workflow occurs often enough to practice.")+cb("f04-c3","A small pilot is feasible within 30 days.")+cb("f04-c4","We can identify who benefits and who carries risk.")+'</div>'
+ + formBlock("table_reports",["f04-table","f04-ctx","f04-action","f04-purpose","f04-role","f04-decision"],{stage:"problem",note:"Table recorder: one submission per table."})
+ + livePanel("reports:problem")
+ + '<h3>All six table cases</h3>'
+ + '<p>Keep the same case through Define, Ideate, and the Field Lab. Keep the A–F envelope sealed until the reveal.</p>'
+ + TABLES.map(function(t){ return '<details><summary><span class="code">Table '+t.id+'</span> '+t.name+'</summary><div class="in">'+tableCard(t)+'</div></details>'; }).join('');
+}},
+
+{id:"govern",code:"07",nav:"Govern",title:"A lifecycle for responsible adoption",lede:"Governance changes as the system moves from selection to deployment, monitoring, and retirement.",block:2,html:function(){ return ''
+ + twrap(thead(["Lifecycle stage","Required behaviors","Evidence to retain"])+'<tbody>'
+   + '<tr><td class="k">1 • Select</td><td>Define the problem; compare options; examine evidence, scope, data practices, vendor terms, payer and regulatory context</td><td>Requirements; decision record; risk review</td></tr>'
+   + '<tr><td class="k">2 • Deploy</td><td>Set policy and decision rights; disclose appropriately; train; pilot; establish access, escalation, and rollback</td><td>Approved workflow; training; pilot criteria</td></tr>'
+   + '<tr><td class="k">3 • Monitor + audit</td><td>Measure outcomes and errors; sample outputs; evaluate impact; watch version changes and drift; receive incident reports</td><td>Performance log; incidents; audits; changes</td></tr>'
+   + '<tr><td class="k">4 • Change + retire</td><td>Revalidate after material change; pause when thresholds fail; export or destroy data; communicate replacement or exit</td><td>Stop decision; data disposition; transition</td></tr></tbody>')
+ + callout("CASP practice parameter","AI should support, rather than supplant, clinical work. Practitioners remain responsible for professional decisions, informed implementation, training, monitoring, and impact (Council of Autism Service Providers, 2025).")
+ + '<h3>Our minimum viable governance '+who("rec")+'</h3>'
+ + '<div class="checks">'+cb("f07-g1","Named owner")+cb("f07-g2","Approved use and prohibited use")+cb("f07-g3","Data boundary")+cb("f07-g4","Human verification")+cb("f07-g5","Pilot measure")+cb("f07-g6","Error-report path")+cb("f07-g7","Stop threshold")+cb("f07-g8","Retirement/data plan")+'</div>'
+ + '<h3>Eight domains for the same workflow <span class="code">07A • Governance check</span></h3>'
+ + '<p>Use this check during the 17-minute governance block and retain it as a practical reference. A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.</p>'
+ + '<div class="cards">'
+ + '<div class="card"><h4>Privacy and security</h4><p>Map source, access, retention, reuse, disclosure, deletion, and downstream services. Section 08 holds the data-flow worksheet.</p></div>'
+ + '<div class="card"><h4>Model validation and scope</h4><p>Specify task, population, setting, data, version, and consequence. Compare with a meaningful baseline. Generated claims and predictive estimates require different checks. Section 09 records evidence and limits.</p></div>'
+ + '<div class="card"><h4>Model and data drift</h4><p>Watch input distributions, missingness, workflow changes, version changes, error, and burden. Name an owner, cadence, and condition for re-evaluation, restriction, or retirement. An error is not automatically evidence of drift.</p></div>'
+ + '<div class="card"><h4>Operational training and general AI literacy</h4><p>Identify the behavior required. Instruct, model, rehearse, observe, and provide feedback. Check performance under normal workload, not just policy acknowledgments or quiz scores. Sections 10–11 connect authority and behavior.</p></div>'
+ + '<div class="card"><h4>Vendor conversations and build or buy</h4><p>Ask for task-specific evidence, data terms, change notice, incident response, export/deletion, and exit support. Compare total maintenance burden of buying, configuring, fine-tuning, training, or using no AI. Section 14 contains the procurement checklist.</p></div>'
+ + '</div>'
+ + ta("f07a-open","One unresolved question, the owner who can answer it, and the decision it blocks "+who("rec"),3)
+ + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>';
+}},
+
+{id:"safeguard",code:"08",nav:"Safeguard",title:"Privacy, security, and confidentiality",lede:"A de-identification claim is only as good as the process, context, and residual re-identification risk.",block:2,html:function(){ return ''
+ + callout("Workshop rule","No real protected health information, personally identifiable information, workforce-sensitive information, or payer credentials in workshop tools.","rule")
+ + twrap(thead(["Ask before data enter","Why it matters"])+'<tbody>'
+   + '<tr><td class="k">Is the tool approved for this information and purpose?</td><td>Consumer access is not the same as an organizationally approved, contractually governed service.</td></tr>'
+   + '<tr><td class="k">Does a service provider create, receive, maintain, or transmit ePHI?</td><td>HIPAA obligations may apply even when a provider cannot view encrypted data; a compliant BAA and safeguards may be required.</td></tr>'
+   + '<tr><td class="k">Who can access, reuse, train on, disclose, or retain the data?</td><td>Settings, contracts, integrations, logs, and subprocessors may matter more than the user interface.</td></tr>'
+   + '<tr><td class="k">Can the minimum necessary information accomplish the task?</td><td>Reduce exposure; prefer fictional, synthetic, or properly de-identified data for practice and testing.</td></tr>'
+   + '<tr><td class="k">How will access end and data be exported or destroyed?</td><td>Exit is part of the design, not a future administrative detail.</td></tr></tbody>')
+ + '<h3>Sketch the data path '+who("rec")+'</h3>'
+ + twrap(thead(["Source","What enters","Where processed/stored","Who receives output","Retention/exit"])+'<tbody>'
+   + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c);}).join('')+'</tr>'
+   + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r2-"+i,"Data path row 2 / "+c);}).join('')+'</tr></tbody>')
+ + '<p class="code">This worksheet is educational, not legal advice. Apply organizational policy and obtain qualified privacy, security, compliance, or legal review when needed.</p>';
+}},
+
+{id:"verify",code:"09",nav:"Verify",title:"Validity, scope, drift, and error",lede:"The question is not “Does it work?” It is “For which task, people, setting, data, version, threshold, and consequence?”",block:2,html:function(){ return ''
+ + twrap(thead(["Before pilot","During pilot","After deployment"])+'<tbody>'
+   + '<tr><td>Define target behavior/outcome and comparison</td><td>Sample outputs against a human-reviewed standard</td><td>Monitor outcomes, errors, complaints, overrides, and version changes</td></tr>'
+   + '<tr><td>Specify intended and prohibited use</td><td>Test boundary cases and likely failure modes</td><td>Revalidate when population, workflow, data, model, or threshold changes</td></tr>'
+   + '<tr><td>Identify affected groups and context</td><td>Inspect differences that could create inequitable impact</td><td>Pause, constrain, retrain, replace, or retire when thresholds fail</td></tr></tbody>')
+ + '<h3>Define a minimum test '+who("rec")+'</h3>'
+ + twrap(thead(["Measure","Current baseline","Pilot criterion","Sample/interval","Owner"])+'<tbody>'
+   + rowFill("f09-benefit","Benefit/outcome",["Baseline","Criterion","Sample","Owner"])
+   + rowFill("f09-error","Error/quality",["Baseline","Criterion","Sample","Owner"])
+   + rowFill("f09-equity","Equity/access",["Baseline","Criterion","Sample","Owner"])
+   + rowFill("f09-time","Time/workload",["Baseline","Criterion","Sample","Owner"])+'</tbody>')
+ + '<aside class="callout"><b>Stop rule</b><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14)+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14)+' reviews it.</p></aside>';
+}},
+
+{id:"assign",code:"10",nav:"Assign",title:"Human decision rights",lede:"Automation is not one switch. Separate generating, recommending, approving, acting, documenting, and monitoring.",block:2,html:function(){ return ''
+ + '<h3>Task steps '+who("rec")+'</h3>'
+ + twrap(thead(["Task step","AI may …","Human must …","Evidence / record"])+'<tbody>'
+   + ["Generate options","Summarize evidence","Recommend or rank","Approve decision","Implement action","Evaluate outcome"].map(function(s,i){ return rowFill("f10-r"+i,s,["AI may","Human must","Evidence"]); }).join('')+'</tbody>')
+ + callout("Accountability test","If the output is wrong, who detects it, before what consequence, using what evidence, with what authority to stop the workflow?")
+ + '<h3>Statements we can defend '+who("rec")+'</h3>'
+ + ta("f10-permitted","The AI system is permitted to …",4)
+ + ta("f10-not","The AI system is not permitted to …",4);
+}},
+
+{id:"procure",code:"14",nav:"Procure",title:"Questions for a vendor, or your own build team",lede:"A polished demonstration is not a substitute for evidence, contracts, operational fit, and an exit plan.",block:2,html:function(){ return ''
+ + '<div class="checks" style="grid-template-columns:1fr">'
+ + ["What exact problem and intended use does the system support?","What data were used to develop and evaluate it?","For which populations, settings, languages, and tasks is performance known?","What error measures, uncertainty, limitations, and boundary conditions are documented?","What client or workforce data enter the system, including logs and metadata?","Where are data processed and stored; who are the subprocessors?","Can data or outputs be reused to train models or improve services? Can that be disabled?","What agreement, including a BAA when applicable, governs the service?","How are access, encryption, incident response, deletion, and audit supported?","How are model, prompt, policy, and product changes communicated and versioned?","Can we export our records and terminate use without workflow lock-in?","What monitoring, human override, escalation, rollback, and retirement functions exist?"].map(function(q,i){ return cb("f14-q"+i,q); }).join('')
+ + '</div>'
+ + callout("Build, buy, or do neither","Compare total implementation burden, not only subscription price. Include validation, training, oversight, workflow redesign, integration, monitoring, incident response, and exit.");
+}},
+
+{id:"define",code:"05–06",nav:"Use-case canvas",title:"Use-Case Canvas",lede:"Describe the ongoing act in context before you describe the technology. Then make the data path and the model’s job observable enough to inspect.",block:2,html:function(){ return ''
+ + '<h3>Purpose and context <span class="code">05 • Define</span> '+who("rec")+'</h3>'
+ + ta("f05-1","1 · Aim. What socially significant outcome should improve? What is the smallest useful unit of change?",3)
+ + ta("f05-2","2 · Act + context. Whose behavior is involved? In which workflow, setting, constraints, and contingencies?",3)
+ + ta("f05-3","3 · Stakeholders. Who benefits, decides, uses, receives, oversees, pays, or may be adversely affected?",3)
+ + ta("f05-4","4 · Current performance. What happens now? What evidence shows the problem, its frequency, cost, latency, quality, or risk?",3)
+ + '<h3>Model and data <span class="code">06 • Bound</span> '+who("rec")+'</h3>'
+ + ta("f06-5","5 · Model function. What enters? What transformation occurs? What output appears? What is the uncertainty or error mode?",3)
+ + ta("f06-6","6 · Data boundary. What information enters; where is it stored; who can access, use, disclose, or retain it; and how is it deleted?",3)
+ + ta("f06-7","7 · Evidence + scope. For whom, where, and for what task has performance been demonstrated? Where should use stop?",3)
+ + ta("f06-8","8 · Decision rights. What may the system suggest, draft, rank, or automate? Who verifies, approves, documents, owns, and can override?",3);
+}},
+
+{id:"definepractice",code:"05A",nav:"Define practice",title:"Define a need and revise it",block:2,html:function(){ return ''
+ + '<div class="output"><strong>Your output:</strong> a person–need–insight statement and an open “How might we…?” question for your table’s case.</div>'
+ + '<p>Use the shared example below as a model, not as a replacement for your case. Draft, get feedback, then revise when a condition changes. 14 minutes total. Use the canvas in sections 05–06 as a reference.</p>'
+ + '<h3>Worked example</h3>'
+ + '<p class="code">Shared demonstration only; apply the structure to your table’s case.</p>'
+ + '<p>A fictional supervision team observes that new staff receive little timely feedback on performance. A need is timely, observable feedback, not “an AI trainer.” How might we increase useful feedback without hiding errors or treating lesson completion as competence? Mark which observations are established and which require inquiry.</p>'
+ + '<h3>First pass and Rep 1 '+who("rec")+'</h3>'
+ + '<p class="stem">'+fill("f05a-person","Person in context",22)+' needs '+fill("f05a-need","meaningful need",22)+' because '+fill("f05a-insight","evidence-grounded insight",30)+'.</p>'
+ + ta("f05a-hmw","How might we…? Keep more than one possible solution available.",2)
+ + '<h3>Rep 2 '+who("rec")+'</h3>'
+ + '<p>A partner names one ordinary overlooked condition. Revise the need or boundary and explain what changed.</p>'
+ + line("f05a-changed","Changed condition")
+ + line("f05a-revised","Revised definition")
+ + line("f05a-missing","Missing voice or evidence")
+ + formBlock("table_reports",["f04-table","f05a-person","f05a-need","f05a-insight","f05a-hmw","f05a-changed","f05a-revised","f05a-missing"],{stage:"define",note:"Table recorder: one submission per table."})
+ + livePanel("reports:define")
+ + callout("Feedback check","Is the person/context clear? Is the need meaningful? Is the insight supported or labeled as an assumption? Does the question avoid selecting a tool in advance?");
+}},
+
+{id:"design",code:"11",nav:"Design",title:"Pair a technical solution with an OBM solution",lede:"A control that exists only in software, or only in policy, will often fail when work becomes busy.",block:2,html:function(){ return ''
+ + '<h3>Design layers '+who("rec")+'</h3>'
+ + twrap(thead(["Design layer","Examples","Our choice"])+'<tbody>'
+   + '<tr><td class="k">Technical</td><td>Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback</td>'+cell("f11-tech","Technical / Our choice")+'</tr>'
+   + '<tr><td class="k">Behavioral / OBM</td><td>Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign</td>'+cell("f11-obm","Behavioral OBM / Our choice")+'</tr>'
+   + '<tr><td class="k">Measurement</td><td>Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost</td>'+cell("f11-measure","Measurement / Our choice")+'</tr></tbody>')
+ + '<h3>Behavioral systems sketch '+who("rec")+'</h3>'
+ + twrap(thead(["Antecedents / context","Target performer behavior","Consequences / feedback","Measure"])+'<tbody>'
+   + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s1-"+i,"Systems sketch row 1 / "+c);}).join('')+'</tr>'
+   + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s2-"+i,"Systems sketch row 2 / "+c);}).join('')+'</tr></tbody>')
+ + callout("Implementation question","What contingencies make the safe behavior easier, faster, more likely, and more reinforcing than the unsafe shortcut?");
+}},
+
+{id:"ideate",code:"11A",nav:"Ideation practice",title:"Generate and compare alternatives",block:2,html:function(){ return ''
+ + '<div class="output"><strong>Your output:</strong> distinct options and the staff supports each would need.</div>'
+ + '<p><strong>Generic example:</strong> To improve handoffs, compare an AI summary, a checklist, and a revised handoff routine. Each needs a reviewer and a check for missing information.</p>'
+ + '<ul class="steps">'
+ + '<li><span class="t">Before break</span><span class="n">Rep 1 · 5 min</span><span class="d">Technical and non-AI options, then 3 minutes of feedback</span></li>'
+ + '<li><span class="t">Break 2</span><span class="n">10 min</span><span class="d">—</span></li>'
+ + '<li><span class="t">After break</span><span class="n">Rep 2 · 7 min</span><span class="d">OBM arrangements, then 3 minutes of feedback</span></li>'
+ + '<li><span class="t"></span><span class="n">Rep 3 · 6 min</span><span class="d">Second-order effects (next section)</span></li>'
+ + '<li><span class="t"></span><span class="n">Select · 4 min</span><span class="d">Converge using explicit criteria</span></li>'
+ + '<li><span class="t"></span><span class="n">Prepare · 5 min</span><span class="d">Prototype preparation in section 13</span></li>'
+ + '</ul>'
+ + '<p>Keep the same defined use case throughout.</p>'
+ + '<h3>Rep 1 · Technical and non-AI alternatives '+who("rec")+'</h3>'
+ + '<p>Write silently for 1 minute, combine ideas for 3, then group distinct options for 1. Keep at least one non-AI option. Defer judgment while generating.</p>'
+ + ta("f11a-optA","Option A and the mechanism it changes",2)
+ + ta("f11a-optB","Option B and the mechanism it changes",2)
+ + ta("f11a-nonai","Non-AI alternative",2)
+ + '<h3>Rep 2 · OBM arrangements '+who("rec")+'</h3>'
+ + '<p>Name the performer, observable response, opportunity, and consequence. Pair each candidate with the time, training, rehearsal, feedback, authority, and workload support it needs. “Human review” alone is not a design.</p>'
+ + '<p class="stem">When '+fill("f11a-when","When",20)+', '+fill("f11a-performer","performer",14)+' will '+fill("f11a-will","will",24)+'.</p>'
+ + '<p class="stem">The supporting consequence/feedback will be '+fill("f11a-consequence","supporting consequence/feedback",30)+'.</p>'
+ + ta("f11a-feedback","Feedback received and one revision",3);
+}},
+
+{id:"anticipate",code:"12",nav:"Anticipate",title:"Scan for second-order effects",lede:"The first-order effect is what the tool does. The second-order effect is how behavior and systems change because the tool is present.",block:3,html:function(){ return ''
+ + '<h3>Domains '+who("rec")+'</h3>'
+ + twrap(thead(["Domain","Possible benefit","Possible cost or shifted burden","What we will observe"])+'<tbody>'
+   + ["Client choice + autonomy","Clinical quality","Staff skill / deskilling","Workload + pace","Access + equity","Documentation + payer","Environmental resources"].map(function(d,i){ return rowFill("f12-r"+i,d,["Benefit","Cost","Observe"]); }).join('')+'</tbody>')
+ + callout("Deskilling check","Which professional discriminations, judgments, or practice opportunities could weaken if this task is routinely delegated, and how will we preserve them?");
+}},
+
+{id:"converge",code:"11A",nav:"Trace and select",title:"Trace effects and select a test",block:3,html:function(){ return ''
+ + '<h3>Rep 3 · Second-order effects '+who("rec")+'</h3>'
+ + '<p>Trace a possible downstream consequence through at least two links. Use section 12 to consider client choice, quality, skill, workload, access, documentation, and resources. These are hypotheses to examine, not inevitable outcomes.</p>'
+ + ta("f11b-chain","Immediate change → next consequence → effect on people or work",3)
+ + ta("f11b-who","Who gains, who bears new work or risk, and who loses practice?",2)
+ + ta("f11b-observe","What will we observe, and what revision follows?",2)
+ + '<h3>Converge using explicit criteria '+who("rec")+'</h3>'
+ + '<p>Compare at least two candidates for purpose/stakeholder fit, evidence, burden, human authority, and a small reversible test. Popularity or novelty alone is not a reason. A non-AI or not-yet decision is legitimate.</p>'
+ + ta("f11b-selected","Selected option and reason",3)
+ + ta("f11b-assumption","Assumption most likely to change our choice",2)
+ + formBlock("table_reports",["f04-table","f11b-selected","f11b-assumption"],{stage:"selected",note:"Table recorder: one submission per table."})
+ + livePanel("reports:selected")
+ + '<h3>Prepare the prototype</h3>'
+ + '<p>In section 13, walk one ordinary fictional case through input, AI contribution, review, decision, and release/monitoring. Specify benefit and error/burden measures plus a stop condition. The Field Lab continues this prototype; it does not introduce a new case.</p>';
+}},
+
+{id:"prototype",code:"13",nav:"Prototype",title:"Build the smallest testable workflow",lede:"A prototype should be cheap enough to change and clear enough to fail informatively.",block:3,html:function(){ return ''
+ + '<h3>Prototype elements '+who("rec")+'</h3>'
+ + twrap(thead(["Prototype element","Decision"])+'<tbody>'
+   + ["User and setting","Trigger / start condition","Minimum data input","AI function and output","Required human verification","Action or handoff","Outcome and error measures","Escalation and stop rule"].map(function(e,i){ return '<tr><td class="k">'+e+'</td>'+cell("f13-e"+i,e)+'</tr>'; }).join('')+'</tbody>')
+ + '<h3>Test record and next test '+who("rec")+'</h3>'
+ + twrap(thead(["Rep","Input case","Predicted result","Observed result","Change before next rep"])+'<tbody>'
+   + [1,2,3].map(function(n){ return rowFill("f13-t"+n,"Rep "+n,["Input case","Predicted","Observed","Change"]); }).join('')+'</tbody>');
+}},
+
+{id:"fieldlab",code:"13A",nav:"Chiron Field Lab",title:"Run the 25-minute prototype and test",block:3,html:function(){ return ''
+ + '<p>Keep your A–F use case and prototype. There are no points or winners. The purpose is to expose assumptions and improve the relation among task, people, technology, and consequences.</p>'
+ + '<h3>Roles and materials</h3>'
+ + '<p><strong>Navigator</strong> reads and paces; <strong>Recorder</strong> moves notes and records revisions; <strong>Challenger</strong> asks for evidence. Roles may be shared. Use the System Map board, sticky notes, Operations card, matching sealed envelope, and eight decision tokens.</p>'
+ + '<div class="cards">'
+ + '<div class="card"><div class="eyebrow">3 tokens</div><h4>AI</h4><p>Permitted contributions</p></div>'
+ + '<div class="card"><div class="eyebrow">3 tokens</div><h4>Human</h4><p>Required judgment or action</p></div>'
+ + '<div class="card"><div class="eyebrow">2 tokens</div><h4>Stop</h4><p>Detectable condition, responsible person, and next step</p></div>'
+ + '</div>'
+ + '<p>Counts scaffold this exercise; they are not a rule for clinical design. Multiple tokens can share a zone. An unused/prohibited AI role may be explicitly marked.</p>'
+ + '<h3>Sequence</h3>'
+ + '<ul class="steps">'
+ + '<li><span class="t">00–02</span><span class="n">Launch</span><span class="d">Keep your use case. Assign Navigator, Recorder, and Challenger.</span></li>'
+ + '<li><span class="t">02–06</span><span class="n">Map</span><span class="d">Move the workflow you already designed onto the board using sticky notes.</span></li>'
+ + '<li><span class="t">06–10</span><span class="n">Place</span><span class="d">Use 3 AI + 3 Human + 2 Stop tokens. Name one safeguard, benefit measure, and error/burden measure.</span></li>'
+ + '<li><span class="t">10–11</span><span class="n">Reveal</span><span class="d">Open only your matching sealed context-shift envelope. Read it aloud.</span></li>'
+ + '<li><span class="t">11–18</span><span class="n">Revise</span><span class="d">Move at least one token. Revise a safeguard, measure, or stop rule. Explain why.</span></li>'
+ + '<li><span class="t">18–21</span><span class="n">Challenge</span><span class="d">Exchange a 60-second report with a neighboring table. Each asks one question.</span></li>'
+ + '<li><span class="t">21–25</span><span class="n">Debrief</span><span class="d">Two selected tables report for 60 seconds each. Presenters synthesize the revisions.</span></li>'
+ + '</ul>'
+ + callout("Keep envelopes sealed","Wait for the presenter to cue the reveal. Foil marks the reveal boundary; it is not a score or approval badge. Use sticky notes on the board, not wet-erase markers.")
+ + '<p>The table tent communicates <strong>WORKING</strong>, <strong>NEED A PROMPT</strong>, or <strong>READY TO REPORT</strong>. Continue with your best bounded assumption while waiting; presenter approval is not required to proceed.</p>'
+ + '<h3>Field Lab record '+who("rec")+'</h3>'
+ + '<p class="stem">Table family A–F: '+fill("f13a-table","Table family",4)+' &nbsp; Purpose: '+fill("f13a-purpose","Purpose",30)+'</p>'
+ + ta("f13a-before","Before the reveal: AI role, human decision, and technical/OBM safeguard",3)
+ + ta("f13a-envelope","What changed in the envelope, and which assumption no longer holds?",3)
+ + ta("f13a-after","After the reveal: token moved, design revision, and why it matters",3)
+ + '<p class="stem">Benefit measure: '+fill("f13a-benefit","Benefit measure",20)+' &nbsp; Error/burden measure: '+fill("f13a-errm","Error/burden measure",20)+'</p>'
+ + ta("f13a-stop","Stop condition, responsible person, and next step",2)
+ + '<h3>Five stems for the 60-second report</h3>'
+ + line("f13a-r1","Our purpose is…")
+ + line("f13a-r2","AI may…")
+ + line("f13a-r3","A human must…")
+ + line("f13a-r4","We will measure…")
+ + line("f13a-r5","We stop or escalate when…")
+ + formBlock("table_reports",["f13a-table","f13a-purpose","f13a-r1","f13a-r2","f13a-r3","f13a-r4","f13a-r5","f13a-benefit","f13a-errm","f13a-stop"],{stage:"fieldlab",note:"Table recorder: submit before the debrief so the report can go on screen."})
+ + livePanel("reports:fieldlab")
+ + ta("f13a-neighbor","Neighbor’s question or unresolved evidence need",2)
+ + '<p class="code">A useful test can lead to revise, constrain, choose a non-AI option, or not deploy. This fictional tabletop exercise does not validate a clinical intervention.</p>';
+}},
+
+{id:"commit",code:"15",nav:"Commit",title:"Your 30-day repertoire experiment",lede:"Choose a small professional behavior you can practice with feedback, not a vague intention to “use more AI.”",block:3,html:function(){ return ''
+ + '<h3>My commitment '+who()+'</h3>'
+ + twrap(thead(["Element","My commitment"])+'<tbody>'
+   + [["Use case and socially significant aim","f15-e0"],["My likely role: Designer / Implementer / Supporter","f15-e1"],["Skill or discrimination to practice","f15-e2"],["Practice opportunity 1","f15-p1"],["Practice opportunity 2","f15-p2"],["Practice opportunity 3","f15-p3"],["Person or source providing feedback","f15-e4"],["One technical safeguard","f15-e5"],["One OBM contingency","f15-e6"],["Benefit and error measures","f15-e7"],["Stop / reconsider threshold","f15-e8"],["Review date","f15-e9"]].map(function(r){ return '<tr><td class="k">'+r[0]+'</td>'+cell(r[1],r[0])+'</tr>'; }).join('')+'</tbody>')
+ + '<aside class="callout"><b>Commitment statement</b><p class="stem" style="margin:0">By '+fill("f15-s1","date",12)+', I will '+fill("f15-s2","behavior",22)+' in the context of '+fill("f15-s3","context",20)+', measure '+fill("f15-s4","measure",18)+', and pause or revise if '+fill("f15-s5","condition",20)+'.</p></aside>'
+ + formBlock("commit",["f15-e0","f15-e1","f15-e2","f15-s1","f15-s2","f15-s3","f15-s4","f15-s5"],{note:"Optional. Anonymous."});
+}},
+
+{id:"retain",code:"16",nav:"Retain",title:"Field guide: eight questions before use",lede:"Keep this page. Use it whenever an AI-enabled workflow moves from curiosity to practice.",block:3,html:function(){ return ''
+ + '<ol>'
+ + '<li><strong>Purpose</strong> — What socially significant outcome are we trying to improve, and for whom?</li>'
+ + '<li><strong>Context</strong> — What ongoing act, workflow, constraints, contingencies, and stakeholders matter?</li>'
+ + '<li><strong>Function</strong> — What information enters, what does the model do, and what output appears?</li>'
+ + '<li><strong>Data</strong> — Is the tool approved for these data, who can use or retain them, and how do we exit?</li>'
+ + '<li><strong>Scope</strong> — For whom and where has performance been demonstrated; where should use stop?</li>'
+ + '<li><strong>Decision rights</strong> — What may the system draft or recommend, and what must a qualified person verify and own?</li>'
+ + '<li><strong>Implementation</strong> — What technical safeguards, skills, prompts, feedback, workload, and escalation support safe use?</li>'
+ + '<li><strong>Monitoring</strong> — Which benefits, errors, inequities, version changes, and stop thresholds will we track?</li>'
+ + '</ol>'
+ + callout("Pragmatic criterion","Does this arrangement support effective action toward an explicit purpose in this context, and can it detect and correct error before meaningful harm?")
+ + '<h3>Knowledge check '+who()+'</h3>'
+ + ta("f16-k1","1. Name one difference between generative and predictive AI that changes how you would validate an output.",2)
+ + ta("f16-k2","2. Identify one professional decision that should remain explicitly assigned to a qualified human in your use case.",2)
+ + ta("f16-k3","3. State one benefit measure, one error measure, and one stop rule for your prototype.",2)
+ + '<h3>Post-workshop check '+who()+'</h3><p>How confident are you now that you can do each of these?</p>'
+ + scale("fpost-c1","Differentiate descriptive, predictive, and generative AI")
+ + scale("fpost-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
+ + scale("fpost-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
+ + scale("fpost-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
+ + formBlock("post",["f02-def2","fpost-c1","fpost-c2","fpost-c3","fpost-c4","f16-k1","f16-k2","f16-k3"],{note:"Anonymous. Includes your revised definition from section 02 and the knowledge check."})
+ + livePanel("confidence");
+}},
+
+{id:"references",code:"17",nav:"References",title:"Selected references and practice anchors",block:3,html:function(){ return ''
+ + '<ul style="max-width:none;font-size:.92rem">'
+ + '<li>Behavior Analyst Certification Board. (2020). <em>Ethics code for behavior analysts.</em> <a href="https://www.bacb.com/ethics-information/ethics-codes/" target="_blank" rel="noopener">bacb.com/ethics-information/ethics-codes</a></li>'
+ + '<li>Behavior Analyst Certification Board. (2026). <em>Authorized Continuing Education provider handbook.</em> <a href="https://www.bacb.com/continuing-education-providers/" target="_blank" rel="noopener">bacb.com/continuing-education-providers</a></li>'
+ + '<li>Council of Autism Service Providers. (2025). <em>Practice parameters for the use of artificial intelligence in applied behavior analysis.</em> <a href="https://assets-002.noviams.com/novi-file-uploads/casp/pdfs-and-documents/AI_Guidelines/aipracticeparameters.pdf" target="_blank" rel="noopener">PDF</a></li>'
+ + '<li>Cox, D. J., &amp; Jennings, A. M. (2024). The promises and possibilities of artificial intelligence in the delivery of behavior analytic services. <em>Behavior Analysis in Practice, 17,</em> 123–136. <a href="https://doi.org/10.1007/s40617-023-00864-3" target="_blank" rel="noopener">doi:10.1007/s40617-023-00864-3</a></li>'
+ + '<li>Hayes, S. C., Hayes, L. J., &amp; Reese, H. W. (1988). Finding the philosophical core: A review of Stephen C. Pepper’s <em>World Hypotheses. Journal of the Experimental Analysis of Behavior, 50</em>(1), 97–111. <a href="https://doi.org/10.1901/jeab.1988.50-97" target="_blank" rel="noopener">doi:10.1901/jeab.1988.50-97</a></li>'
+ + '<li>Jennings, A. M., &amp; Cox, D. J. (2024). Starting the conversation around the ethical use of artificial intelligence in applied behavior analysis. <em>Behavior Analysis in Practice, 17,</em> 107–122. <a href="https://doi.org/10.1007/s40617-023-00868-z" target="_blank" rel="noopener">doi:10.1007/s40617-023-00868-z</a></li>'
+ + '<li>National Institute of Standards and Technology. (2023). <em>Artificial intelligence risk management framework (AI RMF 1.0)</em> (NIST AI 100-1). <a href="https://doi.org/10.6028/NIST.AI.100-1" target="_blank" rel="noopener">doi:10.6028/NIST.AI.100-1</a></li>'
+ + '<li>National Institute of Standards and Technology. (2024). <em>Artificial intelligence risk management framework: Generative artificial intelligence profile</em> (NIST AI 600-1). <a href="https://doi.org/10.6028/NIST.AI.600-1" target="_blank" rel="noopener">doi:10.6028/NIST.AI.600-1</a></li>'
+ + '<li>U.S. Department of Health and Human Services. (n.d.). <em>Guidance on HIPAA &amp; cloud computing.</em> <a href="https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html" target="_blank" rel="noopener">hhs.gov</a></li>'
+ + '<li>Stanford d.school. (n.d.). <em>Design thinking bootleg.</em> <a href="https://dschool.stanford.edu/tools/design-thinking-bootleg" target="_blank" rel="noopener">dschool.stanford.edu</a></li>'
+ + '<li>International Energy Agency. (2025). <em>Energy and AI.</em> <a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">iea.org/reports/energy-and-ai</a></li>'
+ + '</ul>'
+ + callout("Scope note","This workbook is a reusable educational tool. It does not substitute for clinical judgment, organizational policy, payer requirements, professional standards, privacy and security review, or legal advice.");
+}}
+];
+
+var TABLES = [
+ {id:"A",name:"Clinical documentation",q:"Where does summarization save time without weakening the record?",ctx:"A multi-site ABA provider wants to reduce the time BCBAs spend turning structured session data and clinician notes into payer-facing progress summaries.",aug:"An approved generative system drafts a summary from a structured, minimum-necessary input. The BCBA reviews, edits, signs, and remains responsible for the final record.",tensions:["Documentation latency and burnout","Completeness and factual accuracy","Confidentiality, access, retention, and BAA","Authorship, attestation, and audit trail"]},
+ {id:"B",name:"Behavior-plan drafting",q:"What may be drafted, and what must remain assessment-grounded professional judgment?",ctx:"A clinical team wants help organizing assessment information and drafting plan sections for fictional training cases. Leaders hope to standardize quality across supervisors.",aug:"A generative system creates candidate wording and checklist prompts; a qualified behavior analyst integrates assessment evidence, client preferences, risks, and contextual fit.",tensions:["Speed versus assessment-grounded reasoning","Template consistency versus individualized fit","Scope of competence and accountability","Client and stakeholder participation"]},
+ {id:"C",name:"Goal recommendations",q:"How could options be generated without turning familiarity into clinical authority?",ctx:"A clinic wants to generate candidate treatment goals from fictional learner profiles so teams can spend more meeting time discussing prioritization with caregivers.",aug:"The system proposes options and rationales. The team treats them as hypotheses, checks assessment evidence and social significance, and documents human selection or rejection.",tensions:["Option generation versus clinical authority","Cultural and contextual responsiveness","Generalization from training data","Transparency to clients and stakeholders"]},
+ {id:"D",name:"Supervision and training",q:"How can AI accelerate practice while the supervisor retains accountability?",ctx:"A supervision team wants faster creation of role-play cases, knowledge checks, feedback examples, and individualized practice schedules for RBTs and trainees.",aug:"AI drafts fictional materials and performance-support prompts; supervisors validate content, observe performance, give feedback, and evaluate effects on client-facing behavior.",tensions:["Scale versus supervisor accountability","Knowledge checks versus demonstrated performance","Deskilling or never-skilling","Bias in examples and feedback"]},
+ {id:"E",name:"Outcome prediction",q:"What would make a prediction locally valid and decision-relevant?",ctx:"A provider is considering a model that estimates the likelihood of reaching selected outcomes within a service window and flags cases for additional review.",aug:"Predictions inform, rather than determine, review. The organization evaluates local performance, uncertainty, subgroup impact, overrides, and changes over time.",tensions:["Prediction versus causal explanation","Local validity and sample shift","Payer or resource-allocation pressure","Fairness, access, and self-fulfilling decisions"]},
+ {id:"F",name:"Scheduling and workflow",q:"How do we optimize while preserving access, fairness, and exceptions?",ctx:"An in-home provider wants to match staff, geography, availability, credentials, continuity, and client preferences while reducing cancellations and travel time.",aug:"An optimization tool proposes schedules within explicit constraints. Coordinators review exceptions, client access, staff burden, and downstream clinical effects.",tensions:["Efficiency versus continuity and preference","Hidden workload shifts","Fair access and exception handling","Automation bias and override authority"]}
+];
+function tableCard(t){
+  return '<div class="eyebrow">Fictional case · Define · Ideate · Chiron Field Lab</div>'
+   + '<h4 style="margin-top:.2rem">Current context</h4><p>'+t.ctx+'</p>'
+   + '<h4>Proposed augmentation</h4><p>'+t.aug+'</p>'
+   + '<h4>Tensions to make explicit</h4><ul>'+t.tensions.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'
+   + '<p class="code">60-second report: Our purpose is… | AI may… | A human must… | We will measure… | We stop or escalate when…</p>';
+}
+
+/* ---------- configuration ---------- */
+var API_URL = "https://script.google.com/macros/s/AKfycbxsnjeGnJUoJKNkAlShFNnsRVTe7_mfFPuzVX6uGF7z8X-tyjmmA-NkwL6cDK9LqQO45Q/exec";      /* paste the Apps Script web app URL here (ends in /exec) */
+var POLL_MS = 8000;    /* how often participants check for newly opened sections */
+
+/* ---------- state ---------- */
+var LS_ANS = "nr-answers", LS_SEC = "nr-section", LS_GATES = "nr-gates", LS_PID = "nr-pid", LS_SUB = "nr-submitted", SS_KEY = "nr-key";
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function ssGet(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
+function ssSet(k,v){ try{ if(v===null) sessionStorage.removeItem(k); else sessionStorage.setItem(k,v); }catch(e){} }
+function parse(s,fallback){ try{ var v=JSON.parse(s); return v===null||v===undefined?fallback:v; }catch(e){ return fallback; } }
+
+var ANSWERS = parse(lsGet(LS_ANS),{}) || {};
+var SUBMITTED = parse(lsGet(LS_SUB),{}) || {};
+var PID = lsGet(LS_PID);
+if(!PID){ PID = "p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); lsSet(LS_PID,PID); }
+var ALL_IDS = SECTIONS.map(function(s){return s.id;});
+var PANELS = [["interests","Interest poll (04)"],["demographics","Role and setting snapshot (03A)"],["confidence","Confidence pre/post (02, 16)"],["reports:problem","Problem statements (04)"],["reports:define","Define statements (05A)"],["reports:selected","Selected options (11A)"],["reports:fieldlab","Field Lab reports (13A)"]];
+var ALL_PANELS = PANELS.map(function(p){return p[0];});
+var GATES = API_URL ? (parse(lsGet(LS_GATES),null) || {unlocked:[],current:"welcome",show:[]}) : {unlocked:ALL_IDS.slice(),current:"welcome",show:ALL_PANELS.slice()};
+if(!Array.isArray(GATES.show)) GATES.show=[];
+var ONLINE = null;            /* null = unknown, true/false after first poll */
+var ADMIN = false;            /* true once the passcode is accepted */
+var ADMIN_KEY = ssGet(SS_KEY) || "";
+var PENDING = null;           /* facilitator draft of GATES */
+var ADMIN_DATA = null;        /* last admin fetch */
+var ADMIN_MSG = null;
+
+function saveAnswer(id,val){ ANSWERS[id]=val; lsSet(LS_ANS, JSON.stringify(ANSWERS)); }
+function isUnlocked(id){ return id==="welcome" || GATES.unlocked.indexOf(id)>=0; }
+function sectionById(id){ for(var i=0;i<SECTIONS.length;i++) if(SECTIONS[i].id===id) return SECTIONS[i]; return null; }
+function firstUnlockedAfter(idx){ for(var i=idx+1;i<SECTIONS.length;i++) if(ADMIN||isUnlocked(SECTIONS[i].id)) return SECTIONS[i]; return null; }
+function lastUnlockedBefore(idx){ for(var i=idx-1;i>=0;i--) if(ADMIN||isUnlocked(SECTIONS[i].id)) return SECTIONS[i]; return null; }
+function orderUnlocked(list){ return ALL_IDS.filter(function(id){return list.indexOf(id)>=0;}); }
+function myTable(){ return ANSWERS["f04-table"] || ANSWERS["f13a-table"] || ""; }
+function fmtTime(iso){ try{ return new Date(iso).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}); }catch(e){ return ""; } }
+
+/* ---------- API ---------- */
+function apiGet(params){
+  var q = Object.keys(params).map(function(k){ return encodeURIComponent(k)+"="+encodeURIComponent(params[k]); }).join("&");
+  return fetch(API_URL+(API_URL.indexOf("?")>=0?"&":"?")+q, {method:"GET"}).then(function(r){ return r.json(); });
+}
+function apiPost(body){
+  /* plain-text body avoids a CORS preflight, which Apps Script does not answer */
+  return fetch(API_URL, {method:"POST", body:JSON.stringify(body)}).then(function(r){ return r.json(); });
+}
+function applyGates(g){
+  if(!g || !Array.isArray(g.unlocked)) return;
+  var clean = {unlocked:orderUnlocked(g.unlocked.map(String)), current:String(g.current||"welcome"), show:ALL_PANELS.filter(function(k){ return Array.isArray(g.show) && g.show.indexOf(k)>=0; })};
+  if(JSON.stringify(clean)===JSON.stringify(GATES)) return;
+  GATES = clean; lsSet(LS_GATES, JSON.stringify(GATES));
+  render({keepScroll:true});
+}
+function setOnline(v){ if(ONLINE===v) return; ONLINE=v; var el=document.getElementById("conn"); if(el) el.outerHTML=connChip(); }
+function pollGates(){
+  if(!API_URL) return;
+  apiGet({action:"state"}).then(function(r){ if(r && r.gates){ applyGates(r.gates); setOnline(true); } })
+    .catch(function(){ setOnline(false); })
+    .then(function(){ setTimeout(pollGates, POLL_MS + Math.random()*2000); });
+}
+
+/* ---------- routing ---------- */
+function currentSectionId(){
+  var h = location.hash;
+  if(h.indexOf("#s/")===0){ var id=h.slice(3); if(sectionById(id)) return id; }
+  if(h==="" && !ADMIN){ var s=lsGet(LS_SEC); if(s && sectionById(s) && isUnlocked(s)) return s; }
+  return "welcome";
+}
+
+/* ---------- rendering ---------- */
+var root = document.getElementById("root");
+var railOpen = false;
+
+function render(opts){
+  opts = opts || {};
+  FIELDS = [];
+  var ae = document.activeElement, focusId = ae && ae.id, selS=null, selE=null;
+  try{ if(ae && ae.setSelectionRange){ selS=ae.selectionStart; selE=ae.selectionEnd; } }catch(e){}
+  var scrollY = window.scrollY;
+  var cur = currentSectionId();
+  var wantAdmin = location.hash==="#admin";
+  var html = '';
+  html += '<header class="topbar"><div class="topbar-in">'
+    + '<a class="brand" href="#welcome"><b>The Next Repertoire</b><span>SDABA 2026</span></a>'
+    + '<span class="spacer"></span>'
+    + nowChip()
+    + connChip()
+    + '<button class="btn small quiet menu-btn" id="menu-btn" aria-expanded="'+railOpen+'">Sections</button>'
+    + '</div></header>';
+  if(!API_URL) html += '<div class="banner">Preview mode: not connected to the response sheet. All sections are open and submissions are off. Set API_URL in the page to connect.</div>';
+  html += '<div class="layout">';
+  html += '<nav class="rail'+(railOpen?' open':'')+'" id="rail">'+renderRail(cur)+'</nav>';
+  html += '<main class="main" id="main">';
+  if(wantAdmin) html += ADMIN ? renderAdmin() : renderLogin();
+  if(cur==="welcome"){ if(!wantAdmin) html += renderLanding(); }
+  else html += renderSection(cur);
+  html += '<div class="footer"><span>David J. Cox &amp; Ryan L. O’Donnell · Project Chiron</span>'
+    + '<button class="btn small quiet" id="export-btn">Export my answers</button>'
+    + '<button class="btn small quiet" id="print-btn">Print</button>'
+    + (wantAdmin ? '<a href="#welcome">Exit facilitator view</a>' : '<a href="#admin">Facilitator</a>')
+    + '</div>';
+  html += '</main></div>';
+  root.innerHTML = html;
+  hydrate();
+  if(cur!=="welcome" && !ADMIN) lsSet(LS_SEC, cur);
+  if(opts.keepScroll){
+    window.scrollTo(0,scrollY);
+    if(focusId){ var el=document.getElementById(focusId); if(el){ el.focus({preventScroll:true}); try{ if(selS!==null) el.setSelectionRange(selS,selE); }catch(e){} } }
+  } else window.scrollTo(0,0);
+}
+
+function nowChip(){
+  var s = sectionById(GATES.current);
+  if(!s) return '';
+  return '<a class="now-chip" href="#s/'+s.id+'" title="Current section"><i></i>Now: '+s.code+' '+s.nav+'</a>';
+}
+function connChip(){
+  var t = !API_URL ? 'Preview' : (ONLINE===null ? 'Connecting' : (ONLINE ? 'Live' : 'Offline'));
+  var c = !API_URL ? 'prev' : (ONLINE ? 'on' : 'off');
+  return '<span class="conn '+c+'" id="conn" title="Connection to the workshop sheet">'+t+'</span>';
+}
+
+function renderRail(cur){
+  var out = '<a href="#welcome" class="'+(cur==="welcome"?'active':'')+'"><span class="rc">—</span>Welcome</a>';
+  var lastBlock = 0;
+  SECTIONS.forEach(function(s){
+    if(s.block!==lastBlock){
+      lastBlock = s.block;
+      out += '</div><div class="rail-block"><div class="eyebrow">'+BLOCKS[s.block].n+' · '+BLOCKS[s.block].time+'</div>';
+    }
+    var open = ADMIN || isUnlocked(s.id);
+    var cls = (s.id===cur?'active ':'')+(open?'':'locked');
+    var tail = '';
+    if(!open) tail = '<span class="lk" title="Opens later in the workshop">locked</span>';
+    else if(GATES.current===s.id) tail = '<span class="nowdot" title="Now"></span>';
+    if(open) out += '<a href="#s/'+s.id+'" class="'+cls+'"><span class="rc">'+s.code+'</span><span>'+s.nav+'</span>'+tail+'</a>';
+    else out += '<a class="'+cls+'" aria-disabled="true"><span class="rc">'+s.code+'</span><span>'+s.nav+'</span>'+tail+'</a>';
+  });
+  return '<div class="rail-block">'+out+'</div>';
+}
+
+function renderLanding(){
+  var nowS = sectionById(GATES.current);
+  var rows = [1,2,3].map(function(b){
+    var secs = SECTIONS.filter(function(s){return s.block===b;});
+    var open = secs.filter(function(s){return isUnlocked(s.id);}).length;
+    var st = open===0 ? 'Locked' : (open===secs.length ? 'Open' : open+' of '+secs.length+' open');
+    return '<tr><td class="k">'+BLOCKS[b].time+'</td><td>'+BLOCKS[b].t+'</td><td>'+st+'</td></tr>';
+  }).join('');
+  return ''
+   + '<div class="hero">'
+   + '<div class="eyebrow">SDABA 2026</div>'
+   + '<h1>The Next Repertoire</h1>'
+   + '<p class="sub">Designing Your Professional Skillset for AI-Augmented Practice</p>'
+   + '<div class="meta"><span>David J. Cox</span><span>Ryan L. O’Donnell</span><span>3 hours</span></div>'
+   + '</div>'
+   + '<div class="section" style="margin-top:20px">'
+   + '<p>Same sections as the printed workbook. Use either. Sections open as the workshop reaches them.</p>'
+   + '<p>Your answers are saved in this browser. Some prompts have a Submit button; those responses go to the facilitators anonymously. Use fictional examples; no client or staff information.</p>'
+   + twrap(thead(["Time","Block","Status"])+'<tbody>'+rows+'</tbody>')
+   + (nowS ? '<p><a class="btn primary" href="#s/'+nowS.id+'">Current section: '+nowS.code+' '+nowS.nav+'</a></p>' : '<p><a class="btn primary" href="#s/orient">Start: 01 Orient</a></p>')
+   + '</div>';
+}
+
+function renderSection(id){
+  var s = sectionById(id);
+  if(!s) return renderLanding();
+  var idx = SECTIONS.indexOf(s);
+  if(!ADMIN && !isUnlocked(id)){
+    return '<div class="locked-note"><div class="eyebrow">'+s.code+' · '+BLOCKS[s.block].n+'</div><h2>'+s.title+'</h2><p>Not open yet.</p><p><a class="btn" href="#welcome">Back</a></p></div>';
+  }
+  CUR_SECTION = s.code+" "+s.title;
+  var prev = lastUnlockedBefore(idx), next = firstUnlockedAfter(idx);
+  var nextLocked = (!next && idx<SECTIONS.length-1) ? SECTIONS[idx+1] : null;
+  var chip = ADMIN ? '<span class="lockchip'+(isUnlocked(id)?' open':'')+'">'+(isUnlocked(id)?'Open to participants':'Locked for participants')+'</span>' : '';
+  return '<article class="section">'
+   + '<div class="section-head"><span class="code">'+s.code+' · '+BLOCKS[s.block].n+'</span>'+(GATES.current===id?'<span class="who rec" style="margin:0">Now</span>':'')+chip+'</div>'
+   + '<h2>'+s.title+'</h2>'
+   + (s.lede?'<p class="lede">'+s.lede+'</p>':'')
+   + s.html()
+   + '</article>'
+   + '<div class="pager">'
+   + (prev ? '<a href="#s/'+prev.id+'"><small>Previous</small>'+prev.code+' · '+prev.nav+'</a>' : '<a href="#welcome"><small>Previous</small>Welcome</a>')
+   + (next ? '<a class="next" href="#s/'+next.id+'"><small>Next</small>'+next.code+' · '+next.nav+'</a>' : (nextLocked ? '<a class="next disabled"><small>Next (locked)</small>'+nextLocked.code+' · '+nextLocked.nav+'</a>' : ''))
+   + '</div>';
+}
+
+/* ---------- submissions ---------- */
+function subKey(form,stage){ return form+(stage?":"+stage:""); }
+function formBlock(form,fields,opts){
+  opts = opts||{};
+  var st = SUBMITTED[subKey(form,opts.stage)];
+  var note = opts.note || "Anonymous. Goes to the facilitators.";
+  return '<div class="submit" data-form="'+form+'" data-stage="'+(opts.stage||'')+'" data-fields="'+fields.join(',')+'">'
+   + '<button class="btn primary small" type="button">'+(st?'Submit again':'Submit')+'</button>'
+   + '<span class="submit-status">'+(st ? 'Submitted '+fmtTime(st)+'.' : note)+'</span></div>';
+}
+function submitBlock(box){
+  var form = box.getAttribute("data-form"), stage = box.getAttribute("data-stage")||"";
+  var ids = box.getAttribute("data-fields").split(",");
+  var status = box.querySelector(".submit-status"), btn = box.querySelector("button");
+  if(!API_URL){ status.textContent = "Not connected to the response sheet yet."; return; }
+  var data = {}; var any=false;
+  ids.forEach(function(id){ var el=document.getElementById(id); var v = el ? (el.type==="checkbox"?el.checked:el.value) : ANSWERS[id]; if(v===undefined) v=""; data[id]=v; if(v!=="" && v!==false) any=true; });
+  if(!any){ status.textContent = "Nothing to send yet."; return; }
+  if(stage) data.stage = stage;
+  btn.disabled = true; status.textContent = "Sending…";
+  apiPost({action:"submit", form:form, pid:PID, table:myTable(), data:data}).then(function(r){
+    if(r && r.ok){ var now=new Date().toISOString(); SUBMITTED[subKey(form,stage)]=now; lsSet(LS_SUB, JSON.stringify(SUBMITTED)); status.textContent="Submitted "+fmtTime(now)+"."; btn.textContent="Submit again"; setTimeout(pollSummary, 1500); }
+    else status.textContent = "Could not send ("+((r&&r.error)||"unknown")+"). Try again.";
+  }).catch(function(){ status.textContent = "Could not send. Check the connection and try again."; })
+  .then(function(){ btn.disabled=false; });
+}
+
+/* ---------- facilitator ---------- */
+function renderLogin(){
+  return '<section class="admin"><h2>Facilitator</h2>'
+   + (API_URL ? '<div class="field" style="max-width:320px"><label for="admin-key">Passcode</label><input type="password" id="admin-key" autocomplete="current-password"></div><button class="btn primary" id="admin-login">Enter</button>'
+              + (ADMIN_MSG ? '<div class="msg err">'+ADMIN_MSG+'</div>' : '')
+              : '<p>Preview mode. Set API_URL in the page to enable facilitator controls.</p>')
+   + '</section>';
+}
+function adminLogin(){
+  var key = (document.getElementById("admin-key")||{}).value || "";
+  var btn = document.getElementById("admin-login"); if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
+  apiGet({action:"admin", key:key}).then(function(r){
+    if(r && !r.error){ ADMIN=true; ADMIN_KEY=key; ssSet(SS_KEY,key); ADMIN_DATA=r; ADMIN_MSG=null; if(r.gates) applyGates(r.gates); render(); }
+    else { ADMIN_MSG = "Passcode not accepted."; render(); }
+  }).catch(function(){ ADMIN_MSG="Could not reach the sheet. Try again."; render(); });
+}
+function refreshAdmin(){
+  if(!ADMIN || !API_URL) return;
+  apiGet({action:"admin", key:ADMIN_KEY}).then(function(r){
+    if(r && !r.error){ ADMIN_DATA=r; if(r.gates) applyGates(r.gates); var box=document.getElementById("responses"); if(box) box.innerHTML=renderResponses(); var t=document.getElementById("resp-time"); if(t) t.textContent="Updated "+fmtTime(new Date().toISOString()); }
+    else if(r && r.error==="unauthorized"){ ADMIN=false; ssSet(SS_KEY,null); ADMIN_MSG="Session ended. Enter the passcode again."; render(); }
+  }).catch(function(){});
+}
+function renderAdmin(){
+  var g = PENDING || GATES;
+  if(PENDING) PENDING.unlocked = orderUnlocked(PENDING.unlocked);
+  if(PENDING) PENDING.show = ALL_PANELS.filter(function(k){return PENDING.show.indexOf(k)>=0;});
+  var dirty = !!PENDING && JSON.stringify(PENDING)!==JSON.stringify(GATES);
+  var openCount = g.unlocked.length;
+  var nowS = sectionById(g.current);
+  var lastBlock = 0, gates = '';
+  SECTIONS.forEach(function(s){
+    if(s.block!==lastBlock){ lastBlock=s.block; gates += '<div class="gate-block eyebrow">'+BLOCKS[s.block].n+' · '+BLOCKS[s.block].t+'</div>'; }
+    var on = g.unlocked.indexOf(s.id)>=0;
+    gates += '<div class="gate"><label class="sw"><input type="checkbox" data-gate="'+s.id+'"'+(on?' checked':'')+' aria-label="Open '+s.code+' '+s.nav+' to participants"><i></i></label>'
+      + '<span><span class="rc">'+s.code+'</span>'+s.nav+'</span>'
+      + '<button class="nowbtn'+(g.current===s.id?' on':'')+'" data-now="'+s.id+'" title="Mark as current">Now</button></div>';
+  });
+  return '<section class="admin" id="admin-panel">'
+   + '<div class="admin-head"><h2>Sections</h2><span class="status">Participants see <strong>'+openCount+'</strong> of '+SECTIONS.length+'. Now: <strong>'+(nowS?nowS.code+' '+nowS.nav:'Welcome')+'</strong>.</span></div>'
+   + '<div class="actions">'
+   + '<button class="btn" id="a-next">Open next</button>'
+   + '<button class="btn" id="a-all">Open all</button>'
+   + '<button class="btn" id="a-block1">Block 1 only</button>'
+   + '<button class="btn" id="a-lock">Lock all</button>'
+   + '<span style="flex:1"></span>'
+   + (dirty ? '<span class="pending">Unpublished changes</span><button class="btn" id="a-discard">Discard</button>' : '')
+   + '<button class="btn primary" id="a-publish"'+(dirty?'':' disabled')+'>Publish</button>'
+   + '</div>'
+   + '<div class="gates">'+gates+'</div>'
+   + '<h3>Room results shown to participants</h3>'
+   + '<div class="gates">'+PANELS.map(function(p){ var on=g.show.indexOf(p[0])>=0; return '<div class="gate"><label class="sw"><input type="checkbox" data-show="'+p[0]+'"'+(on?' checked':'')+' aria-label="Show '+p[1]+'"><i></i></label><span>'+p[1]+'</span><span></span></div>'; }).join('')+'</div>'
+   + '<div id="admin-msg" hidden></div>'
+   + '</section>'
+   + '<section class="admin" id="admin-responses">'
+   + '<div class="admin-head"><h2>Responses</h2><span class="status" id="resp-time"></span><span style="flex:1"></span><button class="btn small" id="a-refresh">Refresh</button><button class="btn small quiet" id="a-logout">Sign out</button></div>'
+   + '<div id="responses">'+renderResponses()+'</div>'
+   + '</section>';
+}
+function draft(){ if(!PENDING) PENDING = JSON.parse(JSON.stringify(GATES)); return PENDING; }
+function setGate(id,on){
+  var g = draft(); var i = g.unlocked.indexOf(id);
+  if(on && i<0) g.unlocked.push(id);
+  if(!on && i>=0) g.unlocked.splice(i,1);
+  if(!on && g.current===id) g.current = "welcome";
+  render({keepScroll:true});
+}
+function adminMsg(text,err){ var m=document.getElementById("admin-msg"); if(!m) return; m.hidden=false; m.className="msg"+(err?" err":""); m.textContent=text; }
+function publishGates(){
+  var g = PENDING; if(!g) return;
+  var btn = document.getElementById("a-publish"); if(btn){ btn.disabled=true; btn.textContent="Publishing…"; }
+  apiPost({action:"setGates", key:ADMIN_KEY, gates:{unlocked:orderUnlocked(g.unlocked), current:g.current, show:g.show}}).then(function(r){
+    if(r && r.ok){ PENDING=null; applyGates(r.gates); render({keepScroll:true}); adminMsg("Published. Participants update within about "+Math.round(POLL_MS/1000)+" seconds."); }
+    else { adminMsg("Publish failed ("+((r&&r.error)||"unknown")+")."); if(btn){btn.disabled=false;btn.textContent="Publish";} }
+  }).catch(function(){ adminMsg("Publish failed. Check the connection and try again.", true); if(btn){btn.disabled=false;btn.textContent="Publish";} });
+}
+
+/* ---------- live panels (participant-facing aggregates) ---------- */
+var SUMMARY = null, summaryTimer = null;
+var STAGES = {
+  problem:{title:"Problem statements (04)",text:function(r){ return 'In '+r["f04-ctx"]+', AI may '+r["f04-action"]+' to support '+r["f04-purpose"]+'. '+r["f04-role"]+' retains responsibility for '+r["f04-decision"]+'.'; }},
+  define:{title:"Define statements (05A)",text:function(r){ return r["f05a-person"]+' needs '+r["f05a-need"]+' because '+r["f05a-insight"]+'. How might we '+r["f05a-hmw"]+(r["f05a-revised"]?' Revised: '+r["f05a-revised"]:''); }},
+  selected:{title:"Selected options (11A)",text:function(r){ return r["f11b-selected"]+(r["f11b-assumption"]?' Assumption: '+r["f11b-assumption"]:''); }},
+  fieldlab:{title:"Field Lab reports (13A)",text:function(r){ return 'Our purpose is '+r["f13a-r1"]+' | AI may '+r["f13a-r2"]+' | A human must '+r["f13a-r3"]+' | We will measure '+r["f13a-r4"]+' | We stop or escalate when '+r["f13a-r5"]; }}
+};
+var OBJS = [["c1","Differentiate AI types"],["c2","Analyze a workflow with the canvas"],["c3","Evaluate governance considerations"],["c4","Produce a 30-day prototype"]];
+function livePanel(kind){
+  if(!ADMIN && GATES.show.indexOf(kind)<0) return '';
+  return '<div class="live" data-live="'+kind+'"><div class="live-head"><span class="eyebrow">Room results</span><span class="code live-time"></span></div><div class="live-body">'+(API_URL?'Loading…':'Results appear here once the site is connected.')+'</div></div>';
+}
+function renderReports(rows,stage){
+  var st = STAGES[stage]; var rs = (rows||[]).filter(function(r){return r.stage===stage;});
+  if(!rs.length) return '<p class="code">No tables have submitted yet.</p>';
+  var lp = latestPerTable(rs);
+  return twrap('<tbody>'+Object.keys(lp).sort().map(function(t){ return '<tr><td class="k">Table '+esc(t||"?")+'</td><td>'+esc(st.text(lp[t]))+'</td></tr>'; }).join('')+'</tbody>');
+}
+function renderConfidence(pre,post,prefix){
+  prefix = prefix||"";
+  if(!pre.length && !post.length) return '<p class="code">No responses yet.</p>';
+  return twrap(thead(["Confidence, 1–5","Pre (n="+pre.length+")","Post (n="+post.length+")"])+'<tbody>'+OBJS.map(function(o){ return '<tr><td class="k">'+o[1]+'</td><td>'+mean(pre,prefix?"fpre-"+o[0]:o[0])+'</td><td>'+mean(post,prefix?"fpost-"+o[0]:o[0])+'</td></tr>'; }).join('')+'</tbody>');
+}
+function renderInterests(rows){
+  if(!rows.length) return '<p class="code">No responses yet.</p>';
+  var first=count(rows,"first"), second=count(rows,"second");
+  return twrap(thead(["Table","First choice","Second choice"])+'<tbody>'+TABLES.map(function(t){ return '<tr><td class="k">'+t.id+' · '+t.name+'</td><td>'+(first[t.id]||0)+'</td><td>'+(second[t.id]||0)+'</td></tr>'; }).join('')+'</tbody>')
+    + kvTable("Expected role", count(rows,"role"));
+}
+function renderDemographics(rows){
+  if(!rows.length) return '<p class="code">No responses yet.</p>';
+  return '<div class="cards">'+[["role","Role"],["setting","Setting"],["years","Years in field"],["org","Organization size"],["ai","Current AI use"]].map(function(f){ return '<div class="card">'+kvTable(f[1],count(rows,f[0]))+'</div>'; }).join('')+'</div>';
+}
+function paintLive(){
+  var panels = root.querySelectorAll(".live"); if(!panels.length || !SUMMARY) return;
+  var when = fmtTime(new Date().toISOString());
+  panels.forEach(function(p){
+    var kind = p.getAttribute("data-live"), body = p.querySelector(".live-body"), html='';
+    if(kind==="interests") html = renderInterests(SUMMARY.interests||[]);
+    else if(kind==="demographics") html = renderDemographics(SUMMARY.demographics||[]);
+    else if(kind==="confidence") html = renderConfidence(SUMMARY.pre||[], SUMMARY.post||[]);
+    else if(kind.indexOf("reports:")===0) html = renderReports(SUMMARY.table_reports||[], kind.slice(8));
+    body.innerHTML = html; p.querySelector(".live-time").textContent = "Updated "+when;
+  });
+}
+function pollSummary(){
+  clearTimeout(summaryTimer);
+  if(!API_URL || !root.querySelector(".live")) return;
+  apiGet({action:"summary"}).then(function(r){ if(r && !r.error){ SUMMARY=r; paintLive(); } }).catch(function(){})
+    .then(function(){ summaryTimer = setTimeout(pollSummary, 15000); });
+}
+
+/* response summaries */
+function count(rows,field){ var m={}; rows.forEach(function(r){ var v=(r[field]===undefined||r[field]==="")?"(blank)":String(r[field]); m[v]=(m[v]||0)+1; }); return m; }
+function mean(rows,field){ var n=0,s=0; rows.forEach(function(r){ var v=parseFloat(r[field]); if(!isNaN(v)){ n++; s+=v; } }); return n?(s/n).toFixed(1):"–"; }
+function latestPerTable(rows){ var m={}; rows.forEach(function(r){ var t=r.table||"?"; m[t]=r; }); return m; }
+function kvTable(title,m){ var keys=Object.keys(m).sort(function(a,b){return m[b]-m[a];}); if(!keys.length) return ''; return '<h4>'+title+'</h4>'+twrap('<tbody>'+keys.map(function(k){return '<tr><td>'+esc(k)+'</td><td class="k">'+m[k]+'</td></tr>';}).join('')+'</tbody>'); }
+function renderResponses(){
+  var d = ADMIN_DATA;
+  if(!d) return '<p class="code">No data loaded yet.</p>';
+  var c = d.counts||{}, R = d.rows||{};
+  var out = '<div class="cards">'+["pre","demographics","quadrant","interests","table_reports","commit","post"].map(function(f){ return '<div class="card"><div class="eyebrow">'+f.replace("_"," ")+'</div><h4 style="font-size:1.4rem">'+(c[f]||0)+'</h4></div>'; }).join('')+'</div>';
+
+  /* interests: for table sorting */
+  var ir = latestPerTable ? (function(){ var m={}; (R.interests||[]).forEach(function(r){ m[r.pid||Math.random()]=r; }); return Object.keys(m).map(function(k){ var r=m[k]; return {first:r["fint-first"],second:r["fint-second"],role:r["fint-role"]}; }); })() : [];
+  if(ir.length) out += '<h3>Interest poll ('+ir.length+' people, latest response each)</h3>'+renderInterests(ir);
+
+  /* table reports */
+  var tr = R.table_reports||[];
+  Object.keys(STAGES).forEach(function(stage){ if(tr.some(function(r){return r.stage===stage;})) out += '<h3>'+STAGES[stage].title+'</h3>'+renderReports(tr,stage); });
+
+  /* pre / post */
+  var pre = R.pre||[], post = R.post||[];
+  if(pre.length||post.length) out += '<h3>Confidence</h3>'+renderConfidence(pre,post,true);
+
+  /* demographics */
+  var dm = (R.demographics||[]).map(function(r){ return {role:r["fdem-role"],setting:r["fdem-setting"],years:r["fdem-years"],org:r["fdem-org"],ai:r["fdem-ai"]}; });
+  if(dm.length) out += '<h3>Role and setting snapshot (n='+dm.length+')</h3>'+renderDemographics(dm);
+  return out;
+}
+
+/* ---------- export ---------- */
+function exportAnswers(){
+  var lines = ["# The Next Repertoire — my workbook answers","", "Exported "+new Date().toLocaleString(),""];
+  var t = myTable(); if(t) lines.push("Table "+t,"");
+  var lastSec = "", all = [];
+  var saveFields = FIELDS, saveCur = CUR_SECTION;
+  SECTIONS.forEach(function(s){ FIELDS=[]; CUR_SECTION=s.code+" "+s.title; s.html(); all = all.concat(FIELDS); });
+  FIELDS = saveFields; CUR_SECTION = saveCur;
+  var n = 0;
+  all.forEach(function(f){
+    var v = ANSWERS[f.id];
+    if(v===undefined || v==="" || v===false) return;
+    if(f.section!==lastSec){ lines.push("", "## "+f.section, ""); lastSec=f.section; }
+    var label = f.label.replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim();
+    if(v===true) lines.push("- [x] "+label.replace(/^\[ \] /,""));
+    else lines.push("**"+label+"**", "", String(v), "");
+    n++;
+  });
+  if(!n){ toast("Nothing to export yet."); return; }
+  var blob = new Blob([lines.join("\n")], {type:"text/markdown"});
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "next-repertoire-answers.md";
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+var toastTimer=null;
+function toast(msg){
+  var t=document.querySelector(".toast"); if(!t){ t=document.createElement("div"); t.className="toast"; document.body.appendChild(t); }
+  t.textContent=msg; clearTimeout(toastTimer); toastTimer=setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },3200);
+}
+
+/* ---------- hydrate ---------- */
+function hydrate(){
+  root.querySelectorAll("input[type=text],textarea,select").forEach(function(el){ if(el.id && ANSWERS[el.id]!==undefined) el.value = ANSWERS[el.id]; });
+  root.querySelectorAll("input[type=checkbox]").forEach(function(el){ if(el.id && ANSWERS[el.id]!==undefined) el.checked = !!ANSWERS[el.id]; });
+  renderTableCard();
+  var q=function(id){return document.getElementById(id);};
+  if(q("menu-btn")) q("menu-btn").onclick=function(){ railOpen=!railOpen; q("rail").classList.toggle("open",railOpen); q("menu-btn").setAttribute("aria-expanded",railOpen); };
+  if(q("export-btn")) q("export-btn").onclick=exportAnswers;
+  if(q("print-btn")) q("print-btn").onclick=function(){ window.print(); };
+  root.querySelectorAll(".submit button").forEach(function(b){ b.onclick=function(){ submitBlock(b.parentNode); }; });
+  paintLive(); pollSummary();
+  if(q("admin-login")) { q("admin-login").onclick=adminLogin; q("admin-key").onkeydown=function(e){ if(e.key==="Enter") adminLogin(); }; }
+  if(ADMIN){
+    root.querySelectorAll("[data-gate]").forEach(function(el){ el.onchange=function(){ setGate(el.getAttribute("data-gate"), el.checked); }; });
+    root.querySelectorAll("[data-show]").forEach(function(el){ el.onchange=function(){ var g=draft(); var k=el.getAttribute("data-show"); var i=g.show.indexOf(k); if(el.checked&&i<0) g.show.push(k); if(!el.checked&&i>=0) g.show.splice(i,1); render({keepScroll:true}); }; });
+    root.querySelectorAll("[data-now]").forEach(function(el){ el.onclick=function(){ var g=draft(); var id=el.getAttribute("data-now"); g.current = (g.current===id) ? "welcome" : id; if(g.current!=="welcome" && g.unlocked.indexOf(id)<0) g.unlocked.push(id); render({keepScroll:true}); }; });
+    if(q("a-next")) q("a-next").onclick=function(){ var g=draft(); for(var i=0;i<SECTIONS.length;i++){ if(g.unlocked.indexOf(SECTIONS[i].id)<0){ g.unlocked.push(SECTIONS[i].id); g.current=SECTIONS[i].id; break; } } render({keepScroll:true}); };
+    if(q("a-all")) q("a-all").onclick=function(){ var g=draft(); g.unlocked=ALL_IDS.slice(); render({keepScroll:true}); };
+    if(q("a-block1")) q("a-block1").onclick=function(){ var g=draft(); g.unlocked=SECTIONS.filter(function(s){return s.block===1;}).map(function(s){return s.id;}); if(g.unlocked.indexOf(g.current)<0) g.current="orient"; render({keepScroll:true}); };
+    if(q("a-lock")) q("a-lock").onclick=function(){ var g=draft(); g.unlocked=[]; g.current="welcome"; g.show=[]; render({keepScroll:true}); };
+    if(q("a-discard")) q("a-discard").onclick=function(){ PENDING=null; render({keepScroll:true}); };
+    if(q("a-publish")) q("a-publish").onclick=publishGates;
+    if(q("a-refresh")) q("a-refresh").onclick=refreshAdmin;
+    if(q("a-logout")) q("a-logout").onclick=function(){ ADMIN=false; ADMIN_KEY=""; ssSet(SS_KEY,null); ADMIN_DATA=null; PENDING=null; location.hash="#welcome"; };
+  }
+}
+function renderTableCard(){
+  var sel = document.getElementById("f04-table"), box = document.getElementById("table-card");
+  if(!sel || !box) return;
+  var t = TABLES.filter(function(x){return x.id===sel.value;})[0];
+  box.innerHTML = t ? '<div class="card" style="margin:.5rem 0 1rem"><h4>Table '+t.id+' · '+t.name+'</h4>'+tableCard(t)+'</div>' : '';
+}
+
+root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); });
+root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table") renderTableCard(); });
+window.addEventListener("hashchange", function(){ railOpen=false; if(location.hash!=="#admin") PENDING=null; render(); });
+document.addEventListener("visibilitychange", function(){ if(!document.hidden && API_URL) apiGet({action:"state"}).then(function(r){ if(r&&r.gates) applyGates(r.gates); }).catch(function(){}); });
+
+/* boot */
+render();
+if(API_URL){
+  pollGates();
+  if(ADMIN_KEY && location.hash==="#admin"){ apiGet({action:"admin",key:ADMIN_KEY}).then(function(r){ if(r&&!r.error){ ADMIN=true; ADMIN_DATA=r; if(r.gates) applyGates(r.gates); render(); } else { ADMIN_KEY=""; ssSet(SS_KEY,null); } }).catch(function(){}); }
+  setInterval(function(){ if(ADMIN && location.hash==="#admin") refreshAdmin(); }, 20000);
+}
+
+})();
+</script>
+</body>
+</html>
