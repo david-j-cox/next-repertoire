@@ -6,6 +6,7 @@
  *
  * GET  ?action=state              -> {gates:{unlocked:[],current:""}, updated}
  * GET  ?action=summary            -> aggregate counts for the live panels on participant pages
+ * GET  ?action=shift&table=A       -> that table's context shift, only after the reveal is opened
  * GET  ?action=admin&key=PASSCODE -> counts and recent rows for the facilitator panel
  * POST {action:"submit", form, pid, table, data:{...}}
  * POST {action:"setGates", key, gates:{unlocked:[],current:"",show:[]}}
@@ -26,6 +27,7 @@ function doGet(e) {
   var action = p.action || "state";
   if (action === "state") return json({ gates: getGates(), updated: getUpdated() });
   if (action === "summary") return json(summaryData());
+  if (action === "shift") return json(shiftFor(p.table));
   if (action === "admin") {
     if (!checkKey(p.key)) return json({ error: "unauthorized" });
     return json(adminData());
@@ -150,6 +152,35 @@ function summaryData() {
 function latestPerPid(rows) {
   var m = {}; rows.forEach(function (r) { m[r.pid || Math.random()] = r; });
   return Object.keys(m).map(function (k) { return m[k]; });
+}
+
+/* Sealed context shifts. Held server-side so the text is not in the page source before the reveal. */
+var SHIFTS = {
+  A: { t: "The source has changed",
+       c: "The workflow now receives an audio transcript containing overlapping speakers and an ambiguous speaker label. A sentence could have been said by either the caregiver or the clinician. The draft treats it as a confirmed clinician observation.",
+       q: "Where does uncertainty remain visible? Who verifies the source before the statement enters the record?" },
+  B: { t: "The implementer changed",
+       c: "The family member who practiced the proposed routine is temporarily unavailable. A new caregiver can participate only briefly and has not received training. The drafted plan still assumes the original implementation conditions.",
+       q: "Which part of the workflow must pause or change before implementation? Whose input is now missing?" },
+  C: { t: "A preference was inferred",
+       c: "The system ranks goals using a structured intake form. A caregiver explains that the form was completed with language support and that the ranking does not reflect their stated priority. The team had treated the form as an authoritative preference measure.",
+       q: "How will the workflow obtain and preserve meaningful preference information without treating an inferred score as consent?" },
+  D: { t: "The expert is unavailable",
+       c: "A new staff member can correctly repeat the AI-generated explanation, but a qualified supervisor is unexpectedly unavailable during the planned rehearsal. The workflow assumes that a completed lesson is enough to begin independent performance.",
+       q: "What is the smallest safe practice opportunity now? What requires observed performance or supervisor availability?" },
+  E: { t: "The population shifted",
+       c: "The organization adds a service setting with different referral patterns and missing-data practices. The prediction tool is unchanged. Its overall dashboard remains stable, but no one has tested performance for the new setting.",
+       q: "What evidence is needed before these predictions inform decisions in the new setting?" },
+  F: { t: "The incentive changed",
+       c: "Management begins rewarding schedulers for accepting the first AI-generated schedule. A family requests a different arrangement. Staff can technically override the recommendation, but overrides now lower their performance score.",
+       q: "Does the human override still function? What technical and organizational changes are both needed?" }
+};
+function shiftFor(table) {
+  var g = getGates();
+  if (g.show.indexOf("reveal") < 0) return { sealed: true };
+  var key = String(table || "").toUpperCase();
+  if (!SHIFTS[key]) return { sealed: false, unknown: true };
+  return { sealed: false, table: key, shift: SHIFTS[key] };
 }
 
 /* ---------- helpers ---------- */

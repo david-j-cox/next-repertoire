@@ -217,6 +217,18 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .live-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:.3rem}
 .live .tablewrap{background:var(--surface)}
 .live .card{background:var(--surface)}
+.mapgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:.8rem 0}
+.mapfoot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.4rem 0 1rem}
+.zone{border:1px solid var(--line);border-radius:8px;padding:.6rem;background:var(--paper);display:flex;flex-direction:column;gap:.35rem}
+.zone .zn{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.72rem;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+.zone .zt{font-weight:600;font-size:.82rem;letter-spacing:.02em}
+.zone .zq{font-size:.75rem;color:var(--muted)}
+.zone textarea{background:var(--surface);font-size:.85rem}
+.zone.b2 .zt,.mapfoot .zone.b2{border-color:var(--warn)}
+.sealed{border:1px dashed var(--line);border-radius:8px;padding:1rem;background:var(--paper);color:var(--muted)}
+.sealed.open{border-style:solid;border-left:4px solid var(--foil);background:var(--foil-soft);color:var(--ink)}
+.sealed.open .eyebrow{color:var(--foil)}
+@media (max-width:860px){.mapgrid{grid-template-columns:repeat(2,1fr)}.mapfoot{grid-template-columns:1fr}}
 @media print{.submit,.banner,.conn,.live{display:none!important}}
 </style>
 </head>
@@ -587,9 +599,9 @@ var SECTIONS = [
  + '<h3>Roles and materials</h3>'
  + '<p>The <em>Navigator</em> reads and paces; the <em>Recorder</em> moves notes and records revisions; the <em>Challenger</em> asks for evidence. Roles may be shared. Use the System Map board, sticky notes, Operations card, matching sealed envelope, and eight decision tokens.</p>'
  + '<div class="cards">'
- + '<div class="card"><div class="eyebrow">3 tokens</div><h4>AI</h4><p>Permitted contributions</p></div>'
- + '<div class="card"><div class="eyebrow">3 tokens</div><h4>Human</h4><p>Required judgment or action</p></div>'
- + '<div class="card"><div class="eyebrow">2 tokens</div><h4>Stop</h4><p>Detectable condition, responsible person, and next step</p></div>'
+ + '<div class="card"><div class="eyebrow">3 tokens</div><h4>AI may</h4><p>Permitted contributions</p></div>'
+ + '<div class="card"><div class="eyebrow">3 tokens</div><h4>Human must</h4><p>Required judgment or action</p></div>'
+ + '<div class="card"><div class="eyebrow">2 tokens</div><h4>Stop / escalate</h4><p>Detectable condition, responsible person, and next step</p></div>'
  + '</div>'
  + '<p>Counts scaffold this exercise; they are not a rule for clinical design. Multiple tokens can share a zone. An unused/prohibited AI role may be explicitly marked.</p>'
  + '<h3>Sequence</h3>'
@@ -604,6 +616,17 @@ var SECTIONS = [
  + '</ul>'
  + callout("Keep envelopes sealed","Wait for the presenter to cue the reveal. Foil marks the reveal boundary; it is not a score or approval badge. Use sticky notes on the board rather than wet-erase markers.")
  + '<p>The table tent communicates WORKING, NEED A PROMPT, or READY TO REPORT. Continue with your best bounded assumption while waiting; presenter approval is not required to proceed.</p>'
+ + '<h3>System Map '+who("rec")+'</h3>'
+ + '<p>The same six zones as the printed board. Place the workflow you already designed, then place your eight tokens.</p>'
+ + '<div class="mapgrid">'
+ + MAPZONES.map(function(z,i){ return '<div class="zone z'+i+'"><div class="zn">'+(i+1)+'</div><div class="zt">'+z[0]+'</div>'+taBare("f13a-z"+i,"System Map / "+z[0],3)+'<div class="zq">'+z[1]+'</div></div>'; }).join('')
+ + '</div>'
+ + '<div class="mapfoot">'
+ + MAPBOXES.map(function(b,i){ return '<div class="zone b'+i+'"><div class="zt">'+b[0]+'</div><div class="zq">'+b[1]+'</div>'+taBare("f13a-b"+i,"System Map / "+b[0],2)+'</div>'; }).join('')
+ + '</div>'
+ + '<p class="code">Place all eight tokens. After the reveal, move at least one token and revise a safeguard, measure, or stop rule.</p>'
+ + '<h3>The reveal</h3>'
+ + contextShift()
  + '<h3>Field Lab record '+who("rec")+'</h3>'
  + '<p class="stem">Table family A–F: '+fill("f13a-table","Table family",4)+' &nbsp; Purpose: '+fill("f13a-purpose","Purpose",30)+'</p>'
  + ta("f13a-before","Before the reveal: AI role, human decision, and technical/OBM safeguard",3)
@@ -674,20 +697,47 @@ var SECTIONS = [
 }}
 ];
 
+var MAPZONES = [["Purpose","What should improve, and for whom?"],["Source inputs","What information enters, and from where?"],["AI action","What does the system do with it?"],["Human review","What must a qualified person check?"],["Decision","Who decides, and what is recorded?"],["Release monitor","What is watched after release?"]];
+var MAPBOXES = [["Benefit","What should improve?"],["Error / burden","What could become less accurate, fair, or workable?"],["Stop / escalate","What observable condition changes the action?"]];
 var TABLES = [
- {id:"A",name:"Clinical documentation",q:"Where does summarization save time without weakening the record?",ctx:"A multi-site ABA provider wants to reduce the time BCBAs spend turning structured session data and clinician notes into payer-facing progress summaries.",aug:"An approved generative system drafts a summary from a structured, minimum-necessary input. The BCBA reviews, edits, signs, and remains responsible for the final record.",tensions:["Documentation latency and burnout","Completeness and factual accuracy","Confidentiality, access, retention, and BAA","Authorship, attestation, and audit trail"]},
- {id:"B",name:"Behavior-plan drafting",q:"What may be drafted, and what must remain assessment-grounded professional judgment?",ctx:"A clinical team wants help organizing assessment information and drafting plan sections for fictional training cases. Leaders hope to standardize quality across supervisors.",aug:"A generative system creates candidate wording and checklist prompts; a qualified behavior analyst integrates assessment evidence, client preferences, risks, and contextual fit.",tensions:["Speed versus assessment-grounded reasoning","Template consistency versus individualized fit","Scope of competence and accountability","Client and stakeholder participation"]},
- {id:"C",name:"Goal recommendations",q:"How could options be generated without turning familiarity into clinical authority?",ctx:"A clinic wants to generate candidate treatment goals from fictional learner profiles so teams can spend more meeting time discussing prioritization with caregivers.",aug:"The system proposes options and rationales. The team treats them as hypotheses, checks assessment evidence and social significance, and documents human selection or rejection.",tensions:["Option generation versus clinical authority","Cultural and contextual responsiveness","Generalization from training data","Transparency to clients and stakeholders"]},
- {id:"D",name:"Supervision and training",q:"How can AI accelerate practice while the supervisor retains accountability?",ctx:"A supervision team wants faster creation of role-play cases, knowledge checks, feedback examples, and individualized practice schedules for RBTs and trainees.",aug:"AI drafts fictional materials and performance-support prompts; supervisors validate content, observe performance, give feedback, and evaluate effects on client-facing behavior.",tensions:["Scale versus supervisor accountability","Knowledge checks versus demonstrated performance","Deskilling or never-skilling","Bias in examples and feedback"]},
- {id:"E",name:"Outcome prediction",q:"What would make a prediction locally valid and decision-relevant?",ctx:"A provider is considering a model that estimates the likelihood of reaching selected outcomes within a service window and flags cases for additional review.",aug:"Predictions inform, rather than determine, review. The organization evaluates local performance, uncertainty, subgroup impact, overrides, and changes over time.",tensions:["Prediction versus causal explanation","Local validity and sample shift","Payer or resource-allocation pressure","Fairness, access, and self-fulfilling decisions"]},
- {id:"F",name:"Scheduling and workflow",q:"How do we optimize while preserving access, fairness, and exceptions?",ctx:"An in-home provider wants to match staff, geography, availability, credentials, continuity, and client preferences while reducing cancellations and travel time.",aug:"An optimization tool proposes schedules within explicit constraints. Coordinators review exceptions, client access, staff burden, and downstream clinical effects.",tensions:["Efficiency versus continuity and preference","Hidden workload shifts","Fair access and exception handling","Automation bias and override authority"]}
+ {id:"A",name:"Clinical documentation",q:"Where does summarization save time without weakening the record?",ctx:"A multi-site ABA provider wants to reduce the time BCBAs spend turning structured session data and clinician notes into payer-facing progress summaries.",aug:"An approved generative system drafts a summary from a structured, minimum-necessary input. The BCBA reviews, edits, signs, and remains responsible for the final record.",tensions:["Documentation latency and burnout","Completeness and factual accuracy","Confidentiality, access, retention, and BAA","Authorship, attestation, and audit trail"],dq:"How can drafting reduce latency while keeping source verification and authorship explicit?"},
+ {id:"B",name:"Behavior-plan drafting",q:"What may be drafted, and what must remain assessment-grounded professional judgment?",ctx:"A clinical team wants help organizing assessment information and drafting plan sections for fictional training cases. Leaders hope to standardize quality across supervisors.",aug:"A generative system creates candidate wording and checklist prompts; a qualified behavior analyst integrates assessment evidence, client preferences, risks, and contextual fit.",tensions:["Speed versus assessment-grounded reasoning","Template consistency versus individualized fit","Scope of competence and accountability","Client and stakeholder participation"],dq:"How can a qualified reviewer notice missing evidence without delegating clinical authorization?"},
+ {id:"C",name:"Goal recommendations",q:"How could options be generated without turning familiarity into clinical authority?",ctx:"A clinic wants to generate candidate treatment goals from fictional learner profiles so teams can spend more meeting time discussing prioritization with caregivers.",aug:"The system proposes options and rationales. The team treats them as hypotheses, checks assessment evidence and social significance, and documents human selection or rejection.",tensions:["Option generation versus clinical authority","Cultural and contextual responsiveness","Generalization from training data","Transparency to clients and stakeholders"],dq:"How can options support a collaborative choice without replacing assessment or preferences?"},
+ {id:"D",name:"Supervision and training",q:"How can AI accelerate practice while the supervisor retains accountability?",ctx:"A supervision team wants faster creation of role-play cases, knowledge checks, feedback examples, and individualized practice schedules for RBTs and trainees.",aug:"AI drafts fictional materials and performance-support prompts; supervisors validate content, observe performance, give feedback, and evaluate effects on client-facing behavior.",tensions:["Scale versus supervisor accountability","Knowledge checks versus demonstrated performance","Deskilling or never-skilling","Bias in examples and feedback"],dq:"How can practice and feedback improve observed performance rather than only verbal fluency?"},
+ {id:"E",name:"Outcome prediction",q:"What would make a prediction locally valid and decision-relevant?",ctx:"A provider is considering a model that estimates the likelihood of reaching selected outcomes within a service window and flags cases for additional review.",aug:"Predictions inform, rather than determine, review. The organization evaluates local performance, uncertainty, subgroup impact, overrides, and changes over time.",tensions:["Prediction versus causal explanation","Local validity and sample shift","Payer or resource-allocation pressure","Fairness, access, and self-fulfilling decisions"],dq:"What evidence would make a prediction useful for this task, population, setting, and decision?"},
+ {id:"F",name:"Scheduling and workflow",q:"How do we optimize while preserving access, fairness, and exceptions?",ctx:"An in-home provider wants to match staff, geography, availability, credentials, continuity, and client preferences while reducing cancellations and travel time.",aug:"An optimization tool proposes schedules within explicit constraints. Coordinators review exceptions, client access, staff burden, and downstream clinical effects.",tensions:["Efficiency versus continuity and preference","Hidden workload shifts","Fair access and exception handling","Automation bias and override authority"],dq:"How can scheduling improve efficiency while preserving access, continuity, and meaningful override?"}
 ];
 function tableCard(t){
-  return '<div class="eyebrow">Fictional case · Define · Ideate · Chiron Field Lab</div>'
+  return '<div class="eyebrow">Mission '+t.id+' · fictional case · keep through Define, Ideate, and Test</div>'
    + '<h4 style="margin-top:.2rem">Current context</h4><p>'+t.ctx+'</p>'
    + '<h4>Proposed augmentation</h4><p>'+t.aug+'</p>'
+   + '<h4>Question to define</h4><p>'+t.dq+'</p>'
    + '<h4>Tensions to make explicit</h4><ul>'+t.tensions.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'
    + '<p class="code">60-second report: Our purpose is… | AI may… | A human must… | We will measure… | We stop or escalate when…</p>';
+}
+/* The sealed context shift. The text lives on the server and arrives only after the facilitator opens the reveal. */
+var SHIFT = null, shiftPending = false;
+function contextShift(){
+  if(!revealOn()) return '<div class="sealed" id="shiftbox"><div class="eyebrow">Sealed context shift</div><p>Opens when the presenter cues the reveal. Keep the paper envelope sealed until then.</p></div>';
+  if(!myTable()) return '<div class="sealed open" id="shiftbox"><div class="eyebrow">Context shift</div><p>Choose your table in section 04 to see the matching context shift.</p></div>';
+  if(!SHIFT) return '<div class="sealed open" id="shiftbox"><div class="eyebrow">Context shift</div><p>'+(API_URL?'Opening…':'Not connected, so the reveal is unavailable. Use the paper envelope.')+'</p></div>';
+  return '<div class="sealed open" id="shiftbox">'+shiftHtml()+'</div>';
+}
+function shiftHtml(){
+  return '<div class="eyebrow">Context shift '+SHIFT.table+' · matches Mission '+SHIFT.table+'</div>'
+   + '<h4 style="margin-top:.2rem">'+esc(SHIFT.shift.t)+'</h4>'
+   + '<h4>The changed condition</h4><p>'+esc(SHIFT.shift.c)+'</p>'
+   + '<h4>Reconsider the boundary</h4><p>'+esc(SHIFT.shift.q)+'</p>'
+   + '<p class="code">Move at least one token. Revise a safeguard, measure, or stop rule. Record what changed and why.</p>';
+}
+function fetchShift(){
+  if(!API_URL || shiftPending) return;
+  var t = myTable(); if(!t || !revealOn()) return;
+  if(SHIFT && SHIFT.table===t) return;
+  shiftPending = true;
+  apiGet({action:"shift", table:t}).then(function(r){
+    if(r && !r.sealed && r.shift){ SHIFT = r; var box=document.getElementById("shiftbox"); if(box){ box.className="sealed open"; box.innerHTML=shiftHtml(); } }
+  }).catch(function(){}).then(function(){ shiftPending=false; });
 }
 
 /* ---------- configuration ---------- */
@@ -707,10 +757,12 @@ var SUBMITTED = parse(lsGet(LS_SUB),{}) || {};
 var PID = lsGet(LS_PID);
 if(!PID){ PID = "p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); lsSet(LS_PID,PID); }
 var ALL_IDS = SECTIONS.map(function(s){return s.id;});
-var PANELS = [["interests","Interest poll (04)"],["demographics","Role and setting snapshot (03A)"],["confidence","Confidence pre/post (02, 16)"],["reports:problem","Problem statements (04)"],["reports:define","Define statements (05A)"],["reports:selected","Selected options (11A)"],["reports:fieldlab","Field Lab reports (13A)"]];
+var PANELS = [["reveal","Field Lab context-shift reveal (13A)"],["interests","Interest poll (04)"],["demographics","Role and setting snapshot (03A)"],["confidence","Confidence pre/post (02, 16)"],["reports:problem","Problem statements (04)"],["reports:define","Define statements (05A)"],["reports:selected","Selected options (11A)"],["reports:fieldlab","Field Lab reports (13A)"]];
 var ALL_PANELS = PANELS.map(function(p){return p[0];});
+var REVEAL_KEY = "reveal";
 var GATES = API_URL ? (parse(lsGet(LS_GATES),null) || {unlocked:[],current:"welcome",show:[]}) : {unlocked:ALL_IDS.slice(),current:"welcome",show:ALL_PANELS.slice()};
 if(!Array.isArray(GATES.show)) GATES.show=[];
+function revealOn(){ return GATES.show.indexOf(REVEAL_KEY)>=0; }
 var ONLINE = null;            /* null = unknown, true/false after first poll */
 var ADMIN = false;            /* true once the passcode is accepted */
 var ADMIN_KEY = ssGet(SS_KEY) || "";
@@ -1102,7 +1154,7 @@ function hydrate(){
   if(q("export-btn")) q("export-btn").onclick=exportAnswers;
   if(q("print-btn")) q("print-btn").onclick=function(){ window.print(); };
   root.querySelectorAll(".submit button").forEach(function(b){ b.onclick=function(){ submitBlock(b.parentNode); }; });
-  paintLive(); pollSummary();
+  paintLive(); pollSummary(); if(document.getElementById("shiftbox")) fetchShift();
   if(q("admin-login")) { q("admin-login").onclick=adminLogin; q("admin-key").onkeydown=function(e){ if(e.key==="Enter") adminLogin(); }; }
   if(ADMIN){
     root.querySelectorAll("[data-gate]").forEach(function(el){ el.onchange=function(){ setGate(el.getAttribute("data-gate"), el.checked); }; });
@@ -1126,7 +1178,7 @@ function renderTableCard(){
 }
 
 root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); });
-root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table") renderTableCard(); });
+root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table"){ renderTableCard(); SHIFT=null; } });
 window.addEventListener("hashchange", function(){ railOpen=false; if(location.hash!=="#admin") PENDING=null; render(); });
 document.addEventListener("visibilitychange", function(){ if(!document.hidden && API_URL) apiGet({action:"state"}).then(function(r){ if(r&&r.gates) applyGates(r.gates); }).catch(function(){}); });
 
