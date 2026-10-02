@@ -119,6 +119,8 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .card h4{margin-top:0}
 .card p{font-size:.9rem}
 details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background:var(--paper)}
+details.ref{background:transparent;border-style:dashed}
+details.ref > summary{font-weight:500;font-size:.88rem;color:var(--muted)}
 summary{cursor:pointer;padding:.7rem 1rem;font-weight:500;list-style:none;display:flex;align-items:center;gap:10px}
 summary::-webkit-details-marker{display:none}
 summary::before{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .15s}
@@ -247,7 +249,8 @@ function taBare(id,label,rows){ reg(id,label); return '<textarea id="'+id+'" row
 function line(id,label){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" type="text"></div>'; }
 function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input type="checkbox" id="'+id+'"><span>'+label+'</span></label>'; }
 function cell(id,label){ reg(id,label); return '<td><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
-function fill(id,label,size){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" size="'+(size||16)+'">'; }
+function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
+function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
 function callout(kicker,text,cls){ return '<aside class="callout'+(cls?' '+cls:'')+'"><b>'+kicker+'</b>'+text+'</aside>'; }
 function who(kind){ return kind==="rec" ? '<span class="who rec">Table recorder</span>' : '<span class="who">Everyone writes</span>'; }
 function twrap(html){ return '<div class="tablewrap"><table>'+html+'</table></div>'; }
@@ -274,15 +277,10 @@ var SECTIONS = [
  + '<li>Analyze an AI-augmented ABA workflow using an act-in-context canvas that makes stakeholders, data boundaries, scope, decision rights, and feedback loops explicit.</li>'
  + '<li>Evaluate a likely use case against privacy and security, validation and generalizability, scope, monitoring and drift, training, vendor, payer, and build-or-buy considerations.</li>'
  + '<li>Produce a 30-day prototype that combines at least one technical safeguard with one organizational behavior management (OBM) contingency.</li></ol>'
- + '<h3>CE structure</h3>'
- + twrap(thead(["Time","Instructional block","What you produce"])+'<tbody>'
-   + '<tr><td class="k">0:00–0:50</td><td>1 • See the system</td><td>A professional repertoire hypothesis</td></tr>'
-   + '<tr><td class="k">0:50–1:00</td><td>Break 1</td><td>Return to your assigned interest table</td></tr>'
-   + '<tr><td class="k">1:00–1:50</td><td>2 • Use cases, governance, Define, Ideate</td><td>A defined use case and alternative options</td></tr>'
-   + '<tr><td class="k">1:50–2:00</td><td>Break 2</td><td></td></tr>'
-   + '<tr><td class="k">2:00–3:00</td><td>3 • Ideate, prototype, Field Lab, close</td><td>A tested workflow and practice plan</td></tr></tbody>')
+ + '<p>Three instructional blocks with two 10-minute breaks. You leave with a professional repertoire hypothesis, a defined use case with alternatives, and a tested workflow with a practice plan. Up to 3 Learning CEUs, subject to ACE Provider confirmation.</p>'
  + '<h3>The process we will practice <span class="code">01A • Design thinking</span></h3>'
  + '<p><em>Design thinking</em> is an iterative, human-centered approach to understanding a problem, generating alternatives, and learning from a tangible test. We use the familiar five modes; governance runs through all of them.</p>'
+ + ref('The five modes',''
  + '<div class="cards">'
  + '<div class="card"><h4>Empathize</h4><p>Learn about people’s work, needs, and constraints through observation and conversation.</p></div>'
  + '<div class="card"><h4>Define</h4><p>Synthesize a focused point of view and an open “How might we” question.</p></div>'
@@ -290,6 +288,7 @@ var SECTIONS = [
  + '<div class="card"><h4>Prototype</h4><p>Make a small version of the workflow that people can inspect.</p></div>'
  + '<div class="card"><h4>Test</h4><p>Observe what happens, revise, and revisit earlier modes when needed.</p></div>'
  + '</div>'
+ )
  + '<h4>What this workshop can and cannot establish</h4>'
  + '<p>Peer interviews illuminate professional experience. They do not substitute for client, caregiver, or other stakeholder input. Label assumptions and identify whose perspective is missing. A table exercise can expose weaknesses in a design; it cannot establish clinical effectiveness or authorize deployment.</p>'
  + '<h4>Our route</h4>'
@@ -321,6 +320,7 @@ var SECTIONS = [
  + '<p>Write your current understanding in one or two sentences. You’ll have an opportunity to revise it after the overview.</p>'
  + ta("f02-def1","Current working definition",3)
  + '<h3>My revised working definition of artificial intelligence '+who()+'</h3>'
+ + '<p>Come back to this after the AI overview. Leave it blank for now.</p>'
  + ta("f02-def2","Revised working definition",3)
  + '<h3>One example I want to test today '+who()+'</h3>'
  + ta("f02-example","One example I want to test today",3)
@@ -334,6 +334,7 @@ var SECTIONS = [
 }},
 
 {id:"literacy",code:"02A",nav:"AI literacy",title:"Terms and trade-offs worth keeping",block:1,html:function(){ return ''
+ + ref('Terms and background',''
  + '<h3>Terms</h3>'
  + '<p><em>Model</em>: a system with learned statistical relationships. A large language model (LLM) processes and generates language sequences. A token is a unit of input or output, sometimes only part of a word.</p>'
  + '<p><em>Prompt and context</em>: the instructions and information supplied for a request. The context window limits the information available to that request.</p>'
@@ -346,6 +347,7 @@ var SECTIONS = [
  + '<p>Training and inference both use resources. Data centers also support non-AI workloads. Energy and water demands depend on the workload, hardware, location, and infrastructure; avoid a universal per-prompt claim. Ask whether the task warrants the system, its scale, and the frequency of calls (IEA, 2025).</p>'
  + '<h3>Protecting professional skill</h3>'
  + '<p><em>De-skilling</em> means an established repertoire weakens; <em>never-skilling</em> means a needed repertoire is not acquired. These are possible effects of arrangements that remove meaningful practice and feedback. They are not inevitable outcomes of AI. Preserve opportunities to perform, observe, and receive feedback.</p>'
+ )
  + '<h3>Trade-offs to examine</h3>'
  + '<div class="cards">'
  + '<div class="card"><h4>Speed &lt; &gt; verification</h4></div>'
@@ -375,9 +377,9 @@ var SECTIONS = [
  + ta("f03a-need","One observed need or recurring work pattern "+who(),3)
  + ta("f03a-assumption","One assumption and the stakeholder perspective still missing "+who(),3)
  + '<h3>Compare after the quadrant exercise</h3>'
- + '<p>Complete the repertoire map in section 03 before completing this part. The section 03 quadrants use the same dimensions as “good at / not yet good at” and “like / dislike doing.” Treat self-ratings as hypotheses. They are not competency assessments. Compare one difference with a partner. What changes across setting, role, workload, or feedback?</p>'
+ + '<p>Do this part after you fill in the repertoire map in <a href="#s/map">03 Map</a>. Those quadrants use the same dimensions as “good at / not yet good at” and “like / dislike doing.” Treat self-ratings as hypotheses. They are not competency assessments. Compare one difference with a partner. What changes across setting, role, workload, or feedback?</p>'
  + ta("f03a-compare","What changes across setting, role, workload, or feedback? "+who(),3)
- + '<p class="stem">To strengthen '+fill("f03a-stem1","To strengthen",22)+', I need '+fill("f03a-stem2","I need",22)+' in the context of '+fill("f03a-stem3","in the context of",34)+'.</p>'
+ + '<p class="stem">To strengthen '+fill("f03a-stem1","To strengthen",22,"which repertoire")+', I need '+fill("f03a-stem2","I need",22,"what support or practice")+' in the context of '+fill("f03a-stem3","in the context of",34,"which setting or workflow")+'.</p>'
  + '<p>Possible roles overlap: Designer, Implementer, and Supporter. Disliking a task does not make it appropriate to automate; liking it does not mean the current arrangement works well.</p>';
 }},
 
@@ -416,6 +418,7 @@ var SECTIONS = [
  + TABLES.map(function(t){ return '<option value="'+t.id+'">Table '+t.id+': '+t.name+'</option>'; }).join('')+'</select></div>'
  + '<div id="table-card"></div>'
  + '<h3>My table and problem statement '+who("rec")+'</h3>'
+ + '<p>Fill the sentence, then tick each statement that is true for your problem.</p>'
  + '<p class="stem">In '+fill("f04-ctx","context",16)+', AI may '+fill("f04-action","bounded action",22)+' to support '+fill("f04-purpose","purpose",18)+'. '+fill("f04-role","human role",14)+' retains responsibility for '+fill("f04-decision","decision",18)+'.</p>'
  + '<div class="checks">'+cb("f04-c1","The outcome is socially significant.")+cb("f04-c2","The workflow occurs often enough to practice.")+cb("f04-c3","A small pilot is feasible within 30 days.")+cb("f04-c4","We can identify who benefits and who carries risk.")+'</div>'
  + formBlock("table_reports",["f04-table","f04-ctx","f04-action","f04-purpose","f04-role","f04-decision"],{stage:"problem",note:"Table recorder: one submission per table."})
@@ -433,7 +436,9 @@ var SECTIONS = [
    + '<tr><td class="k">4 • Change + retire</td><td>Revalidate after material change; pause when thresholds fail; export or destroy data; communicate replacement or exit</td><td>Stop decision; data disposition; transition</td></tr></tbody>')
  + callout("CASP practice parameter","AI should support, rather than supplant, clinical work. Practitioners remain responsible for professional decisions, informed implementation, training, monitoring, and impact (Council of Autism Service Providers, 2025).")
  + '<h3>Our minimum viable governance '+who("rec")+'</h3>'
+ + '<p>Tick each item your table can already name an answer or an owner for. What stays blank is your to-do list.</p>'
  + '<div class="checks">'+cb("f07-g1","Named owner")+cb("f07-g2","Approved use and prohibited use")+cb("f07-g3","Data boundary")+cb("f07-g4","Human verification")+cb("f07-g5","Pilot measure")+cb("f07-g6","Error-report path")+cb("f07-g7","Stop threshold")+cb("f07-g8","Retirement/data plan")+'</div>'
+ + ref('The governance check, domain by domain',''
  + '<h3>Eight domains for the same workflow <span class="code">07A • Governance check</span></h3>'
  + '<p>Use this check during the 17-minute governance block and retain it as a practical reference. A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.</p>'
  + '<div class="cards">'
@@ -443,18 +448,21 @@ var SECTIONS = [
  + '<div class="card"><h4>Operational training and general AI literacy</h4><p>Identify the behavior required. Instruct, model, rehearse, observe, and provide feedback. Check performance under normal workload. Policy acknowledgments and quiz scores are weak evidence on their own. Sections 10–11 connect authority and behavior.</p></div>'
  + '<div class="card"><h4>Vendor conversations and build or buy</h4><p>Ask for task-specific evidence, data terms, change notice, incident response, export/deletion, and exit support. Compare total maintenance burden of buying, configuring, fine-tuning, training, or using no AI. Section 14 contains the procurement checklist.</p></div>'
  + '</div>'
+ )
  + ta("f07a-open","One unresolved question, the owner who can answer it, and the decision it blocks "+who("rec"),3)
  + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>';
 }},
 
 {id:"safeguard",code:"08",nav:"Safeguard",title:"Privacy, security, and confidentiality",lede:"A de-identification claim is only as good as the process, context, and residual re-identification risk.",block:2,html:function(){ return ''
  + callout("Workshop rule","No real protected health information, personally identifiable information, workforce-sensitive information, or payer credentials in workshop tools.","rule")
+ + ref('Five questions to ask before data enter',''
  + twrap(thead(["Ask before data enter","Why it matters"])+'<tbody>'
    + '<tr><td class="k">Is the tool approved for this information and purpose?</td><td>Consumer access is not the same as an organizationally approved, contractually governed service.</td></tr>'
    + '<tr><td class="k">Does a service provider create, receive, maintain, or transmit electronic protected health information (ePHI)?</td><td>HIPAA obligations may apply even when a provider cannot view encrypted data; a compliant business associate agreement (BAA) and safeguards may be required.</td></tr>'
    + '<tr><td class="k">Who can access, reuse, train on, disclose, or retain the data?</td><td>Settings, contracts, integrations, logs, and subprocessors may matter more than the user interface.</td></tr>'
    + '<tr><td class="k">Can the minimum necessary information accomplish the task?</td><td>Reduce exposure; prefer fictional, synthetic, or properly de-identified data for practice and testing.</td></tr>'
    + '<tr><td class="k">How will access end and data be exported or destroyed?</td><td>Exit is part of the design from the start.</td></tr></tbody>')
+ )
  + '<h3>Sketch the data path '+who("rec")+'</h3>'
  + twrap(thead(["Source","What enters","Where processed/stored","Who receives output","Retention/exit"])+'<tbody>'
    + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c);}).join('')+'</tr>'
@@ -463,17 +471,19 @@ var SECTIONS = [
 }},
 
 {id:"verify",code:"09",nav:"Verify",title:"Validity, scope, drift, and error",lede:"Ask “For which task, people, setting, data, version, threshold, and consequence does it work?” rather than “Does it work?”",block:2,html:function(){ return ''
+ + ref('What to check before, during, and after',''
  + twrap(thead(["Before pilot","During pilot","After deployment"])+'<tbody>'
    + '<tr><td>Define target behavior/outcome and comparison</td><td>Sample outputs against a human-reviewed standard</td><td>Monitor outcomes, errors, complaints, overrides, and version changes</td></tr>'
    + '<tr><td>Specify intended and prohibited use</td><td>Test boundary cases and likely failure modes</td><td>Revalidate when population, workflow, data, model, or threshold changes</td></tr>'
    + '<tr><td>Identify affected groups and context</td><td>Inspect differences that could create inequitable impact</td><td>Pause, constrain, retrain, replace, or retire when thresholds fail</td></tr></tbody>')
+ )
  + '<h3>Define a minimum test '+who("rec")+'</h3>'
  + twrap(thead(["Measure","Current baseline","Pilot criterion","Sample/interval","Owner"])+'<tbody>'
    + rowFill("f09-benefit","Benefit/outcome",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-error","Error/quality",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-equity","Equity/access",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-time","Time/workload",["Baseline","Criterion","Sample","Owner"])+'</tbody>')
- + '<aside class="callout"><b>Stop rule</b><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14)+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14)+' reviews it.</p></aside>';
+ + '<aside class="callout"><b>Stop rule</b><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14,"who pauses it")+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14,"who reviews it")+' reviews it.</p></aside>';
 }},
 
 {id:"assign",code:"10",nav:"Assign",title:"Human decision rights",lede:"Automation is not one switch. Separate generating, recommending, approving, acting, documenting, and monitoring.",block:2,html:function(){ return ''
@@ -487,6 +497,7 @@ var SECTIONS = [
 }},
 
 {id:"procure",code:"14",nav:"Procure",title:"Questions for a vendor, or your own build team",lede:"A polished demonstration is not a substitute for evidence, contracts, operational fit, and an exit plan.",block:2,html:function(){ return ''
+ + '<p>Tick the questions you could not answer today for your use case. Those are the ones to ask before anything goes live.</p>'
  + '<div class="checks" style="grid-template-columns:1fr">'
  + ["What exact problem and intended use does the system support?","What data were used to develop and evaluate it?","For which populations, settings, languages, and tasks is performance known?","What error measures, uncertainty, limitations, and boundary conditions are documented?","What client or workforce data enter the system, including logs and metadata?","Where are data processed and stored; who are the subprocessors?","Can data or outputs be reused to train models or improve services? Can that be disabled?","What agreement, including a BAA when applicable, governs the service?","How are access, encryption, incident response, deletion, and audit supported?","How are model, prompt, policy, and product changes communicated and versioned?","Can we export our records and terminate use without workflow lock-in?","What monitoring, human override, escalation, rollback, and retirement functions exist?"].map(function(q,i){ return cb("f14-q"+i,q); }).join('')
  + '</div>'
@@ -557,13 +568,14 @@ var SECTIONS = [
  + ta("f11a-nonai","Non-AI alternative",2)
  + '<h3>Rep 2 · OBM arrangements '+who("rec")+'</h3>'
  + '<p>Name the performer, observable response, opportunity, and consequence. Pair each candidate with the time, training, rehearsal, feedback, authority, and workload support it needs. “Human review” alone is not a design.</p>'
- + '<p class="stem">When '+fill("f11a-when","When",20)+', '+fill("f11a-performer","performer",14)+' will '+fill("f11a-will","will",24)+'.</p>'
+ + '<p class="stem">When '+fill("f11a-when","When",20,"opportunity or antecedent")+', '+fill("f11a-performer","performer",14)+' will '+fill("f11a-will","will",24,"observable response")+'.</p>'
  + '<p class="stem">The supporting consequence/feedback will be '+fill("f11a-consequence","supporting consequence/feedback",30)+'.</p>'
  + ta("f11a-feedback","Feedback received and one revision",3);
 }},
 
 {id:"anticipate",code:"12",nav:"Anticipate",title:"Scan for second-order effects",lede:"The first-order effect is what the tool does. The second-order effect is how behavior and systems change because the tool is present (e.g., who checks less, who waits longer, which skills go unpracticed).",block:3,html:function(){ return ''
  + '<h3>Domains '+who("rec")+'</h3>'
+ + '<p>Complete at least three rows. Choose the domains where your use case is most likely to shift something.</p>'
  + twrap(thead(["Domain","Possible benefit","Possible cost or shifted burden","What we will observe"])+'<tbody>'
    + ["Client choice + autonomy","Clinical quality","Staff skill / deskilling","Workload + pace","Access + equity","Documentation + payer","Environmental resources"].map(function(d,i){ return rowFill("f12-r"+i,d,["Benefit","Cost","Observe"]); }).join('')+'</tbody>')
  + callout("Deskilling check","Which professional discriminations, judgments, or practice opportunities could weaken if this task is routinely delegated, and how will we preserve them?");
@@ -595,7 +607,7 @@ var SECTIONS = [
 }},
 
 {id:"fieldlab",code:"13A",nav:"Chiron Field Lab",title:"Run the 25-minute prototype and test",block:3,html:function(){ return ''
- + '<p>Keep your A–F use case and prototype. There are no points or winners. The purpose is to expose assumptions and improve the relation among task, people, technology, and consequences.</p>'
+ + '<p>Keep your A–F use case and prototype. There are no points or winners. The purpose is to expose assumptions and improve the design.</p>'
  + '<h3>Roles and materials</h3>'
  + '<p>The <em>Navigator</em> reads and paces; the <em>Recorder</em> moves notes and records revisions; the <em>Challenger</em> asks for evidence. Roles may be shared. Use the System Map board, sticky notes, Operations card, matching sealed envelope, and eight decision tokens.</p>'
  + '<div class="cards">'
@@ -603,7 +615,8 @@ var SECTIONS = [
  + '<div class="card"><div class="eyebrow">3 tokens</div><h4>Human must</h4><p>Required judgment or action</p></div>'
  + '<div class="card"><div class="eyebrow">2 tokens</div><h4>Stop / escalate</h4><p>Detectable condition, responsible person, and next step</p></div>'
  + '</div>'
- + '<p>Counts scaffold this exercise; they are not a rule for clinical design. Multiple tokens can share a zone. An unused/prohibited AI role may be explicitly marked.</p>'
+ + '<p>These counts scaffold the exercise. They are not a rule for clinical design. Tokens can share a zone, and you can mark a role AI should not have.</p>'
+ + ref('The 25-minute sequence',''
  + '<h3>Sequence</h3>'
  + '<ul class="steps">'
  + '<li><span class="t">00–02</span><span class="n">Launch</span><span class="d">Keep your use case. Assign Navigator, Recorder, and Challenger.</span></li>'
@@ -614,10 +627,11 @@ var SECTIONS = [
  + '<li><span class="t">18–21</span><span class="n">Challenge</span><span class="d">Exchange a 60-second report with a neighboring table. Each asks one question.</span></li>'
  + '<li><span class="t">21–25</span><span class="n">Debrief</span><span class="d">Two selected tables report for 60 seconds each. Presenters synthesize the revisions.</span></li>'
  + '</ul>'
- + callout("Keep envelopes sealed","Wait for the presenter to cue the reveal. Foil marks the reveal boundary; it is not a score or approval badge. Use sticky notes on the board rather than wet-erase markers.")
- + '<p>The table tent communicates WORKING, NEED A PROMPT, or READY TO REPORT. Continue with your best bounded assumption while waiting; presenter approval is not required to proceed.</p>'
+ )
+ + callout("Keep envelopes sealed","Wait for the presenter to cue the reveal. The foil marks the boundary, not a score. Use sticky notes rather than wet-erase markers.")
+ + '<p>Your table tent shows WORKING, NEED A PROMPT, or READY TO REPORT. While you wait, keep going on your best assumption.</p>'
  + '<h3>System Map '+who("rec")+'</h3>'
- + '<p>The same six zones as the printed board. Place the workflow you already designed, then place your eight tokens.</p>'
+ + '<p>The same six zones as the printed board. Write what happens at each step of the workflow you already designed. Then note in each zone which tokens sit there: AI MAY, HUMAN MUST, or STOP / ESCALATE.</p>'
  + '<div class="mapgrid">'
  + MAPZONES.map(function(z,i){ return '<div class="zone z'+i+'"><div class="zn">'+(i+1)+'</div><div class="zt">'+z[0]+'</div>'+taBare("f13a-z"+i,"System Map / "+z[0],3)+'<div class="zq">'+z[1]+'</div></div>'; }).join('')
  + '</div>'
@@ -628,7 +642,7 @@ var SECTIONS = [
  + '<h3>The reveal</h3>'
  + contextShift()
  + '<h3>Field Lab record '+who("rec")+'</h3>'
- + '<p class="stem">Table family A–F: '+fill("f13a-table","Table family",4)+' &nbsp; Purpose: '+fill("f13a-purpose","Purpose",30)+'</p>'
+ + '<p class="stem">Table family A–F: '+fill("f13a-table","Table family",4,"A-F")+' &nbsp; Purpose: '+fill("f13a-purpose","Purpose",30,"what should improve")+'</p>'
  + ta("f13a-before","Before the reveal: AI role, human decision, and technical/OBM safeguard",3)
  + ta("f13a-envelope","What changed in the envelope, and which assumption no longer holds?",3)
  + ta("f13a-after","After the reveal: token moved, design revision, and why it matters",3)
@@ -650,7 +664,7 @@ var SECTIONS = [
  + '<h3>My commitment '+who()+'</h3>'
  + twrap(thead(["Element","My commitment"])+'<tbody>'
    + [["Use case and socially significant aim","f15-e0"],["My likely role: Designer / Implementer / Supporter","f15-e1"],["Skill or discrimination to practice","f15-e2"],["Practice opportunity 1","f15-p1"],["Practice opportunity 2","f15-p2"],["Practice opportunity 3","f15-p3"],["Person or source providing feedback","f15-e4"],["One technical safeguard","f15-e5"],["One OBM contingency","f15-e6"],["Benefit and error measures","f15-e7"],["Stop / reconsider threshold","f15-e8"],["Review date","f15-e9"]].map(function(r){ return '<tr><td class="k">'+r[0]+'</td>'+cell(r[1],r[0])+'</tr>'; }).join('')+'</tbody>')
- + '<aside class="callout"><b>Commitment statement</b><p class="stem" style="margin:0">By '+fill("f15-s1","date",12)+', I will '+fill("f15-s2","behavior",22)+' in the context of '+fill("f15-s3","context",20)+', measure '+fill("f15-s4","measure",18)+', and pause or revise if '+fill("f15-s5","condition",20)+'.</p></aside>'
+ + '<aside class="callout"><b>Commitment statement</b><p class="stem" style="margin:0">By '+fill("f15-s1","date",12,"review date")+', I will '+fill("f15-s2","behavior",22)+' in the context of '+fill("f15-s3","context",20)+', measure '+fill("f15-s4","measure",18)+', and pause or revise if '+fill("f15-s5","condition",20)+'.</p></aside>'
  + formBlock("commit",["f15-e0","f15-e1","f15-e2","f15-s1","f15-s2","f15-s3","f15-s4","f15-s5"],{note:"Optional. Anonymous."});
 }},
 
@@ -680,6 +694,7 @@ var SECTIONS = [
 }},
 
 {id:"references",code:"17",nav:"References",title:"Selected references and practice anchors",block:3,html:function(){ return ''
+ + ref('Show the reference list',''
  + '<ul style="max-width:none;font-size:.92rem">'
  + '<li>Behavior Analyst Certification Board. (2020). <em>Ethics code for behavior analysts.</em> <a href="https://www.bacb.com/ethics-information/ethics-codes/" target="_blank" rel="noopener">bacb.com/ethics-information/ethics-codes</a></li>'
  + '<li>Behavior Analyst Certification Board. (2026). <em>Authorized Continuing Education provider handbook.</em> <a href="https://www.bacb.com/continuing-education-providers/" target="_blank" rel="noopener">bacb.com/continuing-education-providers</a></li>'
@@ -693,6 +708,7 @@ var SECTIONS = [
  + '<li>Stanford d.school. (n.d.). <em>Design thinking bootleg.</em> <a href="https://dschool.stanford.edu/tools/design-thinking-bootleg" target="_blank" rel="noopener">dschool.stanford.edu</a></li>'
  + '<li>International Energy Agency. (2025). <em>Energy and AI.</em> <a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">iea.org/reports/energy-and-ai</a></li>'
  + '</ul>'
+ )
  + callout("Scope note","This workbook is a reusable educational tool. It does not substitute for clinical judgment, organizational policy, payer requirements, professional standards, privacy and security review, or legal advice.");
 }}
 ];
@@ -708,12 +724,12 @@ var TABLES = [
  {id:"F",name:"Scheduling and workflow",q:"How can scheduling improve efficiency while preserving access, continuity, and meaningful override?",ctx:"An in-home provider wants to match staff, geography, availability, credentials, continuity, and client preferences while reducing cancellations and travel time.",aug:"An optimization tool proposes schedules within explicit constraints. Coordinators review exceptions, client access, staff burden, and downstream clinical effects.",tensions:["Efficiency versus continuity and preference","Hidden workload shifts","Fair access and exception handling","Automation bias and override authority"],dq:"How can scheduling improve efficiency while preserving access, continuity, and meaningful override?"}
 ];
 function tableCard(t){
-  return '<div class="eyebrow">Mission '+t.id+' · fictional case · keep through Define, Ideate, and Test</div>'
+  return '<div class="eyebrow">Mission '+t.id+' · fictional case</div>'
    + '<h4 style="margin-top:.2rem">Current context</h4><p>'+t.ctx+'</p>'
    + '<h4>Proposed augmentation</h4><p>'+t.aug+'</p>'
    + '<h4>Question to define</h4><p>'+t.dq+'</p>'
    + '<h4>Tensions to make explicit</h4><ul>'+t.tensions.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'
-   + '<p class="code">60-second report: Our purpose is… | AI may… | A human must… | We will measure… | We stop or escalate when…</p>';
+   + '';
 }
 /* The sealed context shift. The text lives on the server and arrives only after the facilitator opens the reveal. */
 var SHIFT = null, shiftPending = false;
