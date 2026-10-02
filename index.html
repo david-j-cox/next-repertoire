@@ -91,10 +91,20 @@ button{font:inherit;cursor:pointer}
 .rail a .nowdot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--foil);flex:none}
 .rail a.locked .rc{color:var(--lock)}
 .main{padding-block:28px 80px;min-width:0}
-.section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:clamp(20px,3vw,36px);box-shadow:var(--shadow)}
+.section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0;box-shadow:var(--shadow);overflow:hidden}
+.sec-body{padding:clamp(20px,3vw,36px)}
+.sec-hd{position:relative;padding:clamp(22px,3vw,34px) clamp(20px,3vw,36px);background:#14213D;color:#F2F4F8;overflow:hidden}
+.sec-hd::before{content:"";position:absolute;inset:0;background-position:right center;background-size:cover;opacity:.8}
+.sec-hd.b1::before{background-image:url("img/block1.jpg")}
+.sec-hd.b2::before{background-image:url("img/block2.jpg")}
+.sec-hd.b3::before{background-image:url("img/block3.jpg")}
+.sec-hd::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#14213D 0%,#14213D 42%,rgba(20,33,61,.9) 60%,rgba(20,33,61,.55) 82%,rgba(20,33,61,.4) 100%)}
+.sec-hd > *{position:relative;z-index:1}
+.sec-hd h2{color:#FFFFFF}
 .section-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-bottom:.5rem}
-.section-head .code{font-size:.85rem}
-.section .lede{color:var(--muted);font-style:italic;font-family:var(--display);font-size:1.05rem;margin-top:.25rem}
+.section-head .code{font-size:.85rem;color:#C9D3E3}
+.sec-hd .lede{color:#C9D3E3;font-style:italic;font-family:var(--display);font-size:1.05rem;margin-top:.35rem;margin-bottom:0}
+@media (max-width:700px){.sec-hd::after{background:linear-gradient(180deg,rgba(20,33,61,.84) 0%,rgba(20,33,61,.95) 70%)}}
 .who{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--surface-2);color:var(--muted);vertical-align:middle;margin-left:4px}
 .who.rec{background:var(--foil-soft);color:var(--foil)}
 .output{border-left:3px solid var(--accent);padding:.35rem .9rem;margin:1rem 0;background:var(--surface-2);border-radius:0 6px 6px 0;font-size:.95rem}
@@ -299,7 +309,11 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .sealed.open .eyebrow{color:var(--foil)}
 @media (max-width:860px){.mapgrid{grid-template-columns:repeat(2,1fr)}.mapfoot{grid-template-columns:1fr}}
 @media (max-width:560px){.mapgrid{grid-template-columns:1fr}}
-@media print{.submit,.banner,.conn,.live{display:none!important}}
+@media print{.submit,.banner,.conn,.live{display:none!important}
+  .sec-hd{background:none;color:#000;padding-left:0;padding-right:0}
+  .sec-hd::before,.sec-hd::after{display:none}
+  .sec-hd h2{color:#000}.sec-hd .lede,.section-head .code{color:#333}
+  .sec-body{padding:0}}
 </style>
 </head>
 <body>
@@ -1031,8 +1045,6 @@ function renderLanding(){
    + '<div class="meta"><span>David J. Cox</span><span>Ryan L. O’Donnell</span><span>3 hours</span></div>'
    + '</div>'
    + '<div class="section" style="margin-top:20px">'
-   + '<p>Same sections as the printed workbook. Use either. Sections open as the workshop reaches them.</p>'
-   + '<p>Your answers are saved in this browser. Some prompts have a Submit button; those responses go to the facilitators anonymously. Use fictional examples; no client or staff information.</p>'
    + '<div class="blockcards">'+rows+'</div>'
    + (nowS ? '<p><a class="btn primary" href="#s/'+nowS.id+'">Current section: '+nowS.code+' '+nowS.nav+'</a></p>' : '<p><a class="btn primary" href="#s/orient">Start: 01 Orient</a></p>')
    + '</div>';
@@ -1050,10 +1062,12 @@ function renderSection(id){
   var nextLocked = (!next && idx<SECTIONS.length-1) ? SECTIONS[idx+1] : null;
   var chip = ADMIN ? '<span class="lockchip'+(isUnlocked(id)?' open':'')+'">'+(isUnlocked(id)?'Open to participants':'Locked for participants')+'</span>' : '';
   return '<article class="section">'
+   + '<header class="sec-hd b'+s.block+'">'
    + '<div class="section-head"><span class="code">'+s.code+' · '+BLOCKS[s.block].n+'</span>'+(GATES.current===id?'<span class="who rec" style="margin:0">Now</span>':'')+chip+'</div>'
    + '<h2>'+s.title+'</h2>'
    + (s.lede?'<p class="lede">'+s.lede+'</p>':'')
-   + s.html()
+   + '</header>'
+   + '<div class="sec-body">'+s.html()+'</div>'
    + '</article>'
    + '<div class="pager">'
    + (prev ? '<a href="#s/'+prev.id+'"><small>Previous</small>'+prev.code+' · '+prev.nav+'</a>' : '<a href="#welcome"><small>Previous</small>Welcome</a>')
