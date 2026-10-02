@@ -417,7 +417,7 @@ var SECTIONS = [
  + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
  + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
  + formBlock("pre",["f02-def1","f02-example","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{note:"Anonymous. Sends your definition, example, and ratings to the facilitators."})
- + livePanel("confidence");
+ + livePanel("confidence-pre");
 }},
 
 {id:"literacy",code:"02A",nav:"AI Literacy",title:"Terms and Trade-Offs Worth Keeping",block:1,html:function(){ return ''
@@ -779,7 +779,7 @@ var SECTIONS = [
  + scale("fpost-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
  + scale("fpost-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
  + formBlock("post",["f02-def2","fpost-c1","fpost-c2","fpost-c3","fpost-c4","f16-k1","f16-k2","f16-k3"],{note:"Anonymous. Includes your revised definition from section 02 and the knowledge check."})
- + livePanel("confidence");
+ + livePanel("confidence-post");
 }},
 
 {id:"references",code:"17",nav:"References",title:"Selected References and Practice Anchors",block:3,html:function(){ return ''
@@ -943,7 +943,18 @@ var SUBMITTED = parse(lsGet(LS_SUB),{}) || {};
 var PID = lsGet(LS_PID);
 if(!PID){ PID = "p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); lsSet(LS_PID,PID); }
 var ALL_IDS = SECTIONS.map(function(s){return s.id;});
-var PANELS = [["reveal","Field Lab Context-Shift Reveal (13A)"],["assignment","Table Assignments (04)"],["interests","Interest Poll (04)"],["demographics","Role and Setting Snapshot (03A)"],["confidence","Confidence Pre/Post (02, 16)"],["reports:problem","Problem Statements (04)"],["reports:define","Define Statements (05A)"],["reports:selected","Selected Options (11A)"],["reports:fieldlab","Field Lab Reports (13A)"]];
+var PANELS = [
+  ["confidence-pre","Confidence, Pre (02)"],
+  ["demographics","Role and Setting Snapshot (03A)"],
+  ["interests","Interest Poll (04)"],
+  ["assignment","Table Assignments (04)"],
+  ["reports:problem","Problem Statements (04)"],
+  ["reports:define","Define Statements (05A)"],
+  ["reports:selected","Selected Options (11A)"],
+  ["reveal","Field Lab Context-Shift Reveal (13A)"],
+  ["reports:fieldlab","Field Lab Reports (13A)"],
+  ["confidence-post","Confidence, Pre and Post (16)"]
+];
 var ALL_PANELS = PANELS.map(function(p){return p[0];});
 var REVEAL_KEY = "reveal";
 var GATES = API_URL ? (parse(lsGet(LS_GATES),null) || {unlocked:[],current:"welcome",show:[]}) : {unlocked:ALL_IDS.slice(),current:"welcome",show:ALL_PANELS.slice()};
@@ -1292,8 +1303,15 @@ function renderReports(rows,stage){
 }
 function renderConfidence(pre,post,prefix){
   prefix = prefix||"";
-  if(!pre.length && !post.length) return '<p class="code">No responses yet.</p>';
-  return twrap(thead(["Confidence, 1–5","Pre (n="+pre.length+")","Post (n="+post.length+")"])+'<tbody>'+OBJS.map(function(o){ return '<tr><td class="k">'+o[1]+'</td><td>'+mean(pre,prefix?"fpre-"+o[0]:o[0])+'</td><td>'+mean(post,prefix?"fpost-"+o[0]:o[0])+'</td></tr>'; }).join('')+'</tbody>');
+  pre = pre||[];
+  var withPost = post!==null && post!==undefined;
+  if(!pre.length && (!withPost || !post.length)) return '<p class="code">No responses yet.</p>';
+  var head = withPost ? ["Confidence, 1–5","Pre (n="+pre.length+")","Post (n="+post.length+")"]
+                      : ["Confidence, 1–5","Pre (n="+pre.length+")"];
+  return twrap(thead(head)+'<tbody>'+OBJS.map(function(o){
+    return '<tr><td class="k">'+o[1]+'</td><td>'+mean(pre,prefix?"fpre-"+o[0]:o[0])+'</td>'
+      + (withPost ? '<td>'+mean(post,prefix?"fpost-"+o[0]:o[0])+'</td>' : '')+'</tr>';
+  }).join('')+'</tbody>');
 }
 function renderInterests(rows){
   if(!rows.length) return '<p class="code">No responses yet.</p>';
@@ -1312,7 +1330,8 @@ function paintLive(){
     var kind = p.getAttribute("data-live"), body = p.querySelector(".live-body"), html='';
     if(kind==="interests") html = renderInterests(SUMMARY.interests||[]);
     else if(kind==="demographics") html = renderDemographics(SUMMARY.demographics||[]);
-    else if(kind==="confidence") html = renderConfidence(SUMMARY.pre||[], SUMMARY.post||[]);
+    else if(kind==="confidence-pre") html = renderConfidence(SUMMARY.pre||[], null);
+  else if(kind==="confidence-post") html = renderConfidence(SUMMARY.pre||[], SUMMARY.post||[]);
     else if(kind.indexOf("reports:")===0) html = renderReports(SUMMARY.table_reports||[], kind.slice(8));
     body.innerHTML = html; p.querySelector(".live-time").textContent = "Updated "+when;
   });
