@@ -194,7 +194,11 @@ details .in{padding:0 1rem 1rem}
 .footer a{color:var(--muted)}
 
 /* Landing */
-.hero{padding:clamp(28px,5vw,56px) clamp(20px,3vw,36px);background:#14213D;color:#F2F4F8;border-radius:12px;position:relative;overflow:hidden}
+.hero{padding:clamp(28px,5vw,56px) clamp(20px,3vw,36px);background:#14213D;color:#F2F4F8;border-radius:12px;position:relative;overflow:hidden;min-height:330px;display:flex;flex-direction:column;justify-content:center}
+.hero::before{content:"";position:absolute;inset:0;background:url("img/hero.jpg") right center/cover no-repeat;opacity:.85}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#14213D 0%,#14213D 34%,rgba(20,33,61,.86) 52%,rgba(20,33,61,.45) 74%,rgba(20,33,61,.3) 100%)}
+.hero > *{position:relative;z-index:1}
+@media (max-width:700px){.hero::after{background:linear-gradient(180deg,rgba(20,33,61,.82) 0%,rgba(20,33,61,.93) 60%)}}
 .hero .eyebrow{color:#C9D3E3}
 .hero h1{margin:.35rem 0 .25rem;color:#FFFFFF}
 .hero .sub{font-family:var(--display);font-style:italic;font-size:clamp(1.05rem,2vw,1.35rem);color:#C9D3E3;margin:0 0 1.2rem}
@@ -202,6 +206,16 @@ details .in{padding:0 1rem 1rem}
 .hero .premise b{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#D89A62;display:block;margin-bottom:.2rem}
 .hero .meta{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.88rem;color:#C9D3E3}
 .blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:.8rem 0}
+.blockcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:1.1rem 0}
+.blockcard{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column}
+.blockcard img{width:100%;height:118px;object-fit:cover;display:block}
+.bc-body{padding:.7rem .85rem .85rem}
+.bc-body .t{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.bc-body h4{margin:.15rem 0 .3rem;font-family:var(--body);font-size:.95rem}
+.bc-body p{font-size:.85rem;margin:0;color:var(--muted)}
+.bc-body .st{margin-top:.5rem;font-size:.76rem;color:var(--muted)}
+.bc-body .st.open{color:var(--ok)}
+@media (max-width:760px){.blockcards{grid-template-columns:1fr}.blockcard img{height:96px}}
 .blk{border:1px solid var(--line);border-radius:8px;padding:.8rem .95rem;background:var(--paper)}
 .blk .t{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
 .blk h4{margin:.15rem 0 .3rem}
@@ -219,7 +233,11 @@ details .in{padding:0 1rem 1rem}
 .gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px 24px;margin-top:.6rem}
 .gate{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:.35rem .5rem;border-radius:6px;font-size:.9rem}
 .gate:hover{background:var(--surface-2)}
-.gate .rc{font-family:var(--mono);font-size:.72rem;color:var(--muted);width:2.4rem}
+.gate .rc{font-family:var(--mono);font-size:.72rem;color:var(--muted);display:inline-block;min-width:2.9rem}
+.gate-block{display:flex;align-items:center;gap:12px;margin-top:.9rem}
+.blkbtn{font-size:.76rem;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:5px;padding:2px 9px;cursor:pointer;white-space:nowrap}
+.blkbtn:hover{border-color:var(--accent);color:var(--accent)}
+.blkbtn.on{border-color:var(--ok);color:var(--ok)}
 .gate .sw{position:relative;width:38px;height:22px;flex:none}
 .gate .sw input{opacity:0;width:0;height:0;position:absolute}
 .gate .sw i{position:absolute;inset:0;background:var(--lock);border-radius:22px;transition:.15s}
@@ -270,8 +288,9 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:.8rem 0}
 .mapfoot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.4rem 0 1rem}
 .zone{border:1px solid var(--line);border-radius:8px;padding:.6rem;background:var(--paper);display:flex;flex-direction:column;gap:.35rem}
-.zone .zn{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.72rem;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
-.zone .zt{font-weight:600;font-size:.82rem;letter-spacing:.02em}
+.zone .zhead{display:flex;align-items:center;gap:7px}
+.zone .zn{width:21px;height:21px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.7rem;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);flex:none}
+.zone .zt{font-weight:600;font-size:.9rem;letter-spacing:.01em}
 .zone .zq{font-size:.75rem;color:var(--muted)}
 .zone textarea{background:var(--surface);font-size:.85rem}
 .zone.b2 .zt,.mapfoot .zone.b2{border-color:var(--warn)}
@@ -683,7 +702,7 @@ var SECTIONS = [
  + '<p>The same six zones as the printed board. Write what happens at each step of the workflow you already designed, then place your tokens: tap a token, then tap the zone it belongs in. Tap a placed token to remove it.</p>'
  + tokenTray()
  + '<div class="mapgrid">'
- + MAPZONES.map(function(z,i){ return '<div class="zone z'+i+'" data-zonebox="'+i+'"><div class="zn">'+(i+1)+'</div><div class="zt">'+z[0]+'</div>'+taBare("f13a-z"+i,"System Map / "+z[0],3)+'<div class="zq">'+z[1]+'</div>'+zoneTokens(i)+'</div>'; }).join('')
+ + MAPZONES.map(function(z,i){ return '<div class="zone z'+i+'" data-zonebox="'+i+'"><div class="zhead"><span class="zn">'+(i+1)+'</span><span class="zt">'+z[0]+'</span></div>'+taBare("f13a-z"+i,"System Map / "+z[0],3)+'<div class="zq">'+z[1]+'</div>'+zoneTokens(i)+'</div>'; }).join('')
  + '</div>'
  + '<div class="mapfoot">'
  + MAPBOXES.map(function(b,i){ return '<div class="zone b'+i+'"><div class="zt">'+b[0]+'</div><div class="zq">'+b[1]+'</div>'+taBare("f13a-b"+i,"System Map / "+b[0],2)+'</div>'; }).join('')
@@ -765,7 +784,7 @@ var SECTIONS = [
 ];
 
 var TOKEN_KINDS = {ai:{label:"AI MAY",img:"img/token-ai.png"},human:{label:"HUMAN MUST",img:"img/token-human.png"},stop:{label:"STOP / ESCALATE",img:"img/token-stop.png"}};
-var TOKENS = [{id:"ai1",k:"ai"},{id:"ai2",k:"ai"},{id:"ai3",k:"ai"},{id:"hu1",k:"human"},{id:"hu2",k:"human"},{id:"hu3",k:"human"},{id:"st1",k:"stop"},{id:"st2",k:"stop"}];
+var TOKENS = [{k:"ai"},{k:"human"},{k:"stop"}];
 var SEL_TOKEN = null;
 function placements(){ var m=ANSWERS["f13a-tokenmap"]; if(typeof m==="string"){ try{ m=JSON.parse(m); }catch(e){ m=null; } } return Array.isArray(m) ? m : []; }
 function zoneName(z){ var i=parseInt(z,10); return isNaN(i) ? "" : (MAPZONES[i]?MAPZONES[i][0]:""); }
@@ -777,8 +796,8 @@ function saveTokens(list){
   saveAnswer("f13a-tokens", txt);
 }
 function trayNote(){
-  if(SEL_TOKEN) return 'Placing ' + TOKEN_KINDS[SEL_TOKEN].label + '. Tap a zone to add one, as many times as you need. Tap the coin again to stop.';
-  return 'Tap a coin, then tap a zone. The printed set has three AI MAY, three HUMAN MUST, and two STOP / ESCALATE; here you can place as many of each as your design needs.';
+  if(SEL_TOKEN) return 'Placing ' + TOKEN_KINDS[SEL_TOKEN].label + '. Tap each zone it belongs in. Tap the coin again to stop.';
+  return 'Tap a coin, then tap the zones it belongs in. A zone takes at most one of each kind. Tap a placed coin to remove it.';
 }
 function paletteHtml(t,i){
   var k=TOKEN_KINDS[t.k], sel=(SEL_TOKEN===t.k);
@@ -1000,7 +1019,9 @@ function renderLanding(){
     var secs = SECTIONS.filter(function(s){return s.block===b;});
     var open = secs.filter(function(s){return isUnlocked(s.id);}).length;
     var st = open===0 ? 'Locked' : (open===secs.length ? 'Open' : open+' of '+secs.length+' open');
-    return '<tr><td class="k">'+BLOCKS[b].time+'</td><td>'+BLOCKS[b].t+'</td><td>'+st+'</td></tr>';
+    return '<div class="blockcard"><img src="img/block'+b+'.jpg" alt="" loading="lazy">'
+      + '<div class="bc-body"><div class="t">'+BLOCKS[b].time+'</div><h4>'+BLOCKS[b].t+'</h4>'
+      + '<p>'+BLOCKS[b].out+'</p><div class="st'+(open?' open':'')+'">'+st+'</div></div></div>';
   }).join('');
   return ''
    + '<div class="hero">'
@@ -1012,7 +1033,7 @@ function renderLanding(){
    + '<div class="section" style="margin-top:20px">'
    + '<p>Same sections as the printed workbook. Use either. Sections open as the workshop reaches them.</p>'
    + '<p>Your answers are saved in this browser. Some prompts have a Submit button; those responses go to the facilitators anonymously. Use fictional examples; no client or staff information.</p>'
-   + twrap(thead(["Time","Block","Status"])+'<tbody>'+rows+'</tbody>')
+   + '<div class="blockcards">'+rows+'</div>'
    + (nowS ? '<p><a class="btn primary" href="#s/'+nowS.id+'">Current section: '+nowS.code+' '+nowS.nav+'</a></p>' : '<p><a class="btn primary" href="#s/orient">Start: 01 Orient</a></p>')
    + '</div>';
 }
@@ -1099,7 +1120,12 @@ function renderAdmin(){
   var nowS = sectionById(g.current);
   var lastBlock = 0, gates = '';
   SECTIONS.forEach(function(s){
-    if(s.block!==lastBlock){ lastBlock=s.block; gates += '<div class="gate-block eyebrow">'+BLOCKS[s.block].n+' · '+BLOCKS[s.block].t+'</div>'; }
+    if(s.block!==lastBlock){ lastBlock=s.block;
+      var ids=SECTIONS.filter(function(x){return x.block===s.block;}).map(function(x){return x.id;});
+      var allOn=ids.every(function(id){return g.unlocked.indexOf(id)>=0;});
+      gates += '<div class="gate-block"><span class="eyebrow">'+BLOCKS[s.block].n+' · '+BLOCKS[s.block].t+'</span>'
+        + '<button class="blkbtn'+(allOn?' on':'')+'" data-block="'+s.block+'">'+(allOn?'Lock this block':'Open this block')+'</button></div>';
+    }
     var on = g.unlocked.indexOf(s.id)>=0;
     gates += '<div class="gate"><label class="sw"><input type="checkbox" data-gate="'+s.id+'"'+(on?' checked':'')+' aria-label="Open '+s.code+' '+s.nav+' to participants"><i></i></label>'
       + '<span><span class="rc">'+s.code+'</span>'+s.nav+'</span>'
@@ -1308,6 +1334,18 @@ function hydrate(){
   if(q("admin-login")) { q("admin-login").onclick=adminLogin; q("admin-key").onkeydown=function(e){ if(e.key==="Enter") adminLogin(); }; }
   if(ADMIN){
     root.querySelectorAll("[data-gate]").forEach(function(el){ el.onchange=function(){ setGate(el.getAttribute("data-gate"), el.checked); }; });
+    root.querySelectorAll("[data-block]").forEach(function(el){ el.onclick=function(){
+      var b=parseInt(el.getAttribute("data-block"),10), g=draft();
+      var ids=SECTIONS.filter(function(x){return x.block===b;}).map(function(x){return x.id;});
+      var allOn=ids.every(function(id){return g.unlocked.indexOf(id)>=0;});
+      ids.forEach(function(id){
+        var i=g.unlocked.indexOf(id);
+        if(allOn && i>=0) g.unlocked.splice(i,1);
+        if(!allOn && i<0) g.unlocked.push(id);
+      });
+      if(allOn && ids.indexOf(g.current)>=0) g.current="welcome";
+      render({keepScroll:true});
+    }; });
     root.querySelectorAll("[data-show]").forEach(function(el){ el.onchange=function(){ var g=draft(); var k=el.getAttribute("data-show"); var i=g.show.indexOf(k); if(el.checked&&i<0) g.show.push(k); if(!el.checked&&i>=0) g.show.splice(i,1); render({keepScroll:true}); }; });
     root.querySelectorAll("[data-now]").forEach(function(el){ el.onclick=function(){ var g=draft(); var id=el.getAttribute("data-now"); g.current = (g.current===id) ? "welcome" : id; if(g.current!=="welcome" && g.unlocked.indexOf(id)<0) g.unlocked.push(id); render({keepScroll:true}); }; });
     if(q("a-next")) q("a-next").onclick=function(){ var g=draft(); for(var i=0;i<SECTIONS.length;i++){ if(g.unlocked.indexOf(SECTIONS[i].id)<0){ g.unlocked.push(SECTIONS[i].id); g.current=SECTIONS[i].id; break; } } render({keepScroll:true}); };
@@ -1363,7 +1401,9 @@ function wireTokens(){
     z.onclick=function(ev){
       if(!SEL_TOKEN) return;
       if(ev.target.closest && ev.target.closest("textarea,input,select,button,a")) return;
-      var list=placements(); list.push({k:SEL_TOKEN, z:z.getAttribute("data-zonebox")});
+      var zi=z.getAttribute("data-zonebox"), list=placements();
+      if(list.some(function(pl){ return pl.k===SEL_TOKEN && String(pl.z)===String(zi); })) return;
+      list.push({k:SEL_TOKEN, z:zi});
       saveTokens(list); repaintTokens();
     };
   });
