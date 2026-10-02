@@ -42,6 +42,7 @@ h2{font-size:clamp(1.5rem,3vw,2rem)}
 h3{font-size:1.2rem;margin-top:1.75rem;margin-bottom:.5rem}
 h4{font-family:var(--body);font-size:.95rem;font-weight:600;margin-top:1.25rem;margin-bottom:.35rem}
 p{margin:.6rem 0;max-width:68ch}
+p.code{max-width:none}
 ul,ol{max-width:68ch;padding-left:1.3rem}
 li{margin:.25rem 0}
 .eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -102,6 +103,19 @@ input.inline::placeholder{color:var(--muted);opacity:.75}
 .check input{margin-top:.3rem;accent-color:var(--accent)}
 .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 24px;margin:.5rem 0}
 .tablewrap{overflow-x:auto;margin:.9rem 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap.grid{overflow-x:visible}
+.tablewrap.grid table{min-width:0;width:100%;table-layout:fixed}
+.tablewrap.grid td input[type=text]{min-width:0;width:100%}
+.tablewrap.grid th,.tablewrap.grid td{word-break:break-word}
+@media (max-width:760px){
+  .tablewrap.grid table,.tablewrap.grid tbody,.tablewrap.grid tr,.tablewrap.grid td{display:block;width:auto}
+  .tablewrap.grid thead{display:none}
+  .tablewrap.grid tr{border-bottom:1px solid var(--line);padding:.45rem 0}
+  .tablewrap.grid tr:last-child{border-bottom:none}
+  .tablewrap.grid td{border:none;padding:.3rem .7rem}
+  .tablewrap.grid td.k{font-weight:600;font-size:.95rem;padding-top:.5rem;white-space:normal}
+  .tablewrap.grid td[data-h]::before{content:attr(data-h);display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.15rem}
+}
 table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
 th,td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px solid var(--line)}
 th{background:var(--surface-2);font-weight:600;font-size:.82rem}
@@ -271,15 +285,15 @@ function ta(id,label,rows,ph){ reg(id,label); return '<div class="field"><label 
 function taBare(id,label,rows){ reg(id,label); return '<textarea id="'+id+'" rows="'+(rows||3)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function line(id,label){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" type="text"></div>'; }
 function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input type="checkbox" id="'+id+'"><span>'+label+'</span></label>'; }
-function cell(id,label){ reg(id,label); return '<td><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
+function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
 function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
 function callout(kicker,text,cls){ return '<aside class="callout'+(cls?' '+cls:'')+'"><b>'+kicker+'</b>'+text+'</aside>'; }
 function who(kind){ return kind==="rec" ? '<span class="who rec">Table recorder</span>' : '<span class="who">Everyone writes</span>'; }
-function twrap(html){ return '<div class="tablewrap"><table>'+html+'</table></div>'; }
+function twrap(html){ var grid = html.indexOf('<input')>=0 || html.indexOf('<textarea')>=0; return '<div class="tablewrap'+(grid?' grid':'')+'"><table>'+html+'</table></div>'; }
 function thead(cols){ return '<thead><tr>'+cols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead>'; }
 function rowFill(prefix,label,cols){ /* one labeled row with editable cells */
-  return '<tr><td class="k">'+label+'</td>'+cols.map(function(c,i){return cell(prefix+'-'+i,label+' / '+c);}).join('')+'</tr>';
+  return '<tr><td class="k">'+label+'</td>'+cols.map(function(c,i){return cell(prefix+'-'+i,label+' / '+c,c);}).join('')+'</tr>';
 }
 
 function sel(id,label,options){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><select id="'+id+'"><option value="">Select</option>'+options.map(function(o){ var v=Array.isArray(o)?o[0]:o, l=Array.isArray(o)?o[1]:o; return '<option value="'+esc(v)+'">'+esc(l)+'</option>'; }).join('')+'</select></div>'; }
@@ -380,7 +394,8 @@ var SECTIONS = [
  + '<div class="card"><h4>Scale &lt; &gt; local fit</h4></div>'
  + '<div class="card"><h4>Automation &lt; &gt; skill practice</h4></div>'
  + '</div>'
- + ta("f02a-condition","What condition would change your answer? "+who(),4);
+ + '<h3>Where do you sit? '+who()+'</h3>'
+ + ta("f02a-condition","Pick one trade-off above. Where does your current practice sit on it, and what would have to change to move you?",4);
 }},
 
 {id:"empathize",code:"03A",nav:"Empathize",title:"Capture experience and compare conditions",block:1,html:function(){ return ''
@@ -487,8 +502,8 @@ var SECTIONS = [
  )
  + '<h3>Sketch the data path '+who("rec")+'</h3>'
  + twrap(thead(["Source","What enters","Where processed/stored","Who receives output","Retention/exit"])+'<tbody>'
-   + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c);}).join('')+'</tr>'
-   + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r2-"+i,"Data path row 2 / "+c);}).join('')+'</tr></tbody>')
+   + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c,c);}).join('')+'</tr>'
+   + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r2-"+i,"Data path row 2 / "+c,c);}).join('')+'</tr></tbody>')
  + '<p class="code">This worksheet is educational. It is not legal advice. Apply organizational policy and obtain qualified privacy, security, compliance, or legal review when needed.</p>';
 }},
 
@@ -561,13 +576,13 @@ var SECTIONS = [
 {id:"design",code:"11",nav:"Design",title:"Pair a technical solution with an OBM solution",lede:"A control that exists only in software, or only in policy, will likely fail when work becomes busy.",block:2,html:function(){ return ''
  + '<h3>Design layers '+who("rec")+'</h3>'
  + twrap(thead(["Design layer","Examples","Our choice"])+'<tbody>'
-   + '<tr><td class="k">Technical</td><td>Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback</td>'+cell("f11-tech","Technical / Our choice")+'</tr>'
-   + '<tr><td class="k">Behavioral (OBM)</td><td>Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign</td>'+cell("f11-obm","Behavioral OBM / Our choice")+'</tr>'
-   + '<tr><td class="k">Measurement</td><td>Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost</td>'+cell("f11-measure","Measurement / Our choice")+'</tr></tbody>')
+   + '<tr><td class="k">Technical</td><td>Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback</td>'+cell("f11-tech","Technical / Our choice","Our choice")+'</tr>'
+   + '<tr><td class="k">Behavioral (OBM)</td><td>Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign</td>'+cell("f11-obm","Behavioral OBM / Our choice","Our choice")+'</tr>'
+   + '<tr><td class="k">Measurement</td><td>Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost</td>'+cell("f11-measure","Measurement / Our choice","Our choice")+'</tr></tbody>')
  + '<h3>Behavioral systems sketch '+who("rec")+'</h3>'
  + twrap(thead(["Antecedents / context","Target performer behavior","Consequences / feedback","Measure"])+'<tbody>'
-   + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s1-"+i,"Systems sketch row 1 / "+c);}).join('')+'</tr>'
-   + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s2-"+i,"Systems sketch row 2 / "+c);}).join('')+'</tr></tbody>')
+   + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s1-"+i,"Systems sketch row 1 / "+c,c);}).join('')+'</tr>'
+   + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s2-"+i,"Systems sketch row 2 / "+c,c);}).join('')+'</tr></tbody>')
  + callout("Implementation question","What contingencies make the safe behavior easier, faster, more likely, and more reinforcing than the unsafe shortcut?");
 }},
 
@@ -622,7 +637,7 @@ var SECTIONS = [
 {id:"prototype",code:"13",nav:"Prototype",title:"Build the smallest testable workflow",lede:"A prototype should be cheap enough to change and clear enough to fail informatively.",block:3,html:function(){ return ''
  + '<h3>Prototype elements '+who("rec")+'</h3>'
  + twrap(thead(["Prototype element","Decision"])+'<tbody>'
-   + ["User and setting","Trigger / start condition","Minimum data input","AI function and output","Required human verification","Action or handoff","Outcome and error measures","Escalation and stop rule"].map(function(e,i){ return '<tr><td class="k">'+e+'</td>'+cell("f13-e"+i,e)+'</tr>'; }).join('')+'</tbody>')
+   + ["User and setting","Trigger / start condition","Minimum data input","AI function and output","Required human verification","Action or handoff","Outcome and error measures","Escalation and stop rule"].map(function(e,i){ return '<tr><td class="k">'+e+'</td>'+cell("f13-e"+i,e,"Decision")+'</tr>'; }).join('')+'</tbody>')
  + '<h3>Test record and next test '+who("rec")+'</h3>'
  + twrap(thead(["Rep","Input case","Predicted result","Observed result","Change before next rep"])+'<tbody>'
    + [1,2,3].map(function(n){ return rowFill("f13-t"+n,"Rep "+n,["Input case","Predicted","Observed","Change"]); }).join('')+'</tbody>');
@@ -687,7 +702,7 @@ var SECTIONS = [
 {id:"commit",code:"15",nav:"Commit",title:"Your 30-day repertoire experiment",lede:"Choose a small professional behavior you can practice with feedback. A vague intention to “use more AI” will not work.",block:3,html:function(){ return ''
  + '<h3>My commitment '+who()+'</h3>'
  + twrap(thead(["Element","My commitment"])+'<tbody>'
-   + [["Use case and socially significant aim","f15-e0"],["My likely role: Designer / Implementer / Supporter","f15-e1"],["Skill or discrimination to practice","f15-e2"],["Practice opportunity 1","f15-p1"],["Practice opportunity 2","f15-p2"],["Practice opportunity 3","f15-p3"],["Person or source providing feedback","f15-e4"],["One technical safeguard","f15-e5"],["One OBM contingency","f15-e6"],["Benefit and error measures","f15-e7"],["Stop / reconsider threshold","f15-e8"],["Review date","f15-e9"]].map(function(r){ return '<tr><td class="k">'+r[0]+'</td>'+cell(r[1],r[0])+'</tr>'; }).join('')+'</tbody>')
+   + [["Use case and socially significant aim","f15-e0"],["My likely role: Designer / Implementer / Supporter","f15-e1"],["Skill or discrimination to practice","f15-e2"],["Practice opportunity 1","f15-p1"],["Practice opportunity 2","f15-p2"],["Practice opportunity 3","f15-p3"],["Person or source providing feedback","f15-e4"],["One technical safeguard","f15-e5"],["One OBM contingency","f15-e6"],["Benefit and error measures","f15-e7"],["Stop / reconsider threshold","f15-e8"],["Review date","f15-e9"]].map(function(r){ return '<tr><td class="k">'+r[0]+'</td>'+cell(r[1],r[0],"My commitment")+'</tr>'; }).join('')+'</tbody>')
  + '<aside class="callout"><b>Commitment statement</b><p class="stem" style="margin:0">By '+fill("f15-s1","date",12,"review date")+', I will '+fill("f15-s2","behavior",22)+' in the context of '+fill("f15-s3","context",20)+', measure '+fill("f15-s4","measure",18)+', and pause or revise if '+fill("f15-s5","condition",20)+'.</p></aside>'
  + formBlock("commit",["f15-e0","f15-e1","f15-e2","f15-s1","f15-s2","f15-s3","f15-s4","f15-s5"],{note:"Optional. Anonymous."});
 }},
