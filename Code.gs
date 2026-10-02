@@ -17,11 +17,28 @@
 var FORMS = ["pre", "demographics", "quadrant", "interests", "table_reports", "commit", "post"];
 var MAX_ROWS_RETURNED = 600;
 
-/* Run this once from the editor to set the facilitator passcode. */
+/*
+ * Run this once from the editor to set the facilitator passcode.
+ * Put the passcode on the `key` line, Run, then set it back to "change-me".
+ * Running it with the placeholder still in place does nothing, so an accidental
+ * Run cannot wipe the passcode you already set.
+ */
 function setAdminKey() {
   var key = "change-me";
+  if (!key || key === "change-me") {
+    Logger.log("Nothing changed. Put your passcode on the key line in setAdminKey, then Run again.");
+    return;
+  }
   PropertiesService.getScriptProperties().setProperty("ADMIN_KEY", key);
   Logger.log("Facilitator passcode set.");
+}
+
+/* Reports whether a passcode is set, without printing it. */
+function checkAdminKeyStatus() {
+  var k = PropertiesService.getScriptProperties().getProperty("ADMIN_KEY");
+  Logger.log(!k ? "No passcode set."
+    : (k === "change-me" ? "WARNING: the passcode is still the placeholder \"change-me\". Set a real one."
+                         : "A passcode is set (" + k.length + " characters)."));
 }
 
 function doGet(e) {

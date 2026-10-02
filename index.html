@@ -65,8 +65,11 @@ button{font:inherit;cursor:pointer}
 .btn.primary:disabled{opacity:.5;cursor:default}
 .btn.quiet{border-color:transparent;background:transparent;color:var(--muted)}
 .btn.small{padding:.3rem .6rem;font-size:.78rem}
-.menu-btn{display:none}
-.layout{max-width:1180px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:40px}
+.menu-btn{display:inline-flex}
+.layout{max-width:1180px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px}
+.layout.with-rail{grid-template-columns:270px minmax(0,1fr)}
+.rail{display:none}
+.layout.with-rail .rail{display:block}
 .rail{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));align-self:start;max-height:calc(100vh - 56px);overflow:auto;padding-block:24px 40px}
 .rail-block{margin-bottom:18px}
 .rail-block > .eyebrow{padding:0 10px 6px}
@@ -225,9 +228,8 @@ details .in{padding:0 1rem 1rem}
 
 @media (max-width: 860px){
   .layout{grid-template-columns:1fr;gap:0}
-  .rail{position:static;max-height:none;padding-block:12px;border-bottom:1px solid var(--line);display:none}
-  .rail.open{display:block}
-  .menu-btn{display:inline-flex}
+  .layout.with-rail{grid-template-columns:1fr}
+  .rail{position:static;max-height:none;padding-block:12px;border-bottom:1px solid var(--line)}
   .now-chip{display:none}
   .steps li{grid-template-columns:4.2rem 1fr;grid-template-areas:"t n" "t d"}
   .steps li .t{grid-area:t}.steps li .n{grid-area:n}.steps li .d{grid-area:d}
@@ -256,7 +258,7 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .live-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:.3rem}
 .live .tablewrap{background:var(--surface)}
 .live .card{background:var(--surface)}
-.mapgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:.8rem 0}
+.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:.8rem 0}
 .mapfoot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.4rem 0 1rem}
 .zone{border:1px solid var(--line);border-radius:8px;padding:.6rem;background:var(--paper);display:flex;flex-direction:column;gap:.35rem}
 .zone .zn{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.72rem;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
@@ -268,6 +270,7 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .sealed.open{border-style:solid;border-left:4px solid var(--foil);background:var(--foil-soft);color:var(--ink)}
 .sealed.open .eyebrow{color:var(--foil)}
 @media (max-width:860px){.mapgrid{grid-template-columns:repeat(2,1fr)}.mapfoot{grid-template-columns:1fr}}
+@media (max-width:560px){.mapgrid{grid-template-columns:1fr}}
 @media print{.submit,.banner,.conn,.live{display:none!important}}
 </style>
 </head>
@@ -905,7 +908,14 @@ function currentSectionId(){
 
 /* ---------- rendering ---------- */
 var root = document.getElementById("root");
-var railOpen = false;
+var LS_RAIL = "nr-rail";
+var railOpen = (function(){
+  var v = lsGet(LS_RAIL);
+  if(v==="1") return true;
+  if(v==="0") return false;
+  try{ return window.innerWidth > 860; }catch(e){ return true; }
+})();
+function setRail(on){ railOpen=on; lsSet(LS_RAIL, on?"1":"0"); render({keepScroll:true}); }
 
 function render(opts){
   opts = opts || {};
@@ -921,11 +931,11 @@ function render(opts){
     + '<span class="spacer"></span>'
     + nowChip()
     + connChip()
-    + '<button class="btn small quiet menu-btn" id="menu-btn" aria-expanded="'+railOpen+'">Sections</button>'
+    + '<button class="btn small quiet menu-btn" id="menu-btn" aria-expanded="'+railOpen+'" aria-controls="rail">'+(railOpen?'Hide sections':'Sections')+'</button>'
     + '</div></header>';
   if(!API_URL) html += '<div class="banner">Preview mode: not connected to the response sheet. All sections are open and submissions are off. Set API_URL in the page to connect.</div>';
-  html += '<div class="layout">';
-  html += '<nav class="rail'+(railOpen?' open':'')+'" id="rail">'+renderRail(cur)+'</nav>';
+  html += '<div class="layout'+(railOpen?' with-rail':'')+'">';
+  html += '<nav class="rail" id="rail">'+renderRail(cur)+'</nav>';
   html += '<main class="main" id="main">';
   if(wantAdmin) html += ADMIN ? renderAdmin() : renderLogin();
   if(cur==="welcome"){ if(!wantAdmin) html += renderLanding(); }
@@ -1281,7 +1291,7 @@ function hydrate(){
   renderTableCard();
   wireTokens();
   var q=function(id){return document.getElementById(id);};
-  if(q("menu-btn")) q("menu-btn").onclick=function(){ railOpen=!railOpen; q("rail").classList.toggle("open",railOpen); q("menu-btn").setAttribute("aria-expanded",railOpen); };
+  if(q("menu-btn")) q("menu-btn").onclick=function(){ setRail(!railOpen); };
   if(q("export-btn")) q("export-btn").onclick=exportAnswers;
   if(q("print-btn")) q("print-btn").onclick=function(){ window.print(); };
   root.querySelectorAll(".submit button").forEach(function(b){ b.onclick=function(){ submitBlock(b.parentNode); }; });
@@ -1357,7 +1367,11 @@ function renderTableCard(){
 
 root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); });
 root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table"){ renderTableCard(); SHIFT=null; } });
-window.addEventListener("hashchange", function(){ railOpen=false; if(location.hash!=="#admin") PENDING=null; render(); });
+window.addEventListener("hashchange", function(){
+  try{ if(window.innerWidth<=860 && railOpen) setRail(false); }catch(e){}
+  if(location.hash!=="#admin") PENDING=null;
+  render();
+});
 document.addEventListener("visibilitychange", function(){ if(!document.hidden && API_URL) apiGet({action:"state"}).then(function(r){ if(r&&r.gates) applyGates(r.gates); }).catch(function(){}); });
 
 /* boot */
