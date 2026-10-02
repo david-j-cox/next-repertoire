@@ -1114,7 +1114,7 @@ function renderAdmin(){
    + '</section>'
    + '<section class="admin" id="admin-responses">'
    + '<div class="admin-head"><h2>Sort the room</h2><span class="status">'+(ADMIN_DATA&&ADMIN_DATA.assigned&&ADMIN_DATA.assigned.n ? ADMIN_DATA.assigned.n+' people seated: '+TABLES.map(function(t){return t.id+' '+(ADMIN_DATA.assigned.counts[t.id]||0);}).join(' · ') : 'Not sorted yet')+'</span></div>'
-   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone, honouring first choice, then second, then filling the emptiest table. Leave the cap blank for an even split. Switch on <strong>Table assignments</strong> above and Publish so people can see their seat.</p>'
+   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone, honoring first choice, then second, then filling the emptiest table. Leave the cap blank for an even split. Switch on <strong>Table assignments</strong> above and Publish so people can see their seat.</p>'
    + '<div class="actions"><label style="font-size:.85rem;color:var(--muted)">Max per table <input type="text" id="a-cap" size="3" style="width:4rem;display:inline-block"></label>'
    + '<button class="btn primary" id="a-assign">Assign tables</button><span id="assign-msg" class="status"></span></div>'
    + '</section>'

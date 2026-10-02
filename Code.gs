@@ -222,7 +222,7 @@ var TABLE_IDS = ["A", "B", "C", "D", "E", "F"];
 
 /**
  * Sort everyone who answered the interest poll into tables.
- * Honours first choice, then second choice, then fills the emptiest table,
+ * Honors first choice, then second choice, then fills the emptiest table,
  * keeping every table within `capacity` (default: an even split).
  * Earlier responses are seated first when a table is oversubscribed.
  */
