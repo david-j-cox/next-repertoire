@@ -7,6 +7,8 @@
  * GET  ?action=state              -> {gates:{unlocked:[],current:""}, updated}
  * GET  ?action=summary            -> aggregate counts for the live panels on participant pages
  * GET  ?action=shift&table=A       -> that table's context shift, only after the reveal is opened
+ * GET  ?action=myTable&pid=p-xxx   -> that participant's assigned table, once assignments are shown
+ * POST {action:"assign", key, capacity} -> sort everyone into tables from the interest poll
  * GET  ?action=admin&key=PASSCODE -> counts and recent rows for the facilitator panel
  * POST {action:"submit", form, pid, table, data:{...}}
  * POST {action:"setGates", key, gates:{unlocked:[],current:"",show:[]}}
@@ -28,6 +30,7 @@ function doGet(e) {
   if (action === "state") return json({ gates: getGates(), updated: getUpdated() });
   if (action === "summary") return json(summaryData());
   if (action === "shift") return json(shiftFor(p.table));
+  if (action === "myTable") return json(myTable(p.pid));
   if (action === "admin") {
     if (!checkKey(p.key)) return json({ error: "unauthorized" });
     return json(adminData());
@@ -39,6 +42,10 @@ function doPost(e) {
   var body = {};
   try { body = JSON.parse(e.postData.contents); } catch (err) { return json({ error: "bad json" }); }
   if (body.action === "submit") return json(submit(body));
+  if (body.action === "assign") {
+    if (!checkKey(body.key)) return json({ error: "unauthorized" });
+    return json(assignTables(body.capacity));
+  }
   if (body.action === "setGates") {
     if (!checkKey(body.key)) return json({ error: "unauthorized" });
     setGates(body.gates || {});
@@ -117,7 +124,7 @@ function submit(body) {
 /* ---------- facilitator data ---------- */
 function adminData() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var out = { counts: {}, rows: {}, gates: getGates() };
+  var out = { counts: {}, rows: {}, gates: getGates(), assigned: assignmentTally() };
   FORMS.forEach(function (f) {
     var sh = ss.getSheetByName(f);
     if (!sh || sh.getLastRow() < 2) { out.counts[f] = 0; out.rows[f] = []; return; }
@@ -154,6 +161,16 @@ function latestPerPid(rows) {
   return Object.keys(m).map(function (k) { return m[k]; });
 }
 
+function assignmentTally() {
+  var map = assignmentMap(), counts = {}, n = 0;
+  TABLE_IDS.forEach(function (t) { counts[t] = 0; });
+  Object.keys(map).forEach(function (pid) {
+    if (counts[map[pid].table] !== undefined) counts[map[pid].table]++;
+    n++;
+  });
+  return { n: n, counts: counts };
+}
+
 /* Sealed context shifts. Held server-side so the text is not in the page source before the reveal. */
 var SHIFTS = {
   A: { t: "The source has changed",
@@ -181,6 +198,104 @@ function shiftFor(table) {
   var key = String(table || "").toUpperCase();
   if (!SHIFTS[key]) return { sealed: false, unknown: true };
   return { sealed: false, table: key, shift: SHIFTS[key] };
+}
+
+/* ---------- table assignment ---------- */
+var TABLE_IDS = ["A", "B", "C", "D", "E", "F"];
+
+/**
+ * Sort everyone who answered the interest poll into tables.
+ * Honours first choice, then second choice, then fills the emptiest table,
+ * keeping every table within `capacity` (default: an even split).
+ * Earlier responses are seated first when a table is oversubscribed.
+ */
+function assignTables(capacity) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName("interests");
+  if (!sh || sh.getLastRow() < 2) return { error: "No interest-poll responses yet." };
+
+  var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(String);
+  var vals = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+  var col = {};
+  headers.forEach(function (h, i) { col[h] = i; });
+
+  var latest = {};
+  vals.forEach(function (r) {
+    var pid = String(r[col["pid"]] || "");
+    if (!pid) return;
+    latest[pid] = {
+      pid: pid,
+      ts: r[col["timestamp"]] instanceof Date ? r[col["timestamp"]].getTime() : 0,
+      first: String(r[col["fint-first"]] || "").toUpperCase(),
+      second: String(r[col["fint-second"]] || "").toUpperCase()
+    };
+  });
+  var people = Object.keys(latest).map(function (k) { return latest[k]; });
+  people.sort(function (a, b) { return a.ts - b.ts; });
+  if (!people.length) return { error: "No interest-poll responses yet." };
+
+  var cap = Number(capacity) > 0 ? Number(capacity) : Math.ceil(people.length / TABLE_IDS.length);
+  var counts = {};
+  TABLE_IDS.forEach(function (t) { counts[t] = 0; });
+
+  function seat(p, t, basis) { counts[t]++; p.table = t; p.basis = basis; }
+
+  people.forEach(function (p) {
+    if (counts[p.first] !== undefined && counts[p.first] < cap) seat(p, p.first, "first choice");
+  });
+  people.forEach(function (p) {
+    if (!p.table && counts[p.second] !== undefined && counts[p.second] < cap) seat(p, p.second, "second choice");
+  });
+  people.forEach(function (p) {
+    if (p.table) return;
+    var t = TABLE_IDS.slice().sort(function (a, b) { return counts[a] - counts[b]; })[0];
+    seat(p, t, "balanced");
+  });
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var a = ss.getSheetByName("assignments");
+    if (!a) { a = ss.insertSheet("assignments"); }
+    a.clear();
+    a.appendRow(["timestamp", "pid", "table", "basis"]);
+    a.setFrozenRows(1);
+    var now = new Date();
+    a.getRange(2, 1, people.length, 4).setValues(people.map(function (p) {
+      return [now, p.pid, p.table, p.basis];
+    }));
+    CacheService.getScriptCache().remove("assign");
+  } finally { lock.releaseLock(); }
+
+  var basis = { "first choice": 0, "second choice": 0, "balanced": 0 };
+  people.forEach(function (p) { basis[p.basis]++; });
+  return { ok: true, n: people.length, capacity: cap, counts: counts, basis: basis };
+}
+
+/* The participant's own seat. Withheld until the facilitator shows assignments. */
+function myTable(pid) {
+  var g = getGates();
+  if (g.show.indexOf("assignment") < 0) return { pending: true };
+  pid = String(pid || "");
+  if (!pid) return { pending: true };
+  var map = assignmentMap();
+  if (!map[pid]) return { pending: true, unassigned: true };
+  return { table: map[pid].table, basis: map[pid].basis };
+}
+
+function assignmentMap() {
+  var cache = CacheService.getScriptCache();
+  var c = cache.get("assign");
+  if (c) return JSON.parse(c);
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("assignments");
+  var map = {};
+  if (sh && sh.getLastRow() > 1) {
+    sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues().forEach(function (r) {
+      if (r[1]) map[String(r[1])] = { table: String(r[2]), basis: String(r[3]) };
+    });
+  }
+  cache.put("assign", JSON.stringify(map), 15);
+  return map;
 }
 
 /* ---------- helpers ---------- */
