@@ -161,6 +161,8 @@ details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background
 .seat-n{font-size:1rem;font-weight:500}
 .seat p{margin:.3rem 0 0}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0 .2rem}
+.chips.mini{margin:.35rem 0 0;gap:4px}
+.chips.mini .chip{font-size:.74rem;padding:.18rem .5rem;background:var(--paper)}
 .chip{font-size:.82rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.3rem .7rem;cursor:pointer;line-height:1.3}
 .chip:hover{border-color:var(--accent)}
 .chip.sel{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -626,9 +628,10 @@ var SECTIONS = [
 {id:"design",code:"11",nav:"Design",title:"Pair a Technical Solution with an OBM Solution",lede:"A control that exists only in software, or only in policy, will likely fail when work becomes busy.",block:2,html:function(){ return ''
  + '<h3>Design Layers '+who("rec")+'</h3>'
  + twrap(thead(["Design Layer","Examples","Our Choice"])+'<tbody>'
-   + '<tr><td class="k">Technical</td><td>Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback</td>'+cell("f11-tech","Technical / Our choice","Our choice")+'</tr>'
-   + '<tr><td class="k">Behavioral (OBM)</td><td>Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign</td>'+cell("f11-obm","Behavioral OBM / Our choice","Our choice")+'</tr>'
-   + '<tr><td class="k">Measurement</td><td>Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost</td>'+cell("f11-measure","Measurement / Our choice","Our choice")+'</tr></tbody>')
+   + '<tr><td class="k">Technical</td><td data-h="Examples">'+chipsFor("f11-tech","Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback")+'</td>'+cell("f11-tech","Technical / Our choice","Our choice")+'</tr>'
+   + '<tr><td class="k">Behavioral (OBM)</td><td data-h="Examples">'+chipsFor("f11-obm","Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign")+'</td>'+cell("f11-obm","Behavioral OBM / Our choice","Our choice")+'</tr>'
+   + '<tr><td class="k">Measurement</td><td data-h="Examples">'+chipsFor("f11-measure","Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost")+'</td>'+cell("f11-measure","Measurement / Our choice","Our choice")+'</tr></tbody>')
+ + '<p class="code">Tap an example to drop it into Our Choice, then edit it.</p>'
  + '<h3>Behavioral Systems Sketch '+who("rec")+'</h3>'
  + twrap(thead(["Antecedents / Context","Target Performer Behavior","Consequences / Feedback","Measure"])+'<tbody>'
    + '<tr>'+["Antecedents","Behavior","Consequences","Measure"].map(function(c,i){return cell("f11-s1-"+i,"Systems sketch row 1 / "+c,c);}).join('')+'</tr>'
@@ -752,7 +755,30 @@ var SECTIONS = [
 {id:"commit",code:"15",nav:"Commit",title:"Your 30-Day Repertoire Experiment",lede:"Choose a small professional behavior you can practice with feedback. A vague intention to “use more AI” will not work.",block:3,html:function(){ return ''
  + '<h3>My Commitment '+who()+'</h3>'
  + twrap(thead(["Element","My Commitment"])+'<tbody>'
-   + [["Use case and socially significant aim","f15-e0"],["My likely role: Designer / Implementer / Supporter","f15-e1"],["Skill or discrimination to practice","f15-e2"],["Practice opportunity 1","f15-p1"],["Practice opportunity 2","f15-p2"],["Practice opportunity 3","f15-p3"],["Person or source providing feedback","f15-e4"],["One technical safeguard","f15-e5"],["One OBM contingency","f15-e6"],["Benefit and error measures","f15-e7"],["Stop / reconsider threshold","f15-e8"],["Review date","f15-e9"]].map(function(r){ return '<tr><td class="k">'+r[0]+'</td>'+cell(r[1],r[0],"My commitment")+'</tr>'; }).join('')+'</tbody>')
+   + [["Use case and socially significant aim","f15-e0",""],
+      ["My likely role","f15-e1","role"],
+      ["Skill or discrimination to practice","f15-e2",""],
+      ["Practice opportunity 1","f15-p1",""],
+      ["Practice opportunity 2","f15-p2",""],
+      ["Practice opportunity 3","f15-p3",""],
+      ["Person or source providing feedback","f15-e4",""],
+      ["One technical safeguard","f15-e5","tech"],
+      ["One OBM contingency","f15-e6","obm"],
+      ["Benefit and error measures","f15-e7","meas"],
+      ["Stop / reconsider threshold","f15-e8",""],
+      ["Review date","f15-e9",""]].map(function(r){
+        if(r[2]==="role"){
+          reg(r[1],r[0]);
+          return '<tr><td class="k">'+r[0]+'</td><td data-h="My commitment"><select id="'+r[1]+'"><option value="">Select</option>'
+            + ["Designer","Implementer","Supporter","More than one"].map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join('')
+            + '</select></td></tr>';
+        }
+        var extra = r[2]==="tech" ? chipsFor(r[1],"Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback")
+                  : r[2]==="obm"  ? chipsFor(r[1],"Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign")
+                  : r[2]==="meas" ? chipsFor(r[1],"Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost") : '';
+        reg(r[1],r[0]);
+        return '<tr><td class="k">'+r[0]+'</td><td data-h="My commitment"><input type="text" id="'+r[1]+'" aria-label="'+esc(r[0])+'">'+extra+'</td></tr>';
+      }).join('')+'</tbody>')
  + '<aside class="callout"><b>Commitment statement</b><p class="stem" style="margin:0">By '+fill("f15-s1","date",12,"review date")+', I will '+fill("f15-s2","behavior",22)+' in the context of '+fill("f15-s3","context",20)+', measure '+fill("f15-s4","measure",18)+', and pause or revise if '+fill("f15-s5","condition",20)+'.</p></aside>'
  + formBlock("commit",["f15-e0","f15-e1","f15-e2","f15-s1","f15-s2","f15-s3","f15-s4","f15-s5"],{note:"Optional. Anonymous."});
 }},
@@ -857,6 +883,25 @@ function chipBank(){
     + '<div class="chips" id="chipbank">'
     + REP_EXAMPLES.map(function(t,i){ return '<button type="button" class="chip'+(SEL_CHIP===i?' sel':'')+'" data-chip="'+i+'">'+esc(t)+'</button>'; }).join('')
     + '</div>');
+}
+/* Chips that fill one specific input. One tap, no arming, since the target is unambiguous. */
+function chipsFor(targetId, csv){
+  var items=csv.split(";").map(function(x){return x.trim();}).filter(Boolean);
+  return '<div class="chips mini">'+items.map(function(t){
+    return '<button type="button" class="chip" data-fill="'+targetId+'" data-text="'+esc(t)+'">'+esc(t)+'</button>';
+  }).join('')+'</div>';
+}
+function wireFillChips(){
+  root.querySelectorAll("[data-fill]").forEach(function(b){
+    b.onclick=function(ev){ ev.stopPropagation();
+      var ta=document.getElementById(b.getAttribute("data-fill")); if(!ta) return;
+      var txt=b.getAttribute("data-text");
+      var cur=ta.value.replace(/[\s;]*$/,"");
+      ta.value=(cur ? cur+"; " : "")+txt+"; ";
+      saveAnswer(ta.id, ta.value);
+      ta.focus(); try{ ta.setSelectionRange(ta.value.length, ta.value.length); }catch(e){}
+    };
+  });
 }
 function wireChips(){
   var bank=document.getElementById("chipbank"); if(!bank) return;
@@ -1410,6 +1455,7 @@ function hydrate(){
   renderTableCard();
   wireTokens();
   wireChips();
+  wireFillChips();
   var q=function(id){return document.getElementById(id);};
   if(q("menu-btn")) q("menu-btn").onclick=function(){ setRail(!railOpen); };
   if(q("export-btn")) q("export-btn").onclick=exportAnswers;
