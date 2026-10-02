@@ -346,9 +346,9 @@ function scale(id,label){ return sel(id,label,[["1","1 - Not confident"],["2","2
 var PNS = "Prefer not to say";
 /* ---------- content ---------- */
 var BLOCKS = {
-  1:{n:"Block 1",t:"See the system",time:"0:00–0:50",out:"A professional repertoire hypothesis"},
-  2:{n:"Block 2",t:"Use cases, governance, Define, Ideate",time:"1:00–1:50",out:"A defined use case and alternative options"},
-  3:{n:"Block 3",t:"Ideate, prototype, Field Lab, close",time:"2:00–3:00",out:"A tested workflow and practice plan"}
+  1:{n:"Block 1",t:"See the System",time:"0:00–0:50",out:"A professional repertoire hypothesis"},
+  2:{n:"Block 2",t:"Use Cases, Governance, Define, Ideate",time:"1:00–1:50",out:"A defined use case and alternative options"},
+  3:{n:"Block 3",t:"Ideate, Prototype, Field Lab, Close",time:"2:00–3:00",out:"A tested workflow and practice plan"}
 };
 
 var SECTIONS = [
@@ -586,7 +586,7 @@ var SECTIONS = [
  + callout("Build, buy, or do neither","Compare total implementation burden (i.e., validation, training, oversight, workflow redesign, integration, monitoring, incident response, and exit) rather than subscription price alone.");
 }},
 
-{id:"define",code:"05–06",nav:"Use-case canvas",title:"Use-Case Canvas",lede:"Describe the ongoing act in context before you describe the technology. Then make the data path and the model’s job observable enough to inspect.",block:2,html:function(){ return ''
+{id:"define",code:"05–06",nav:"Use-Case Canvas",title:"Use-Case Canvas",lede:"Describe the ongoing act in context before you describe the technology. Then make the data path and the model’s job observable enough to inspect.",block:2,html:function(){ return ''
  + '<h3>Purpose and context <span class="code">05 • Define</span> '+who("rec")+'</h3>'
  + ta("f05-1","1 · Aim. What socially significant outcome should improve? What is the smallest useful unit of change?",3)
  + ta("f05-2","2 · Act + context. Whose behavior is involved? In which workflow, setting, constraints, and contingencies?",3)
@@ -1035,7 +1035,7 @@ function renderLanding(){
     var st = open===0 ? 'Locked' : (open===secs.length ? 'Open' : open+' of '+secs.length+' open');
     return '<div class="blockcard"><img src="img/block'+b+'.jpg" alt="" loading="lazy">'
       + '<div class="bc-body"><div class="t">'+BLOCKS[b].time+'</div><h4>'+BLOCKS[b].t+'</h4>'
-      + '<p>'+BLOCKS[b].out+'</p><div class="st'+(open?' open':'')+'">'+st+'</div></div></div>';
+      + '<div class="st'+(open?' open':'')+'">'+st+'</div></div></div>';
   }).join('');
   return ''
    + '<div class="hero">'
