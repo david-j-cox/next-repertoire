@@ -876,7 +876,8 @@ function wireChips(){
       if(SEL_CHIP===null) return;
       var ta=q.querySelector("textarea"); if(!ta) return;
       var txt=REP_EXAMPLES[SEL_CHIP];
-      ta.value = ta.value.trim() ? ta.value.replace(/\s*$/,"") + "\n" + txt : txt;
+      var cur = ta.value.replace(/[\s;]*$/,"");
+      ta.value = (cur ? cur + "; " : "") + txt + "; ";
       saveAnswer(ta.id, ta.value);
       SEL_CHIP=null;
       root.querySelectorAll("[data-chip]").forEach(function(x){ x.classList.remove("sel"); });
