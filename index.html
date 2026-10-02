@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Next Repertoire</title>
 <meta name="description" content="Companion site for the SDABA 2026 workshop.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="img/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="theme-color" content="#14213D">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root{
@@ -65,7 +69,11 @@ button{font:inherit;cursor:pointer}
 .btn.primary:disabled{opacity:.5;cursor:default}
 .btn.quiet{border-color:transparent;background:transparent;color:var(--muted)}
 .btn.small{padding:.3rem .6rem;font-size:.78rem}
-.menu-btn{display:inline-flex}
+.railbtn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;flex:none;border:1px solid transparent;border-radius:6px;background:transparent;padding:0;cursor:pointer}
+.railbtn svg{width:19px;height:19px;fill:none;stroke:var(--muted);stroke-width:1.6}
+.railbtn:hover{border-color:var(--line);background:var(--surface-2)}
+.railbtn:hover svg{stroke:var(--ink)}
+.railbtn[aria-expanded="true"] svg{stroke:var(--accent)}
 .layout{max-width:1180px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px}
 .layout.with-rail{grid-template-columns:270px minmax(0,1fr)}
 .rail{display:none}
@@ -146,7 +154,8 @@ details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background
 .tray-h{display:flex;align-items:center;gap:12px;margin-bottom:.5rem}
 .tray-n{font-size:.78rem;color:var(--muted);margin-left:auto}
 .tray-b{display:flex;flex-wrap:wrap;gap:8px;min-height:62px;align-items:flex-start}
-.tray-empty{font-size:.82rem;color:var(--muted);align-self:center}
+.tray-note{font-size:.78rem;color:var(--muted);margin:.5rem 0 0;max-width:none}
+.zone.armed{outline:2px dashed var(--accent);outline-offset:2px}
 .tok{display:flex;flex-direction:column;align-items:center;gap:2px;border:2px solid transparent;border-radius:10px;background:transparent;padding:3px 4px;width:72px;cursor:pointer}
 .tok img{width:44px;height:44px;display:block}
 .tok span{font-family:var(--mono);font-size:.56rem;letter-spacing:.02em;color:var(--muted);text-align:center;line-height:1.1}
@@ -238,7 +247,7 @@ details .in{padding:0 1rem 1rem}
   .quad .qh,.quad .qr{display:none}
 }
 @media print{
-  .topbar,.rail,.pager,.admin,.footer,.menu-btn,.toast{display:none!important}
+  .topbar,.rail,.pager,.admin,.footer,.railbtn,.toast{display:none!important}
   body{background:#fff;color:#000}
   .layout{display:block}
   .section{box-shadow:none;border:none;page-break-after:always;padding:0}
@@ -671,7 +680,7 @@ var SECTIONS = [
  + callout("Keep envelopes sealed","Wait for the presenter to cue the reveal. The foil marks the boundary, not a score. Use sticky notes rather than wet-erase markers.")
  + '<p>Your table tent shows WORKING, NEED A PROMPT, or READY TO REPORT. While you wait, keep going on your best assumption.</p>'
  + '<h3>System Map '+who("rec")+'</h3>'
- + '<p>The same six zones as the printed board. Write what happens at each step of the workflow you already designed, then place your eight tokens: tap a token, then tap the zone it belongs in. Tap a placed token to take it back.</p>'
+ + '<p>The same six zones as the printed board. Write what happens at each step of the workflow you already designed, then place your tokens: tap a token, then tap the zone it belongs in. Tap a placed token to remove it.</p>'
  + tokenTray()
  + '<div class="mapgrid">'
  + MAPZONES.map(function(z,i){ return '<div class="zone z'+i+'" data-zonebox="'+i+'"><div class="zn">'+(i+1)+'</div><div class="zt">'+z[0]+'</div>'+taBare("f13a-z"+i,"System Map / "+z[0],3)+'<div class="zq">'+z[1]+'</div>'+zoneTokens(i)+'</div>'; }).join('')
@@ -758,38 +767,40 @@ var SECTIONS = [
 var TOKEN_KINDS = {ai:{label:"AI MAY",img:"img/token-ai.png"},human:{label:"HUMAN MUST",img:"img/token-human.png"},stop:{label:"STOP / ESCALATE",img:"img/token-stop.png"}};
 var TOKENS = [{id:"ai1",k:"ai"},{id:"ai2",k:"ai"},{id:"ai3",k:"ai"},{id:"hu1",k:"human"},{id:"hu2",k:"human"},{id:"hu3",k:"human"},{id:"st1",k:"stop"},{id:"st2",k:"stop"}];
 var SEL_TOKEN = null;
-function tokenMap(){ var m=ANSWERS["f13a-tokenmap"]; if(typeof m==="string"){ try{ m=JSON.parse(m); }catch(e){ m=null; } } return m && typeof m==="object" ? m : {}; }
+function placements(){ var m=ANSWERS["f13a-tokenmap"]; if(typeof m==="string"){ try{ m=JSON.parse(m); }catch(e){ m=null; } } return Array.isArray(m) ? m : []; }
 function zoneName(z){ var i=parseInt(z,10); return isNaN(i) ? "" : (MAPZONES[i]?MAPZONES[i][0]:""); }
-function saveTokens(m){
-  saveAnswer("f13a-tokenmap", JSON.stringify(m));
+function saveTokens(list){
+  saveAnswer("f13a-tokenmap", JSON.stringify(list));
   var by={};
-  Object.keys(m).forEach(function(id){ var z=m[id]; if(z===undefined||z===null||z==="tray") return;
-    var t=TOKENS.filter(function(x){return x.id===id;})[0]; if(!t) return;
-    (by[z]=by[z]||[]).push(TOKEN_KINDS[t.k].label); });
+  list.forEach(function(pl){ (by[pl.z]=by[pl.z]||[]).push(TOKEN_KINDS[pl.k].label); });
   var txt=Object.keys(by).sort().map(function(z){ return zoneName(z)+": "+by[z].join(", "); }).join(" | ");
   saveAnswer("f13a-tokens", txt);
 }
-function tokenHtml(t, placed){
-  var k=TOKEN_KINDS[t.k];
-  return '<button type="button" class="tok'+(SEL_TOKEN===t.id?' sel':'')+'" data-token="'+t.id+'" aria-pressed="'+(SEL_TOKEN===t.id)+'"'
-   + ' title="'+esc(k.label)+(placed?' - tap to return it to the tray':' - tap, then tap a zone')+'">'
+function trayNote(){
+  if(SEL_TOKEN) return 'Placing ' + TOKEN_KINDS[SEL_TOKEN].label + '. Tap a zone to add one, as many times as you need. Tap the coin again to stop.';
+  return 'Tap a coin, then tap a zone. The printed set has three AI MAY, three HUMAN MUST, and two STOP / ESCALATE; here you can place as many of each as your design needs.';
+}
+function paletteHtml(t,i){
+  var k=TOKEN_KINDS[t.k], sel=(SEL_TOKEN===t.k);
+  return '<button type="button" class="tok'+(sel?' sel':'')+'" data-kind="'+t.k+'" aria-pressed="'+sel+'"'
+   + ' title="'+esc(k.label)+' - tap, then tap a zone"><img src="'+k.img+'" alt="'+esc(k.label)+'" draggable="false"><span>'+k.label+'</span></button>';
+}
+function placedHtml(idx,pl){
+  var k=TOKEN_KINDS[pl.k];
+  return '<button type="button" class="tok" data-placed="'+idx+'" title="'+esc(k.label)+' - tap to remove">'
    + '<img src="'+k.img+'" alt="'+esc(k.label)+'" draggable="false"><span>'+k.label+'</span></button>';
 }
 function tokenTray(){
-  var m=tokenMap();
-  var free=TOKENS.filter(function(t){ return !m[t.id] || m[t.id]==="tray"; });
+  var n=placements().length;
   return '<div class="tray"><div class="tray-h"><span class="eyebrow">Tokens</span>'
-   + '<span class="tray-n">'+free.length+' of 8 unplaced</span>'
-   + '<button type="button" class="btn small quiet" id="tok-reset">Reset</button></div>'
-   + '<div class="tray-b" id="tok-tray">'
-   + (free.length ? free.map(function(t){ return tokenHtml(t,false); }).join('')
-                  : '<span class="tray-empty">All eight placed. Tap a token in a zone to take it back.</span>')
-   + '</div></div>';
+   + '<span class="tray-n" id="tok-count">'+(n?n+' placed':'none placed yet')+'</span>'
+   + '<button type="button" class="btn small quiet" id="tok-reset">Clear all</button></div>'
+   + '<div class="tray-b" id="tok-tray">'+TOKENS.map(paletteHtml).join('')+'</div>'
+   + '<p class="tray-note" id="tok-note">'+trayNote()+'</p></div>';
 }
 function zoneTokens(zi){
-  var m=tokenMap();
-  var here=TOKENS.filter(function(t){ return m[t.id]===String(zi); });
-  return '<div class="ztok" data-zone="'+zi+'">'+here.map(function(t){ return tokenHtml(t,true); }).join('')+'</div>';
+  var here=placements().map(function(pl,i){ return {pl:pl,i:i}; }).filter(function(x){ return String(x.pl.z)===String(zi); });
+  return '<div class="ztok" data-zone="'+zi+'">'+here.map(function(x){ return placedHtml(x.i,x.pl); }).join('')+'</div>';
 }
 var MAPZONES = [["Purpose","What should improve, and for whom?"],["Source inputs","What information enters, and from where?"],["AI action","What does the system do with it?"],["Human review","What must a qualified person check?"],["Decision","Who decides, and what is recorded?"],["Release monitor","What is watched after release?"]];
 var MAPBOXES = [["Benefit","What should improve?"],["Error / burden","What could become less accurate, fair, or workable?"],["Stop / escalate","What observable condition changes the action?"]];
@@ -802,11 +813,8 @@ var TABLES = [
  {id:"F",name:"Scheduling and workflow",q:"How can scheduling improve efficiency while preserving access, continuity, and meaningful override?",ctx:"An in-home provider wants to match staff, geography, availability, credentials, continuity, and client preferences while reducing cancellations and travel time.",aug:"An optimization tool proposes schedules within explicit constraints. Coordinators review exceptions, client access, staff burden, and downstream clinical effects.",tensions:["Efficiency versus continuity and preference","Hidden workload shifts","Fair access and exception handling","Automation bias and override authority"],dq:"How can scheduling improve efficiency while preserving access, continuity, and meaningful override?"}
 ];
 function tableCard(t){
-  return '<div class="eyebrow">Mission '+t.id+' · fictional case</div>'
-   + '<img class="misscard" src="img/mission-'+t.id.toLowerCase()+'.jpg" alt="Mission '+t.id+' card, '+esc(t.name)+'" loading="lazy">'
-   + '<h4 style="margin-top:.2rem">Current context</h4><p>'+t.ctx+'</p>'
-   + '<h4>Proposed augmentation</h4><p>'+t.aug+'</p>'
-   + '<h4>Question to define</h4><p>'+t.dq+'</p>'
+  return '<img class="misscard" src="img/mission-'+t.id.toLowerCase()+'.jpg" loading="lazy"'
+   + ' alt="Mission '+t.id+' card. '+esc(t.name)+'. Current context: '+esc(t.ctx)+' Proposed augmentation: '+esc(t.aug)+' Question to define: '+esc(t.dq)+'">'
    + '<h4>Tensions to make explicit</h4><ul>'+t.tensions.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'
    + '';
 }
@@ -927,11 +935,12 @@ function render(opts){
   var wantAdmin = location.hash==="#admin";
   var html = '';
   html += '<header class="topbar"><div class="topbar-in">'
+    + '<button class="railbtn" id="menu-btn" aria-expanded="'+railOpen+'" aria-controls="rail" title="'+(railOpen?'Hide sections':'Show sections')+'" aria-label="'+(railOpen?'Hide sections':'Show sections')+'">'
+    + '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><line x1="8" y1="3.5" x2="8" y2="16.5"/></svg></button>'
     + '<a class="brand" href="#welcome"><b>The Next Repertoire</b><span>SDABA 2026</span></a>'
     + '<span class="spacer"></span>'
     + nowChip()
     + connChip()
-    + '<button class="btn small quiet menu-btn" id="menu-btn" aria-expanded="'+railOpen+'" aria-controls="rail">'+(railOpen?'Hide sections':'Sections')+'</button>'
     + '</div></header>';
   if(!API_URL) html += '<div class="banner">Preview mode: not connected to the response sheet. All sections are open and submissions are off. Set API_URL in the page to connect.</div>';
   html += '<div class="layout'+(railOpen?' with-rail':'')+'">';
@@ -1324,39 +1333,42 @@ function hydrate(){
 }
 function repaintTokens(){
   var tray=document.getElementById("tok-tray"); if(!tray) return;
-  var m=tokenMap();
-  var free=TOKENS.filter(function(t){ return !m[t.id] || m[t.id]==="tray"; });
-  tray.innerHTML = free.length ? free.map(function(t){ return tokenHtml(t,false); }).join('')
-                               : '<span class="tray-empty">All eight placed. Tap a token in a zone to take it back.</span>';
-  var n=document.querySelector(".tray-n"); if(n) n.textContent=free.length+" of 8 unplaced";
+  tray.innerHTML = TOKENS.map(paletteHtml).join('');
+  var n=document.getElementById("tok-count");
+  if(n){ var c=placements().length; n.textContent = c ? c+" placed" : "none placed yet"; }
+  var note=document.getElementById("tok-note"); if(note) note.textContent=trayNote();
   root.querySelectorAll(".ztok").forEach(function(box){
     var zi=box.getAttribute("data-zone");
-    var here=TOKENS.filter(function(t){ return m[t.id]===String(zi); });
-    box.innerHTML = here.map(function(t){ return tokenHtml(t,true); }).join('');
+    var here=placements().map(function(pl,i){ return {pl:pl,i:i}; }).filter(function(x){ return String(x.pl.z)===String(zi); });
+    box.innerHTML = here.map(function(x){ return placedHtml(x.i,x.pl); }).join('');
   });
   wireTokens();
 }
 function wireTokens(){
-  var tray=document.getElementById("tok-tray"); if(!tray) return;
-  root.querySelectorAll("[data-token]").forEach(function(b){
-    b.onclick=function(ev){
-      ev.stopPropagation();
-      var id=b.getAttribute("data-token"), m=tokenMap();
-      var placed = m[id] && m[id]!=="tray";
-      if(placed){ m[id]="tray"; SEL_TOKEN=null; saveTokens(m); repaintTokens(); return; }
-      SEL_TOKEN = (SEL_TOKEN===id) ? null : id;
+  if(!document.getElementById("tok-tray")) return;
+  root.querySelectorAll("[data-kind]").forEach(function(b){
+    b.onclick=function(ev){ ev.stopPropagation();
+      var k=b.getAttribute("data-kind");
+      SEL_TOKEN = (SEL_TOKEN===k) ? null : k;
       repaintTokens();
     };
   });
+  root.querySelectorAll("[data-placed]").forEach(function(b){
+    b.onclick=function(ev){ ev.stopPropagation();
+      var i=parseInt(b.getAttribute("data-placed"),10);
+      var list=placements(); list.splice(i,1); saveTokens(list); repaintTokens();
+    };
+  });
   root.querySelectorAll("[data-zonebox]").forEach(function(z){
-    z.onclick=function(){
+    z.onclick=function(ev){
       if(!SEL_TOKEN) return;
-      var m=tokenMap(); m[SEL_TOKEN]=z.getAttribute("data-zonebox");
-      SEL_TOKEN=null; saveTokens(m); repaintTokens();
+      if(ev.target.closest && ev.target.closest("textarea,input,select,button,a")) return;
+      var list=placements(); list.push({k:SEL_TOKEN, z:z.getAttribute("data-zonebox")});
+      saveTokens(list); repaintTokens();
     };
   });
   var r=document.getElementById("tok-reset");
-  if(r) r.onclick=function(){ SEL_TOKEN=null; saveTokens({}); repaintTokens(); };
+  if(r) r.onclick=function(){ SEL_TOKEN=null; saveTokens([]); repaintTokens(); };
 }
 function renderTableCard(){
   var sel = document.getElementById("f04-table"), box = document.getElementById("table-card");
