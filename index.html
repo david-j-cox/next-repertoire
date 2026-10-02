@@ -160,6 +160,11 @@ details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background
 .seat-id{font-family:var(--display);font-size:2.4rem;line-height:1;font-weight:600;color:var(--accent)}
 .seat-n{font-size:1rem;font-weight:500}
 .seat p{margin:.3rem 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0 .2rem}
+.chip{font-size:.82rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.3rem .7rem;cursor:pointer;line-height:1.3}
+.chip:hover{border-color:var(--accent)}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.qc.armed{outline:2px dashed var(--accent);outline-offset:2px;cursor:pointer}
 .tray{border:1px solid var(--line);border-radius:8px;padding:.6rem .8rem;margin:.8rem 0;background:var(--surface-2)}
 .tray-h{display:flex;align-items:center;gap:12px;margin-bottom:.5rem}
 .tray-n{font-size:.78rem;color:var(--muted);margin-left:auto}
@@ -475,15 +480,15 @@ var SECTIONS = [
    + '<tr><td class="k">Supporter</td><td>Define problems, contribute data, test, report failures, and shape requirements</td><td>Can I make the use case and feedback useful to builders?</td></tr></tbody>')
  + '<p>Governance is a responsibility across all three roles. It cannot be handed off to a separate role.</p>'
  + '<h3>Repertoire Map '+who()+'</h3>'
- + ''
+ + chipBank()
  + '<div class="quad">'
  + '<span class="qh"></span><span class="qh">Energizing</span><span class="qh">Draining</span>'
  + '<span class="qr">Strong now</span>'
- + '<div class="qc"><small>Strong now · Energizing: behaviors I can contribute immediately</small>'+taBare("f03-q1","Strong now / Energizing",4)+'</div>'
- + '<div class="qc"><small>Strong now · Draining: behaviors I can perform, but may not sustain</small>'+taBare("f03-q2","Strong now / Draining",4)+'</div>'
+ + '<div class="qc" data-quad="1"><small>Strong now · Energizing: behaviors I can contribute immediately</small>'+taBare("f03-q1","Strong now / Energizing",4)+'</div>'
+ + '<div class="qc" data-quad="1"><small>Strong now · Draining: behaviors I can perform, but may not sustain</small>'+taBare("f03-q2","Strong now / Draining",4)+'</div>'
  + '<span class="qr">Developing</span>'
- + '<div class="qc"><small>Developing · Energizing: skills worth deliberately practicing</small>'+taBare("f03-q3","Developing / Energizing",4)+'</div>'
- + '<div class="qc"><small>Developing · Draining: consider supports, practice, or redesign</small>'+taBare("f03-q4","Developing / Draining",4)+'</div>'
+ + '<div class="qc" data-quad="1"><small>Developing · Energizing: skills worth deliberately practicing</small>'+taBare("f03-q3","Developing / Energizing",4)+'</div>'
+ + '<div class="qc" data-quad="1"><small>Developing · Draining: consider supports, practice, or redesign</small>'+taBare("f03-q4","Developing / Draining",4)+'</div>'
  + '</div>'
  + formBlock("quadrant",["f03-q1","f03-q2","f03-q3","f03-q4"],{note:"Optional. Anonymous."});
 }},
@@ -834,6 +839,51 @@ function tokenTray(){
 function zoneTokens(zi){
   var here=placements().map(function(pl,i){ return {pl:pl,i:i}; }).filter(function(x){ return String(x.pl.z)===String(zi); });
   return '<div class="ztok" data-zone="'+zi+'">'+here.map(function(x){ return placedHtml(x.i,x.pl); }).join('')+'</div>';
+}
+var REP_EXAMPLES = [
+  /* Designer: section 03 role description */
+  "Build or configure a model", "Connect data pipelines", "Evaluate model performance", "Decide build or buy",
+  /* Implementer: section 03 role description, section 07 deploy stage */
+  "Integrate a tool into clinical work", "Redesign a workflow", "Train staff on a new workflow", "Run a vendor conversation",
+  /* Supporter and governance: sections 03, 07, 07A */
+  "Define the problem for builders", "Write a data boundary", "Check local validity", "Watch for model drift", "Write a stop rule",
+  /* Everyday practice named in the six table cases */
+  "Write progress summaries", "Draft behavior-plan sections", "Recommend treatment goals", "Supervise and give feedback", "Build staff schedules"
+];
+var SEL_CHIP = null;
+function chipBank(){
+  return ref('Stuck? Start From Examples',
+    '<p>Tap an example, then tap the cell it belongs in. It lands as editable text, so change the wording to match your own work. These are a starting point, not a list to choose from.</p>'
+    + '<div class="chips" id="chipbank">'
+    + REP_EXAMPLES.map(function(t,i){ return '<button type="button" class="chip'+(SEL_CHIP===i?' sel':'')+'" data-chip="'+i+'">'+esc(t)+'</button>'; }).join('')
+    + '</div>');
+}
+function wireChips(){
+  var bank=document.getElementById("chipbank"); if(!bank) return;
+  root.querySelectorAll("[data-chip]").forEach(function(b){
+    b.onclick=function(ev){ ev.stopPropagation();
+      var i=parseInt(b.getAttribute("data-chip"),10);
+      SEL_CHIP = (SEL_CHIP===i) ? null : i;
+      root.querySelectorAll("[data-chip]").forEach(function(x){
+        var on = parseInt(x.getAttribute("data-chip"),10)===SEL_CHIP;
+        x.classList.toggle("sel",on);
+      });
+      root.querySelectorAll("[data-quad]").forEach(function(q){ q.classList.toggle("armed", SEL_CHIP!==null); });
+    };
+  });
+  root.querySelectorAll("[data-quad]").forEach(function(q){
+    q.onclick=function(){
+      if(SEL_CHIP===null) return;
+      var ta=q.querySelector("textarea"); if(!ta) return;
+      var txt=REP_EXAMPLES[SEL_CHIP];
+      ta.value = ta.value.trim() ? ta.value.replace(/\s*$/,"") + "\n" + txt : txt;
+      saveAnswer(ta.id, ta.value);
+      SEL_CHIP=null;
+      root.querySelectorAll("[data-chip]").forEach(function(x){ x.classList.remove("sel"); });
+      root.querySelectorAll("[data-quad]").forEach(function(x){ x.classList.remove("armed"); });
+      ta.focus(); try{ ta.setSelectionRange(ta.value.length, ta.value.length); }catch(e){}
+    };
+  });
 }
 var MAPZONES = [["Purpose","What should improve, and for whom?"],["Source Inputs","What information enters, and from where?"],["AI Action","What does the system do with it?"],["Human Review","What must a qualified person check?"],["Decision","Who decides, and what is recorded?"],["Release Monitor","What is watched after release?"]];
 var MAPBOXES = [["Benefit","What should improve?"],["Error / Burden","What could become less accurate, fair, or workable?"],["Stop / Escalate","What observable condition changes the action?"]];
@@ -1339,6 +1389,7 @@ function hydrate(){
   root.querySelectorAll("input[type=checkbox]").forEach(function(el){ if(el.id && ANSWERS[el.id]!==undefined) el.checked = !!ANSWERS[el.id]; });
   renderTableCard();
   wireTokens();
+  wireChips();
   var q=function(id){return document.getElementById(id);};
   if(q("menu-btn")) q("menu-btn").onclick=function(){ setRail(!railOpen); };
   if(q("export-btn")) q("export-btn").onclick=exportAnswers;
