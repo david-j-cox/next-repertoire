@@ -440,7 +440,7 @@ var SECTIONS = [
  + '<p>Training and inference both use resources. Data centers also support non-AI workloads. Energy and water demands depend on the workload, hardware, location, and infrastructure; avoid a universal per-prompt claim. Ask whether the task warrants the system, its scale, and the frequency of calls (IEA, 2025).</p>'
  )
  + ref('Protecting Professional Skill',''
- + '<p><em>De-skilling</em> means an established repertoire weakens; <em>never-skilling</em> means a needed repertoire is not acquired. These are possible effects of arrangements that remove meaningful practice and feedback. They are not inevitable outcomes of AI. Preserve opportunities to perform, observe, and receive feedback.</p>'
+ + '<p><em>De-skilling</em> means an established repertoire is no longer maintained once the opportunities to respond and the feedback that supported it are removed. <em>Never-skilling</em> means a needed repertoire is never acquired because those opportunities never occur. Both are effects of how the work is arranged. They are not inevitable outcomes of AI. Keep the opportunities to perform, observe, and receive feedback in place.</p>'
  )
  + '<h3>Trade-Offs to Examine</h3>'
  + '<div class="cards">'
@@ -474,7 +474,7 @@ var SECTIONS = [
  + '<h3>Compare After the Quadrant Exercise</h3>'
  + '<p>Do this part after you fill in the repertoire map in <a href="#s/map">03 Map</a>. Those quadrants use the same dimensions as “good at / not yet good at” and “like / dislike doing.” Treat self-ratings as hypotheses. They are not competency assessments. Compare one difference with a partner. What changes across setting, role, workload, or feedback?</p>'
  + ta("f03a-compare","What changes across setting, role, workload, or feedback? "+who(),3)
- + '<p class="stem">To strengthen '+fill("f03a-stem1","To strengthen",22,"which repertoire")+', I need '+fill("f03a-stem2","I need",22,"what support or practice")+' in the context of '+fill("f03a-stem3","in the context of",34,"which setting or workflow")+'.</p>'
+ + '<p class="stem">To build and maintain '+fill("f03a-stem1","To build and maintain",22,"which repertoire")+', I need '+fill("f03a-stem2","I need",22,"what practice and feedback")+' in the context of '+fill("f03a-stem3","in the context of",34,"which setting or workflow")+'.</p>'
  + '<p>Possible roles overlap: Designer, Implementer, and Supporter. Disliking a task does not make it appropriate to automate; liking it does not mean the current arrangement works well.</p>';
 }},
 
@@ -490,7 +490,7 @@ var SECTIONS = [
  + '<span class="qh"></span><span class="qh">Energizing</span><span class="qh">Draining</span>'
  + '<span class="qr">Strong now</span>'
  + '<div class="qc" data-quad="1"><small>Strong now · Energizing: behaviors I can contribute immediately</small>'+taBare("f03-q1","Strong now / Energizing",4)+'</div>'
- + '<div class="qc" data-quad="1"><small>Strong now · Draining: behaviors I can perform, but may not sustain</small>'+taBare("f03-q2","Strong now / Draining",4)+'</div>'
+ + '<div class="qc" data-quad="1"><small>Strong now · Draining: behaviors I can perform, but do not keep up without effort</small>'+taBare("f03-q2","Strong now / Draining",4)+'</div>'
  + '<span class="qr">Developing</span>'
  + '<div class="qc" data-quad="1"><small>Developing · Energizing: skills worth deliberately practicing</small>'+taBare("f03-q3","Developing / Energizing",4)+'</div>'
  + '<div class="qc" data-quad="1"><small>Developing · Draining: consider supports, practice, or redesign</small>'+taBare("f03-q4","Developing / Draining",4)+'</div>'
@@ -671,15 +671,15 @@ var SECTIONS = [
  + '<p>Complete at least three rows. Choose the domains where your use case is most likely to shift something.</p>'
  + twrap(thead(["Domain","Possible Benefit","Possible Cost or Shifted Burden","What We Will Observe"])+'<tbody>'
    + ["Client choice + autonomy","Clinical quality","Staff skill / deskilling","Workload + pace","Access + equity","Documentation + payer","Environmental resources"].map(function(d,i){ return rowFill("f12-r"+i,d,["Benefit","Cost","Observe"]); }).join('')+'</tbody>')
- + callout("Deskilling check","Which professional discriminations, judgments, or practice opportunities could weaken if this task is routinely delegated, and how will we preserve them?")
- + ta("f12-deskill","Which discriminations or judgments could weaken, and how will you preserve them? "+who("rec"),3);
+ + callout("Deskilling check","If this task is routinely delegated, which professional discriminations would staff stop practicing, and stop getting feedback on? What will you arrange so those opportunities keep occurring?")
+ + ta("f12-deskill","Which discriminations would staff stop practicing, and how will you arrange opportunities to keep them accurate? "+who("rec"),3);
 }},
 
 {id:"converge",code:"11A",nav:"Trace and Select",title:"Trace Effects and Select a Test",block:3,html:function(){ return ''
  + '<h3>Rep 3 · Second-Order Effects '+who("rec")+'</h3>'
  + '<p>Trace a possible downstream consequence through at least two links. Use section 12 to consider client choice, quality, skill, workload, access, documentation, and resources. Treat these as hypotheses to examine.</p>'
  + ta("f11b-chain","Immediate change → next consequence → effect on people or work",3)
- + ta("f11b-who","Who gains, who bears new work or risk, and who loses practice?",2)
+ + ta("f11b-who","Who gains, who takes on new work or risk, and who gets fewer opportunities to practice?",2)
  + ta("f11b-observe","What will we observe, and what revision follows?",2)
  + '<h3>Converge Using Explicit Criteria '+who("rec")+'</h3>'
  + '<p>Compare at least two candidates for purpose/stakeholder fit, evidence, burden, human authority, and a small reversible test. Popularity or novelty alone is not a reason. A non-AI or not-yet decision is legitimate.</p>'
