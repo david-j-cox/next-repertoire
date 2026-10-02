@@ -163,6 +163,8 @@ details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0 .2rem}
 .chips.mini{margin:.35rem 0 0;gap:4px}
 .chips.mini .chip{font-size:.74rem;padding:.18rem .5rem;background:var(--paper)}
+.rolepick{display:flex;flex-wrap:wrap;gap:4px 18px}
+.tablewrap.grid td textarea{width:100%;min-width:0;font-size:.88rem}
 .chip{font-size:.82rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.3rem .7rem;cursor:pointer;line-height:1.3}
 .chip:hover{border-color:var(--accent)}
 .chip.sel{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -337,6 +339,7 @@ function ta(id,label,rows,ph){ reg(id,label); return '<div class="field"><label 
 function taBare(id,label,rows){ reg(id,label); return '<textarea id="'+id+'" rows="'+(rows||3)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function line(id,label){ reg(id,label); return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" type="text"></div>'; }
 function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input type="checkbox" id="'+id+'"><span>'+label+'</span></label>'; }
+function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
 function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
@@ -628,9 +631,9 @@ var SECTIONS = [
 {id:"design",code:"11",nav:"Design",title:"Pair a Technical Solution with an OBM Solution",lede:"A control that exists only in software, or only in policy, will likely fail when work becomes busy.",block:2,html:function(){ return ''
  + '<h3>Design Layers '+who("rec")+'</h3>'
  + twrap(thead(["Design Layer","Examples","Our Choice"])+'<tbody>'
-   + '<tr><td class="k">Technical</td><td data-h="Examples">'+chipsFor("f11-tech","Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback")+'</td>'+cell("f11-tech","Technical / Our choice","Our choice")+'</tr>'
-   + '<tr><td class="k">Behavioral (OBM)</td><td data-h="Examples">'+chipsFor("f11-obm","Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign")+'</td>'+cell("f11-obm","Behavioral OBM / Our choice","Our choice")+'</tr>'
-   + '<tr><td class="k">Measurement</td><td data-h="Examples">'+chipsFor("f11-measure","Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost")+'</td>'+cell("f11-measure","Measurement / Our choice","Our choice")+'</tr></tbody>')
+   + '<tr><td class="k">Technical</td><td data-h="Examples">'+chipsFor("f11-tech","Access Controls; Data Minimization; Templates; Required Fields; Confidence Display; Sampled Review; Version Lock; Logging; Rollback")+'</td>'+cellTA("f11-tech","Technical / Our choice","Our choice",3)+'</td></tr>'
+   + '<tr><td class="k">Behavioral (OBM)</td><td data-h="Examples">'+chipsFor("f11-obm","Task Clarification; Skills Practice; Prompts; Modeling; Checklists; Performance Feedback; Reinforcement; Escalation; Workload Redesign")+'</td>'+cellTA("f11-obm","Behavioral OBM / Our choice","Our choice",3)+'</td></tr>'
+   + '<tr><td class="k">Measurement</td><td data-h="Examples">'+chipsFor("f11-measure","Accuracy; Completeness; Latency; Rework; Override; Incident; Acceptability; Client Outcome; Equity; Opportunity Cost")+'</td>'+cellTA("f11-measure","Measurement / Our choice","Our choice",3)+'</td></tr></tbody>')
  + '<p class="code">Tap an example to drop it into Our Choice, then edit it.</p>'
  + '<h3>Behavioral Systems Sketch '+who("rec")+'</h3>'
  + twrap(thead(["Antecedents / Context","Target Performer Behavior","Consequences / Feedback","Measure"])+'<tbody>'
@@ -668,7 +671,8 @@ var SECTIONS = [
  + '<p>Complete at least three rows. Choose the domains where your use case is most likely to shift something.</p>'
  + twrap(thead(["Domain","Possible Benefit","Possible Cost or Shifted Burden","What We Will Observe"])+'<tbody>'
    + ["Client choice + autonomy","Clinical quality","Staff skill / deskilling","Workload + pace","Access + equity","Documentation + payer","Environmental resources"].map(function(d,i){ return rowFill("f12-r"+i,d,["Benefit","Cost","Observe"]); }).join('')+'</tbody>')
- + callout("Deskilling check","Which professional discriminations, judgments, or practice opportunities could weaken if this task is routinely delegated, and how will we preserve them?");
+ + callout("Deskilling check","Which professional discriminations, judgments, or practice opportunities could weaken if this task is routinely delegated, and how will we preserve them?")
+ + ta("f12-deskill","Which discriminations or judgments could weaken, and how will you preserve them? "+who("rec"),3);
 }},
 
 {id:"converge",code:"11A",nav:"Trace and Select",title:"Trace Effects and Select a Test",block:3,html:function(){ return ''
@@ -768,16 +772,21 @@ var SECTIONS = [
       ["Stop / reconsider threshold","f15-e8",""],
       ["Review date","f15-e9",""]].map(function(r){
         if(r[2]==="role"){
-          reg(r[1],r[0]);
-          return '<tr><td class="k">'+r[0]+'</td><td data-h="My commitment"><select id="'+r[1]+'"><option value="">Select</option>'
-            + ["Designer","Implementer","Supporter","More than one"].map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join('')
-            + '</select></td></tr>';
+          return '<tr><td class="k">'+r[0]+'</td><td data-h="My commitment"><div class="rolepick">'
+            + ["Designer","Implementer","Supporter"].map(function(o){
+                var id="f15-role-"+o.toLowerCase();
+                reg(id,"My likely role: "+o);
+                return '<label class="check"><input type="checkbox" id="'+id+'"><span>'+o+'</span></label>';
+              }).join('')
+            + '</div><span class="code">Choose all that apply.</span></td></tr>';
         }
-        var extra = r[2]==="tech" ? chipsFor(r[1],"Access controls; data minimization; templates; required fields; confidence display; sampled review; version lock; logging; rollback")
-                  : r[2]==="obm"  ? chipsFor(r[1],"Task clarification; skills practice; prompts; modeling; checklists; performance feedback; reinforcement; escalation; workload redesign")
-                  : r[2]==="meas" ? chipsFor(r[1],"Accuracy; completeness; latency; rework; override; incident; acceptability; client outcome; equity; opportunity cost") : '';
+        var extra = r[2]==="tech" ? chipsFor(r[1],"Access Controls; Data Minimization; Templates; Required Fields; Confidence Display; Sampled Review; Version Lock; Logging; Rollback")
+                  : r[2]==="obm"  ? chipsFor(r[1],"Task Clarification; Skills Practice; Prompts; Modeling; Checklists; Performance Feedback; Reinforcement; Escalation; Workload Redesign")
+                  : r[2]==="meas" ? chipsFor(r[1],"Accuracy; Completeness; Latency; Rework; Override; Incident; Acceptability; Client Outcome; Equity; Opportunity Cost") : '';
         reg(r[1],r[0]);
-        return '<tr><td class="k">'+r[0]+'</td><td data-h="My commitment"><input type="text" id="'+r[1]+'" aria-label="'+esc(r[0])+'">'+extra+'</td></tr>';
+        var box = extra ? '<textarea id="'+r[1]+'" rows="2" aria-label="'+esc(r[0])+'"></textarea>'
+                        : '<input type="text" id="'+r[1]+'" aria-label="'+esc(r[0])+'">';
+        return '<tr><td class="k">'+r[0]+'</td><td data-h="My commitment">'+box+extra+'</td></tr>';
       }).join('')+'</tbody>')
  + '<aside class="callout"><b>Commitment statement</b><p class="stem" style="margin:0">By '+fill("f15-s1","date",12,"review date")+', I will '+fill("f15-s2","behavior",22)+' in the context of '+fill("f15-s3","context",20)+', measure '+fill("f15-s4","measure",18)+', and pause or revise if '+fill("f15-s5","condition",20)+'.</p></aside>'
  + formBlock("commit",["f15-e0","f15-e1","f15-e2","f15-s1","f15-s2","f15-s3","f15-s4","f15-s5"],{note:"Optional. Anonymous."});
@@ -868,13 +877,13 @@ function zoneTokens(zi){
 }
 var REP_EXAMPLES = [
   /* Designer: section 03 role description */
-  "Build or configure a model", "Connect data pipelines", "Evaluate model performance", "Decide build or buy",
+  "Build or Configure a Model", "Connect Data Pipelines", "Evaluate Model Performance", "Decide Build or Buy",
   /* Implementer: section 03 role description, section 07 deploy stage */
-  "Integrate a tool into clinical work", "Redesign a workflow", "Train staff on a new workflow", "Run a vendor conversation",
+  "Integrate a Tool into Clinical Work", "Redesign a Workflow", "Train Staff on a New Workflow", "Run a Vendor Conversation",
   /* Supporter and governance: sections 03, 07, 07A */
-  "Define the problem for builders", "Write a data boundary", "Check local validity", "Watch for model drift", "Write a stop rule",
+  "Define the Problem for Builders", "Write a Data Boundary", "Check Local Validity", "Watch for Model Drift", "Write a Stop Rule",
   /* Everyday practice named in the six table cases */
-  "Write progress summaries", "Draft behavior-plan sections", "Recommend treatment goals", "Supervise and give feedback", "Build staff schedules"
+  "Write Progress Summaries", "Draft Behavior-Plan Sections", "Recommend Treatment Goals", "Supervise and Give Feedback", "Build Staff Schedules"
 ];
 var SEL_CHIP = null;
 function chipBank(){
@@ -1090,8 +1099,8 @@ function render(opts){
   if(cur==="welcome"){ if(!wantAdmin) html += renderLanding(); }
   else html += renderSection(cur);
   html += '<div class="footer"><span>David J. Cox &amp; Ryan L. O’Donnell · Project Chiron</span>'
-    + '<button class="btn small quiet" id="export-btn">Export my answers</button>'
-    + '<button class="btn small quiet" id="print-btn">Print</button>'
+    + '<button class="btn small quiet" id="export-btn" title="Download everything you have typed on this site as a text file">Download My Notes</button>'
+    + '<a class="btn small quiet" href="The-Next-Repertoire-Workbook.pdf" target="_blank" rel="noopener" title="The full participant workbook as a PDF">Workbook (PDF)</a>'
     + (wantAdmin ? '<a href="#welcome">Exit facilitator view</a>' : '<a href="#admin">Facilitator</a>')
     + '</div>';
   html += '</main></div>';
@@ -1421,7 +1430,7 @@ function renderResponses(){
 
 /* ---------- export ---------- */
 function exportAnswers(){
-  var lines = ["# The Next Repertoire: my workbook answers","", "Exported "+new Date().toLocaleString(),""];
+  var lines = ["THE NEXT REPERTOIRE", "My workbook notes", "Saved "+new Date().toLocaleString(), ""];
   var t = myTable(); if(t) lines.push("Table "+t,"");
   var lastSec = "", all = [];
   var saveFields = FIELDS, saveCur = CUR_SECTION;
@@ -1431,15 +1440,15 @@ function exportAnswers(){
   all.forEach(function(f){
     var v = ANSWERS[f.id];
     if(v===undefined || v==="" || v===false) return;
-    if(f.section!==lastSec){ lines.push("", "## "+f.section, ""); lastSec=f.section; }
+    if(f.section!==lastSec){ lines.push("", "=== "+f.section+" ===", ""); lastSec=f.section; }
     var label = f.label.replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim();
-    if(v===true) lines.push("- [x] "+label.replace(/^\[ \] /,""));
-    else lines.push("**"+label+"**", "", String(v), "");
+    if(v===true) lines.push("[x] "+label.replace(/^\[ \] /,""));
+    else lines.push(label, "    "+String(v).replace(/\n/g,"\n    "), "");
     n++;
   });
   if(!n){ toast("Nothing to export yet."); return; }
-  var blob = new Blob([lines.join("\n")], {type:"text/markdown"});
-  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "next-repertoire-answers.md";
+  var blob = new Blob([lines.join("\n")], {type:"text/plain"});
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "next-repertoire-my-notes.txt";
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 }
 var toastTimer=null;
@@ -1459,7 +1468,7 @@ function hydrate(){
   var q=function(id){return document.getElementById(id);};
   if(q("menu-btn")) q("menu-btn").onclick=function(){ setRail(!railOpen); };
   if(q("export-btn")) q("export-btn").onclick=exportAnswers;
-  if(q("print-btn")) q("print-btn").onclick=function(){ window.print(); };
+
   root.querySelectorAll(".submit button").forEach(function(b){ b.onclick=function(){ submitBlock(b.parentNode); }; });
   paintLive(); pollSummary(); if(document.getElementById("shiftbox")) fetchShift(); fetchSeat();
   if(q("admin-login")) { q("admin-login").onclick=adminLogin; q("admin-key").onkeydown=function(e){ if(e.key==="Enter") adminLogin(); }; }
