@@ -160,6 +160,20 @@ details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background
 .seat-id{font-family:var(--display);font-size:2.4rem;line-height:1;font-weight:600;color:var(--accent)}
 .seat-n{font-size:1rem;font-weight:500}
 .seat p{margin:.3rem 0 0}
+.slides{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.syncbar{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:.55rem .8rem;margin:0 0 1.1rem;background:var(--paper);font-size:.88rem}
+.syncbar.on{border-color:var(--ok)}
+.syncbar .sw{position:relative;width:38px;height:22px;flex:none}
+.syncbar .sw input{opacity:0;width:0;height:0;position:absolute}
+.syncbar .sw i{position:absolute;inset:0;background:var(--lock);border-radius:22px;transition:.15s;cursor:pointer}
+.syncbar .sw i::after{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.15s}
+.syncbar .sw input:checked + i{background:var(--ok)}
+.syncbar .sw input:checked + i::after{transform:translateX(16px)}
+.syncbar .sw input:focus-visible + i{outline:2px solid var(--accent);outline-offset:2px}
+.syncbar b{font-weight:600}
+.syncbar small{display:block;color:var(--muted);font-size:.8rem}
+.synced{animation:synced 1.6s ease-out}
+@keyframes synced{0%{box-shadow:0 0 0 3px var(--ok)}100%{box-shadow:0 0 0 0 transparent}}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0 .2rem}
 .chips.mini{margin:.35rem 0 0;gap:4px}
 .chips.mini .chip{font-size:.74rem;padding:.18rem .5rem;background:var(--paper)}
@@ -505,13 +519,16 @@ var SECTIONS = [
  + '<h3>Interest Poll '+who()+'</h3><p>Used to sort the room into tables.</p>'
  + sel("fint-first","First choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-second","Second choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
+ + sel("fint-third","Third choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-role","Role you expect to play",["Designer","Implementer","Supporter","Not sure"])
- + formBlock("interests",["fint-first","fint-second","fint-role"])
+ + formBlock("interests",["fint-first","fint-second","fint-third","fint-role"])
  + '<div id="seatbox">'+seatHtml()+'</div>'
  + livePanel("interests")
  + '<h3>My Table</h3>'
  + '<div class="field"><label for="f04-table">Which table did you join?</label><select id="f04-table"><option value="">Choose a table</option>'
  + TABLES.map(function(t){ return '<option value="'+t.id+'">Table '+t.id+': '+t.name+'</option>'; }).join('')+'</select></div>'
+ + '<div class="field"><label for="f04-tablenum">Which table number? Topics with many people use two tables (e.g., A-1 and A-2).</label><select id="f04-tablenum"><option value="">Choose a number</option>'
+ + [1,2,3,4].map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('')+'</select></div>'
  + '<div id="table-card"></div>'
  + '<h3>My Table and Problem Statement '+who("rec")+'</h3>'
  + '<p>Fill the sentence, then tick each statement that is true for your problem.</p>'
@@ -520,8 +537,10 @@ var SECTIONS = [
  + formBlock("table_reports",["f04-table","f04-ctx","f04-action","f04-purpose","f04-role","f04-decision"],{stage:"problem",note:"Table recorder: one submission per table."})
  + livePanel("reports:problem")
  + '<h3>All Six Table Cases</h3>'
- + '<p>Keep the same case through Define, Ideate, and the Field Lab. Keep the A–F envelope sealed until the reveal.</p>'
- + TABLES.map(function(t){ return '<details><summary><span class="code">Table '+t.id+'</span> '+t.name+'</summary><div class="in">'+tableCard(t)+'</div></details>'; }).join('');
+ + (missionsOn()
+   ? '<p>Keep the same case through Define, Ideate, and the Field Lab. Keep the A–F envelope sealed until the reveal.</p>'
+     + TABLES.map(function(t){ return '<details><summary><span class="code">Table '+t.id+'</span> '+t.name+'</summary><div class="in">'+tableCard(t)+'</div></details>'; }).join('')
+   : '<div class="sealed"><div class="eyebrow">Mission cards</div><p>The mission cards open here when the presenter cues them.</p></div>');
 }},
 
 {id:"govern",code:"07",nav:"Govern",title:"A Lifecycle for Responsible Adoption",lede:"Governance changes as the system moves from selection to deployment, monitoring, and retirement.",block:2,html:function(){ return ''
@@ -675,7 +694,7 @@ var SECTIONS = [
  + ta("f12-deskill","Which discriminations would staff stop practicing, and how will you arrange opportunities to keep them accurate? "+who("rec"),3);
 }},
 
-{id:"converge",code:"11A",nav:"Trace and Select",title:"Trace Effects and Select a Test",block:3,html:function(){ return ''
+{id:"converge",code:"11A+",nav:"Trace and Select",title:"Trace Effects and Select a Test",block:3,html:function(){ return ''
  + '<h3>Rep 3 · Second-Order Effects '+who("rec")+'</h3>'
  + '<p>Trace a possible downstream consequence through at least two links. Use section 12 to consider client choice, quality, skill, workload, access, documentation, and resources. Treat these as hypotheses to examine.</p>'
  + ta("f11b-chain","Immediate change → next consequence → effect on people or work",3)
@@ -836,6 +855,15 @@ var SECTIONS = [
  + callout("Scope note","This workbook is a reusable educational tool. It does not substitute for clinical judgment, organizational policy, payer requirements, professional standards, privacy and security review, or legal advice.");
 }}
 ];
+
+/* Deck slide labels (bottom-right corner of each slide, Oct 9 facilitator-scripted deck) for each site section. */
+var SLIDES = {
+  orient:"1–5, 20–21", notice:"6–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
+  choose:"27A–34", govern:"35, 39, 41–42", safeguard:"36", verify:"37", assign:"38", procure:"40",
+  define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52–61", anticipate:"62–63", converge:"62–65",
+  prototype:"66–67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
+};
+function slidesFor(id){ var v=SLIDES[id]; return v ? (v.indexOf(",")>=0||v.indexOf("–")>=0 ? "Slides "+v : "Slide "+v) : ""; }
 
 var TOKEN_KINDS = {ai:{label:"AI MAY",img:"img/token-ai.png"},human:{label:"HUMAN MUST",img:"img/token-human.png"},stop:{label:"STOP / ESCALATE",img:"img/token-stop.png"}};
 var TOKENS = [{k:"ai"},{k:"human"},{k:"stop"}];
@@ -1003,6 +1031,7 @@ var PANELS = [
   ["demographics","Role and Setting Snapshot (03A)"],
   ["interests","Interest Poll (04)"],
   ["assignment","Table Assignments (04)"],
+  ["missions","Mission Cards (04)"],
   ["reports:problem","Problem Statements (04)"],
   ["reports:define","Define Statements (05A)"],
   ["reports:selected","Selected Options (11A)"],
@@ -1015,6 +1044,7 @@ var REVEAL_KEY = "reveal";
 var GATES = API_URL ? (parse(lsGet(LS_GATES),null) || {unlocked:[],current:"welcome",show:[]}) : {unlocked:ALL_IDS.slice(),current:"welcome",show:ALL_PANELS.slice()};
 if(!Array.isArray(GATES.show)) GATES.show=[];
 function revealOn(){ return GATES.show.indexOf(REVEAL_KEY)>=0; }
+function missionsOn(){ return ADMIN || GATES.show.indexOf("missions")>=0; }
 var ONLINE = null;            /* null = unknown, true/false after first poll */
 var ADMIN = false;            /* true once the passcode is accepted */
 var ADMIN_KEY = ssGet(SS_KEY) || "";
@@ -1022,7 +1052,64 @@ var PENDING = null;           /* facilitator draft of GATES */
 var ADMIN_DATA = null;        /* last admin fetch */
 var ADMIN_MSG = null;
 
-function saveAnswer(id,val){ ANSWERS[id]=val; lsSet(LS_ANS, JSON.stringify(ANSWERS)); }
+function saveAnswer(id,val){ ANSWERS[id]=val; lsSet(LS_ANS, JSON.stringify(ANSWERS)); if(!APPLYING && isShared(id) && syncOn()) queuePush(id,val); }
+
+/* ---------- table sync ----------
+   Table-recorder fields can be shared with the rest of a physical table (A-1, A-2, ...).
+   Edits go up after a short pause; tablemates pick them up on their next poll.
+   A field someone is typing in is never overwritten; the update lands when they leave it. */
+var LS_SYNC = "nr-sync";
+var SHARED_RE = /^f(04-(ctx|action|purpose|role|decision|c\d)|05|06|07|08|09|10|11|12|13|14)/;
+var APPLYING = false, OUT = {}, OUT_TIMER = null, PUSHING = false, GROUP_NOW = 0, GROUP_FOR = "", HELD = {};
+function isShared(id){ return SHARED_RE.test(id||""); }
+function myGroup(){ return ANSWERS["f04-group"] || ""; }
+function syncWanted(){ return lsGet(LS_SYNC)!=="0"; }
+function syncOn(){ return !!API_URL && !!myGroup() && syncWanted(); }
+function queuePush(id,val){ OUT[id]=val; clearTimeout(OUT_TIMER); OUT_TIMER=setTimeout(flushPush, 1200); }
+function flushPush(){
+  if(!syncOn()) return;
+  if(PUSHING){ clearTimeout(OUT_TIMER); OUT_TIMER=setTimeout(flushPush, 800); return; }
+  var ids=Object.keys(OUT); if(!ids.length) return;
+  var batch=OUT; OUT={}; PUSHING=true;
+  apiPost({action:"groupPut", group:myGroup(), pid:PID, fields:batch}).then(function(r){
+    if(!r || !r.ok) throw new Error((r&&r.error)||"failed");
+  }).catch(function(){
+    Object.keys(batch).forEach(function(k){ if(OUT[k]===undefined) OUT[k]=batch[k]; });
+    clearTimeout(OUT_TIMER); OUT_TIMER=setTimeout(flushPush, 4000);
+  }).then(function(){ PUSHING=false; });
+}
+function applyOne(id,v){
+  var el=document.getElementById(id);
+  if(el && document.activeElement===el){ HELD[id]=v; return false; }
+  APPLYING=true; saveAnswer(id,v); APPLYING=false;
+  if(el){
+    if(el.type==="checkbox") el.checked=!!v; else el.value=v;
+    el.classList.remove("synced"); void el.offsetWidth; el.classList.add("synced");
+  }
+  if(id==="f13a-tokenmap") repaintTokens();
+  return true;
+}
+function applyGroup(res){
+  if(!res || res.g!==myGroup()) return;
+  GROUP_NOW = res.now || GROUP_NOW;
+  var d=res.d||{};
+  Object.keys(d).forEach(function(id){
+    var e=d[id]; if(!e || e.p===PID || !isShared(id) || OUT[id]!==undefined) return;
+    if(ANSWERS[id]===e.v) return;
+    applyOne(id, e.v);
+  });
+}
+function syncBar(){
+  if(!API_URL) return '';
+  var g=myGroup();
+  if(!g) return '<div class="syncbar"><span><b>Write with your table</b><small>Once you have a table and table number (section 04), Table recorder entries can be shared with your tablemates.</small></span></div>';
+  var on=syncWanted();
+  return '<div class="syncbar'+(on?' on':'')+'"><label class="sw"><input type="checkbox" id="sync-toggle"'+(on?' checked':'')+' aria-label="Write with my table"><i></i></label>'
+    + '<span><b>'+(on?'Writing with Table '+esc(g):'Writing on my own')+'</b><small>'
+    + (on ? 'Table recorder entries are shared. What anyone at '+esc(g)+' types appears on everyone’s screen within a few seconds. One person typing at a time works best.'
+          : 'Your entries stay on this device. Switch on to see and edit your table’s shared entries (they replace yours where your table has written something).')
+    + '</small></span></div>';
+}
 function isUnlocked(id){ return id==="welcome" || GATES.unlocked.indexOf(id)>=0; }
 function sectionById(id){ for(var i=0;i<SECTIONS.length;i++) if(SECTIONS[i].id===id) return SECTIONS[i]; return null; }
 function firstUnlockedAfter(idx){ for(var i=idx+1;i<SECTIONS.length;i++) if(ADMIN||isUnlocked(SECTIONS[i].id)) return SECTIONS[i]; return null; }
@@ -1048,12 +1135,23 @@ function applyGates(g){
   render({keepScroll:true});
 }
 function setOnline(v){ if(ONLINE===v) return; ONLINE=v; var el=document.getElementById("conn"); if(el) el.outerHTML=connChip(); }
-function pollGates(){
-  if(!API_URL) return;
-  apiGet({action:"state"}).then(function(r){ if(r && r.gates){ applyGates(r.gates); setOnline(true); } })
-    .catch(function(){ setOnline(false); })
-    .then(function(){ setTimeout(pollGates, POLL_MS + Math.random()*2000); });
+var GATE_TIMER = null, GATE_BUSY = false;
+function stateParams(){
+  var p={action:"state"};
+  if(syncOn()){
+    if(GROUP_FOR!==myGroup()){ GROUP_FOR=myGroup(); GROUP_NOW=0; }
+    p.group=myGroup(); p.since=GROUP_NOW ? GROUP_NOW-20000 : 0;
+  }
+  return p;
 }
+function pollGates(){
+  if(!API_URL || GATE_BUSY) return;
+  clearTimeout(GATE_TIMER); GATE_BUSY = true;
+  apiGet(stateParams()).then(function(r){ if(r && r.gates){ applyGates(r.gates); setOnline(true); } if(r && r.group) applyGroup(r.group); })
+    .catch(function(){ setOnline(false); })
+    .then(function(){ GATE_BUSY=false; GATE_TIMER=setTimeout(pollGates, (syncOn()?5000:POLL_MS) + Math.random()*1500); });
+}
+function pollGatesNow(){ if(API_URL) pollGates(); }
 
 /* ---------- routing ---------- */
 function currentSectionId(){
@@ -1174,16 +1272,18 @@ function renderSection(id){
     return '<div class="locked-note"><div class="eyebrow">'+s.code+' · '+BLOCKS[s.block].n+'</div><h2>'+s.title+'</h2><p>Not open yet.</p><p><a class="btn" href="#welcome">Back</a></p></div>';
   }
   CUR_SECTION = s.code+" "+s.title;
+  var body = s.html();
+  var shared = FIELDS.some(function(f){ return f.section===CUR_SECTION && isShared(f.id); });
   var prev = lastUnlockedBefore(idx), next = firstUnlockedAfter(idx);
   var nextLocked = (!next && idx<SECTIONS.length-1) ? SECTIONS[idx+1] : null;
   var chip = ADMIN ? '<span class="lockchip'+(isUnlocked(id)?' open':'')+'">'+(isUnlocked(id)?'Open to participants':'Locked for participants')+'</span>' : '';
   return '<article class="section">'
    + '<header class="sec-hd b'+s.block+'">'
-   + '<div class="section-head"><span class="code">'+s.code+' · '+BLOCKS[s.block].n+'</span>'+(GATES.current===id?'<span class="who rec" style="margin:0">Now</span>':'')+chip+'</div>'
+   + '<div class="section-head"><span class="code">'+s.code+' · '+BLOCKS[s.block].n+'</span>'+(slidesFor(id)?'<span class="slides">'+slidesFor(id)+'</span>':'')+(GATES.current===id?'<span class="who rec" style="margin:0">Now</span>':'')+chip+'</div>'
    + '<h2>'+s.title+'</h2>'
    + (s.lede?'<p class="lede">'+s.lede+'</p>':'')
    + '</header>'
-   + '<div class="sec-body">'+s.html()+'</div>'
+   + '<div class="sec-body">'+(shared?syncBar():'')+body+'</div>'
    + '</article>'
    + '<div class="pager">'
    + (prev ? '<a href="#s/'+prev.id+'"><small>Previous</small>'+prev.code+' · '+prev.nav+'</a>' : '<a href="#welcome"><small>Previous</small>Welcome</a>')
@@ -1210,6 +1310,7 @@ function submitBlock(box){
   ids.forEach(function(id){ var el=document.getElementById(id); var v = el ? (el.type==="checkbox"?el.checked:el.value) : ANSWERS[id]; if(v===undefined) v=""; data[id]=v; if(v!=="" && v!==false) any=true; });
   if(!any){ status.textContent = "Nothing to send yet."; return; }
   if(stage) data.stage = stage;
+  if(form==="table_reports"){ data.group = myGroup(); data.voice = syncOn() ? "table" : "own"; }
   btn.disabled = true; status.textContent = "Sending…";
   apiPost({action:"submit", form:form, pid:PID, table:myTable(), data:data}).then(function(r){
     if(r && r.ok){ var now=new Date().toISOString(); SUBMITTED[subKey(form,stage)]=now; lsSet(LS_SUB, JSON.stringify(SUBMITTED)); status.textContent="Submitted "+fmtTime(now)+"."; btn.textContent="Submit again"; setTimeout(pollSummary, 1500); }
@@ -1258,7 +1359,7 @@ function renderAdmin(){
     }
     var on = g.unlocked.indexOf(s.id)>=0;
     gates += '<div class="gate"><label class="sw"><input type="checkbox" data-gate="'+s.id+'"'+(on?' checked':'')+' aria-label="Open '+s.code+' '+s.nav+' to participants"><i></i></label>'
-      + '<span><span class="rc">'+s.code+'</span>'+s.nav+'</span>'
+      + '<span><span class="rc">'+s.code+'</span>'+s.nav+(slidesFor(s.id)?' <span class="code">'+slidesFor(s.id)+'</span>':'')+'</span>'
       + '<button class="nowbtn'+(g.current===s.id?' on':'')+'" data-now="'+s.id+'" title="Mark as current">Now</button></div>';
   });
   return '<section class="admin" id="admin-panel">'
@@ -1278,15 +1379,21 @@ function renderAdmin(){
    + '<div id="admin-msg" hidden></div>'
    + '</section>'
    + '<section class="admin" id="admin-responses">'
-   + '<div class="admin-head"><h2>Sort the Room</h2><span class="status">'+(ADMIN_DATA&&ADMIN_DATA.assigned&&ADMIN_DATA.assigned.n ? ADMIN_DATA.assigned.n+' people seated: '+TABLES.map(function(t){return t.id+' '+(ADMIN_DATA.assigned.counts[t.id]||0);}).join(' · ') : 'Not sorted yet')+'</span></div>'
-   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone, honoring first choice, then second, then filling the emptiest table. Leave the cap blank for an even split. Switch on <strong>Table assignments</strong> above and Publish so people can see their seat.</p>'
-   + '<div class="actions"><label style="font-size:.85rem;color:var(--muted)">Max per table <input type="text" id="a-cap" size="3" style="width:4rem;display:inline-block"></label>'
+   + '<div class="admin-head"><h2>Sort the Room</h2><span class="status">'+(ADMIN_DATA&&ADMIN_DATA.assigned&&ADMIN_DATA.assigned.n ? ADMIN_DATA.assigned.n+' people seated: '+groupTally(ADMIN_DATA.assigned) : 'Not sorted yet')+'</span></div>'
+   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone in a topic (first choice, then second, then third, then the emptiest topic), then splits each topic into physical tables (A-1, A-2) with a mix of expected roles. Mark the tents to match. Switch on <strong>Table assignments</strong> above and Publish so people can see their seat. Paper-only people: place them by hand where the counts are low.</p>'
+   + '<div class="actions"><label style="font-size:.85rem;color:var(--muted)">People per table <input type="text" id="a-size" size="3" value="6" style="width:4rem;display:inline-block"></label>'
+   + '<label style="font-size:.85rem;color:var(--muted)">Max tables per topic <input type="text" id="a-maxt" size="3" value="2" style="width:4rem;display:inline-block"></label>'
    + '<button class="btn primary" id="a-assign">Assign tables</button><span id="assign-msg" class="status"></span></div>'
    + '</section>'
    + '<section class="admin" id="admin-responses">'
    + '<div class="admin-head"><h2>Responses</h2><span class="status" id="resp-time"></span><span style="flex:1"></span><button class="btn small" id="a-refresh">Refresh</button><button class="btn small quiet" id="a-logout">Sign out</button></div>'
    + '<div id="responses">'+renderResponses()+'</div>'
    + '</section>';
+}
+function groupTally(a){
+  var g=a.groups||{}, keys=Object.keys(g).sort();
+  if(!keys.length) return Object.keys(a.counts||{}).map(function(k){return k+" "+a.counts[k];}).join(" · ");
+  return keys.map(function(k){return k+" "+g[k];}).join(" · ");
 }
 function draft(){ if(!PENDING) PENDING = JSON.parse(JSON.stringify(GATES)); return PENDING; }
 function setGate(id,on){
@@ -1312,10 +1419,11 @@ function seatHtml(){
   if(!API_URL) return '';
   if(SEAT && SEAT.table){
     var t = TABLES.filter(function(x){return x.id===SEAT.table;})[0];
+    var g = SEAT.group || SEAT.table;
     return '<div class="seat"><div class="eyebrow">Your table</div>'
-     + '<div class="seat-id">'+SEAT.table+'</div>'
+     + '<div class="seat-id">'+esc(g)+'</div>'
      + '<div class="seat-n">'+(t?t.name:'')+'</div>'
-     + '<p class="code">Assigned by '+esc(SEAT.basis||'')+'. Take your workbook and sit at Table '+SEAT.table+'.</p></div>';
+     + '<p class="code">Assigned by '+esc(SEAT.basis||'')+'. Take your workbook and sit at the table marked '+esc(g)+'.</p></div>';
   }
   if(SEAT && SEAT.unassigned) return '<div class="seat pending"><div class="eyebrow">Your table</div><p>No seat found for this browser. Submit the interest poll above, or ask a facilitator to place you.</p></div>';
   return '<div class="seat pending"><div class="eyebrow">Your table</div><p>Your table appears here once the facilitators sort the room.</p></div>';
@@ -1325,15 +1433,23 @@ function fetchSeat(){
   seatPending = true;
   apiGet({action:"myTable", pid:PID}).then(function(r){
     if(!r || r.error) return;
-    var had = SEAT && SEAT.table;
+    var had = SEAT && (SEAT.group || SEAT.table);
     SEAT = r;
     if(r.table && r.table!==ANSWERS["f04-table"]){
       saveAnswer("f04-table", r.table);
       var sel=document.getElementById("f04-table"); if(sel){ sel.value=r.table; renderTableCard(); }
       SHIFT=null;
     }
+    if(r.group && r.group!==myGroup()){
+      var num=r.group.split("-")[1]||"";
+      saveAnswer("f04-tablenum", num);
+      var ns=document.getElementById("f04-tablenum"); if(ns) ns.value=num;
+      setGroup(r.group);
+      render({keepScroll:true});
+      return;
+    }
     var box=document.getElementById("seatbox");
-    if(box && (!had || had!==r.table)) box.innerHTML=seatHtml();
+    if(box && (!had || had!==(r.group||r.table))) box.innerHTML=seatHtml();
   }).catch(function(){}).then(function(){ seatPending=false; });
 }
 
@@ -1370,8 +1486,8 @@ function renderConfidence(pre,post,prefix){
 }
 function renderInterests(rows){
   if(!rows.length) return '<p class="code">No responses yet.</p>';
-  var first=count(rows,"first"), second=count(rows,"second");
-  return twrap(thead(["Table","First Choice","Second Choice"])+'<tbody>'+TABLES.map(function(t){ return '<tr><td class="k">'+t.id+' · '+t.name+'</td><td>'+(first[t.id]||0)+'</td><td>'+(second[t.id]||0)+'</td></tr>'; }).join('')+'</tbody>')
+  var first=count(rows,"first"), second=count(rows,"second"), third=count(rows,"third");
+  return twrap(thead(["Table","First Choice","Second Choice","Third Choice"])+'<tbody>'+TABLES.map(function(t){ return '<tr><td class="k">'+t.id+' · '+t.name+'</td><td>'+(first[t.id]||0)+'</td><td>'+(second[t.id]||0)+'</td><td>'+(third[t.id]||0)+'</td></tr>'; }).join('')+'</tbody>')
     + kvTable("Expected role", count(rows,"role"));
 }
 function renderDemographics(rows){
@@ -1402,7 +1518,7 @@ function pollSummary(){
 /* response summaries */
 function count(rows,field){ var m={}; rows.forEach(function(r){ var v=(r[field]===undefined||r[field]==="")?"(blank)":String(r[field]); m[v]=(m[v]||0)+1; }); return m; }
 function mean(rows,field){ var n=0,s=0; rows.forEach(function(r){ var v=parseFloat(r[field]); if(!isNaN(v)){ n++; s+=v; } }); return n?(s/n).toFixed(1):"–"; }
-function latestPerTable(rows){ var m={}; rows.forEach(function(r){ var t=r.table||"?"; m[t]=r; }); return m; }
+function latestPerTable(rows){ var m={}; rows.forEach(function(r){ var t=r.group||r.table||"?"; m[t]=r; }); return m; }
 function kvTable(title,m){ var keys=Object.keys(m).sort(function(a,b){return m[b]-m[a];}); if(!keys.length) return ''; return '<h4>'+title+'</h4>'+twrap('<tbody>'+keys.map(function(k){return '<tr><td>'+esc(k)+'</td><td class="k">'+m[k]+'</td></tr>';}).join('')+'</tbody>'); }
 function renderResponses(){
   var d = ADMIN_DATA;
@@ -1411,7 +1527,7 @@ function renderResponses(){
   var out = '<div class="cards">'+["pre","demographics","quadrant","interests","table_reports","commit","post"].map(function(f){ return '<div class="card"><div class="eyebrow">'+f.replace("_"," ")+'</div><h4 style="font-size:1.4rem">'+(c[f]||0)+'</h4></div>'; }).join('')+'</div>';
 
   /* interests: for table sorting */
-  var ir = latestPerTable ? (function(){ var m={}; (R.interests||[]).forEach(function(r){ m[r.pid||Math.random()]=r; }); return Object.keys(m).map(function(k){ var r=m[k]; return {first:r["fint-first"],second:r["fint-second"],role:r["fint-role"]}; }); })() : [];
+  var ir = latestPerTable ? (function(){ var m={}; (R.interests||[]).forEach(function(r){ m[r.pid||Math.random()]=r; }); return Object.keys(m).map(function(k){ var r=m[k]; return {first:r["fint-first"],second:r["fint-second"],third:r["fint-third"],role:r["fint-role"]}; }); })() : [];
   if(ir.length) out += '<h3>Interest poll ('+ir.length+' people, latest response each)</h3>'+renderInterests(ir);
 
   /* table reports */
@@ -1496,10 +1612,11 @@ function hydrate(){
     if(q("a-publish")) q("a-publish").onclick=publishGates;
     if(q("a-assign")) q("a-assign").onclick=function(){
       var b=q("a-assign"), msg=q("assign-msg"); b.disabled=true; msg.textContent="Sorting…";
-      apiPost({action:"assign", key:ADMIN_KEY, capacity:(q("a-cap")||{}).value||""}).then(function(r){
+      apiPost({action:"assign", key:ADMIN_KEY, tableSize:(q("a-size")||{}).value||"", maxTables:(q("a-maxt")||{}).value||""}).then(function(r){
         if(r && r.ok){
-          msg.textContent = r.n+" seated (cap "+r.capacity+"): "+Object.keys(r.counts).map(function(k){return k+" "+r.counts[k];}).join(" · ")
-            + " — " + r.basis["first choice"]+" first choice, "+r.basis["second choice"]+" second, "+r.basis["balanced"]+" balanced.";
+          msg.textContent = r.n+" seated: "+groupTally(r)
+            + ". "+r.basis["first choice"]+" first choice, "+r.basis["second choice"]+" second, "+(r.basis["third choice"]||0)+" third, "+r.basis["balanced"]+" balanced."
+            + (r.overflow ? " More people than seats at "+r.tableSize+" per table, so tables run larger." : "");
           refreshAdmin();
         } else msg.textContent = (r&&r.error) || "Could not sort.";
       }).catch(function(){ msg.textContent="Could not reach the sheet."; })
@@ -1554,17 +1671,21 @@ function renderTableCard(){
   var sel = document.getElementById("f04-table"), box = document.getElementById("table-card");
   if(!sel || !box) return;
   var t = TABLES.filter(function(x){return x.id===sel.value;})[0];
-  box.innerHTML = t ? '<div class="card" style="margin:.5rem 0 1rem"><h4>Table '+t.id+' · '+t.name+'</h4>'+tableCard(t)+'</div>' : '';
+  box.innerHTML = t ? '<div class="card" style="margin:.5rem 0 1rem"><h4>Table '+t.id+' · '+t.name+'</h4>'+(missionsOn() ? tableCard(t) : '<p>'+t.q+'</p><p class="code">Your mission card opens when the presenter cues it.</p>')+'</div>' : '';
 }
 
-root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); });
-root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table"){ renderTableCard(); SHIFT=null; } });
+root.addEventListener("focusout", function(e){ var id=e.target && e.target.id; if(id && HELD[id]!==undefined){ var v=HELD[id]; delete HELD[id]; if(OUT[id]===undefined && ANSWERS[id]!==v) setTimeout(function(){ applyOne(id,v); },0); } });
+root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key" || el.id==="sync-toggle") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); });
+root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; if(el.id!=="sync-toggle") saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table"){ renderTableCard(); SHIFT=null; }
+  if(el.id==="f04-table" || el.id==="f04-tablenum"){ var t=ANSWERS["f04-table"], n=ANSWERS["f04-tablenum"]; var was=myGroup(); setGroup(t && n ? t+"-"+n : ""); if(myGroup()!==was){ render({keepScroll:true}); pollGatesNow(); } }
+  if(el.id==="sync-toggle"){ lsSet(LS_SYNC, el.checked?"1":"0"); GROUP_NOW=0; render({keepScroll:true}); pollGatesNow(); } });
+function setGroup(g){ if(g===myGroup()) return; saveAnswer("f04-group", g); GROUP_NOW=0; HELD={}; OUT={}; }
 window.addEventListener("hashchange", function(){
   try{ if(window.innerWidth<=860 && railOpen) setRail(false); }catch(e){}
   if(location.hash!=="#admin") PENDING=null;
   render();
 });
-document.addEventListener("visibilitychange", function(){ if(!document.hidden && API_URL) apiGet({action:"state"}).then(function(r){ if(r&&r.gates) applyGates(r.gates); }).catch(function(){}); });
+document.addEventListener("visibilitychange", function(){ if(!document.hidden) pollGatesNow(); });
 
 /* boot */
 render();
