@@ -732,12 +732,17 @@ var SECTIONS = [
  + ta("f11a-optA","Option A and the mechanism it changes",2)
  + ta("f11a-optB","Option B and the mechanism it changes",2)
  + ta("f11a-nonai","Non-AI alternative",2)
+ + callout("Break 2","After the break, go to "+nextLink("ideate2")+" for Rep 2. Your Rep 1 answers stay here.")
+ + deeper('Add a fourth option that removes the task entirely. Who loses practice if the tool does this work?');
+}},
+
+{id:"ideate2",code:"11A",nav:"Ideation Rep 2",gate:"ideate",title:"Rep 2: Behavioral Arrangements",lede:"Same table, same use case, same options from Rep 1. Now design the behavior that makes each option work.",block:3,html:function(){ return ''
+ + '<p>Your Rep 1 options are in '+nextLink("ideate")+'.</p>'
  + '<h3>Rep 2 · OBM Arrangements '+who("rec")+'</h3>'
  + '<p>Name the performer, observable response, opportunity, and consequence. Pair each candidate with the time, training, rehearsal, feedback, authority, and workload support it needs. “Human review” alone is not a design.</p>'
  + '<p class="stem">When '+fill("f11a-when","When",20,"opportunity or antecedent")+', '+fill("f11a-performer","performer",14)+' will '+fill("f11a-will","will",24,"observable response")+'.</p>'
  + '<p class="stem">The supporting consequence/feedback will be '+fill("f11a-consequence","supporting consequence/feedback",30)+'.</p>'
- + ta("f11a-feedback","Feedback received and one revision",3)
- + deeper('Add a fourth option that removes the task entirely. Who loses practice if the tool does this work?');
+ + ta("f11a-feedback","Feedback received and one revision",3);
 }},
 
 {id:"anticipate",code:"12",nav:"Anticipate",title:"Scan for Second-Order Effects",lede:"The first-order effect is what the tool does. The second-order effect is how behavior and systems change because the tool is present (e.g., who checks less, who waits longer, which skills go unpracticed).",block:3,html:function(){ return ''
@@ -821,14 +826,20 @@ var SECTIONS = [
  + '</div>'
  + '<p class="code">Place all eight tokens. After the reveal, move at least one token and revise a safeguard, measure, or stop rule.</p>'
  + ref('The Printed Board', '<img src="img/system-map.jpg" alt="The Chiron Field Lab System Map board" loading="lazy" style="width:100%;border-radius:8px">')
- + '<h3>The Reveal</h3>'
- + contextShift()
- + '<h3>Field Lab Record '+who("rec")+'</h3>'
+ + '<h3>Before the Envelope Opens '+who("rec")+'</h3>'
  + '<p class="stem">Table family A–F: '+fill("f13a-table","Table family",4,"A-F")+' &nbsp; Purpose: '+fill("f13a-purpose","Purpose",30,"what should improve")+'</p>'
  + ta("f13a-before","Before the reveal: AI role, human decision, and technical/OBM safeguard",3)
+ + '<p class="stem">Benefit measure: '+fill("f13a-benefit","Benefit measure",20)+' &nbsp; Error/burden measure: '+fill("f13a-errm","Error/burden measure",20)+'</p>'
+ + callout("Next","When the presenter cues the reveal, go to "+nextLink("fieldlab2")+".");
+}},
+
+{id:"fieldlab2",code:"13A",nav:"Field Lab Reveal",gate:"fieldlab",title:"Reveal, Revise, and Report",lede:"Open your envelope, find what no longer holds, and revise the design you mapped.",block:3,html:function(){ return ''
+ + '<h3>The Reveal</h3>'
+ + contextShift()
+ + '<h3>Revise '+who("rec")+'</h3>'
+ + '<p>Move at least one token on the board. The System Map is in '+nextLink("fieldlab")+'.</p>'
  + ta("f13a-envelope","What changed in the envelope, and which assumption no longer holds?",3)
  + ta("f13a-after","After the reveal: token moved, design revision, and why it matters",3)
- + '<p class="stem">Benefit measure: '+fill("f13a-benefit","Benefit measure",20)+' &nbsp; Error/burden measure: '+fill("f13a-errm","Error/burden measure",20)+'</p>'
  + ta("f13a-stop","Stop condition, responsible person, and next step",2)
  + '<h3>Five Stems for the 60-Second Report</h3>'
  + line("f13a-r1","Our purpose is…")
@@ -928,8 +939,8 @@ var SECTIONS = [
 var SLIDES = {
   orient:"1–5, 20–21", mydef:"6", notice:"7–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
   choose:"27A–31", mytable:"32–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
-  define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–61", anticipate:"62–63", converge:"62–65",
-  prototype:"66, 66A, 67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
+  define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–57", ideate2:"58–61", anticipate:"62–63", converge:"62–65",
+  prototype:"66, 66A, 67", fieldlab:"68–71", fieldlab2:"72–79", commit:"80–81", retain:"82–84", references:"91"
 };
 function slidesFor(id){ var v=SLIDES[id]; return v ? (v.indexOf(",")>=0||v.indexOf("–")>=0 ? "Slides "+v : "Slide "+v) : ""; }
 
@@ -1377,6 +1388,7 @@ function refreshPagerNext(){
 
 /* ---------- submissions ---------- */
 function subKey(form,stage){ return form+(stage?":"+stage:""); }
+function nextLink(id){ return '<a href="#s/'+id+'">'+nextLabel(id)+'</a>'; }
 function nextLabel(id){ var s=sectionById(id); return s ? s.code+' '+s.nav : ''; }
 function formBlock(form,fields,opts){
   opts = opts||{};
