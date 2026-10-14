@@ -308,6 +308,7 @@ details .in{padding:0 1rem 1rem}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 
+.submit a[hidden]{display:none}
 .submit{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:.9rem 0 .3rem;padding:.6rem .8rem;border:1px dashed var(--line);border-radius:8px}
 .submit-status{font-size:.85rem;color:var(--muted)}
 .banner{background:var(--warn-soft);color:var(--warn);font-size:.85rem;padding:.5rem 16px;text-align:center}
@@ -544,9 +545,12 @@ var SECTIONS = [
  + sel("fint-second","Second choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-third","Third choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-role","Role you expect to play",["Designer","Implementer","Supporter","Not sure"])
- + formBlock("interests",["fint-first","fint-second","fint-third","fint-role"])
+ + formBlock("interests",["fint-first","fint-second","fint-third","fint-role"],{next:"mytable"})
+ + livePanel("interests");
+}},
+
+{id:"mytable",code:"04",nav:"My Table",gate:"choose",title:"Your Table and Problem Statement",lede:"After the break, find your table here, then write your table’s problem statement.",block:1,html:function(){ return ''
  + '<div id="seatbox">'+seatHtml()+'</div>'
- + livePanel("interests")
  + '<h3>My Table</h3>'
  + '<div class="field"><label for="f04-table">Which table did you join?</label><select id="f04-table"><option value="">Choose a table</option>'
  + TABLES.map(function(t){ return '<option value="'+t.id+'">Table '+t.id+': '+t.name+'</option>'; }).join('')+'</select></div>'
@@ -923,7 +927,7 @@ var SECTIONS = [
 /* Deck slide labels (bottom-right corner of each slide, Oct 9 facilitator-scripted deck) for each site section. */
 var SLIDES = {
   orient:"1–5, 20–21", mydef:"6", notice:"7–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
-  choose:"27A–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
+  choose:"27A–31", mytable:"32–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
   define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–61", anticipate:"62–63", converge:"62–65",
   prototype:"66, 66A, 67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
 };
@@ -1174,7 +1178,7 @@ function syncBar(){
           : 'Your entries stay on this device. Switch on to see and edit your table’s shared entries (they replace yours where your table has written something).')
     + '</small></span></div>';
 }
-function isUnlocked(id){ return id==="welcome" || GATES.unlocked.indexOf(id)>=0; }
+function isUnlocked(id){ var s=sectionById(id); if(s&&s.gate) id=s.gate; return id==="welcome" || GATES.unlocked.indexOf(id)>=0; }
 function sectionById(id){ for(var i=0;i<SECTIONS.length;i++) if(SECTIONS[i].id===id) return SECTIONS[i]; return null; }
 function firstUnlockedAfter(idx){ for(var i=idx+1;i<SECTIONS.length;i++) if(ADMIN||isUnlocked(SECTIONS[i].id)) return SECTIONS[i]; return null; }
 function lastUnlockedBefore(idx){ for(var i=idx-1;i>=0;i--) if(ADMIN||isUnlocked(SECTIONS[i].id)) return SECTIONS[i]; return null; }
@@ -1373,13 +1377,15 @@ function refreshPagerNext(){
 
 /* ---------- submissions ---------- */
 function subKey(form,stage){ return form+(stage?":"+stage:""); }
+function nextLabel(id){ var s=sectionById(id); return s ? s.code+' '+s.nav : ''; }
 function formBlock(form,fields,opts){
   opts = opts||{};
   var st = SUBMITTED[subKey(form,opts.stage)];
   var note = opts.note || "Anonymous. Goes to the facilitators.";
-  return '<div class="submit" data-form="'+form+'" data-stage="'+(opts.stage||'')+'" data-fields="'+fields.join(',')+'">'
+  return '<div class="submit" data-form="'+form+'" data-stage="'+(opts.stage||'')+'" data-next="'+(opts.next||'')+'" data-fields="'+fields.join(',')+'">'
    + '<button class="btn primary small" type="button">'+(st?'Submit again':'Submit')+'</button>'
-   + '<span class="submit-status">'+(st ? 'Submitted '+fmtTime(st)+'.' : note)+'</span></div>';
+   + '<span class="submit-status">'+(st ? 'Submitted '+fmtTime(st)+'.' : note)+'</span>'
+   + (opts.next ? '<a class="btn small" href="#s/'+opts.next+'"'+(st?'':' hidden')+'>Go to '+nextLabel(opts.next)+'</a>' : '')+'</div>';
 }
 function submitBlock(box){
   var form = box.getAttribute("data-form"), stage = box.getAttribute("data-stage")||"";
@@ -1393,7 +1399,8 @@ function submitBlock(box){
   if(form==="table_reports"){ data.group = myGroup(); data.voice = syncOn() ? "table" : "own"; }
   btn.disabled = true; status.textContent = "Sending…";
   apiPost({action:"submit", form:form, pid:PID, table:myTable(), data:data}).then(function(r){
-    if(r && r.ok){ var now=new Date().toISOString(); SUBMITTED[subKey(form,stage)]=now; lsSet(LS_SUB, JSON.stringify(SUBMITTED)); status.textContent="Submitted "+fmtTime(now)+"."; btn.textContent="Submit again"; setTimeout(pollSummary, 1500); }
+    if(r && r.ok){ var now=new Date().toISOString(); SUBMITTED[subKey(form,stage)]=now; lsSet(LS_SUB, JSON.stringify(SUBMITTED)); status.textContent="Submitted "+fmtTime(now)+"."; btn.textContent="Submit again"; setTimeout(pollSummary, 1500);
+      var nx=box.getAttribute("data-next"); if(nx){ var ln=box.querySelector("a"); if(ln) ln.hidden=false; location.hash="#s/"+nx; } }
     else status.textContent = "Could not send ("+((r&&r.error)||"unknown")+"). Try again.";
   }).catch(function(){ status.textContent = "Could not send. Check the connection and try again."; })
   .then(function(){ btn.disabled=false; });
@@ -1437,6 +1444,7 @@ function renderAdmin(){
       gates += '<div class="gate-block"><span class="eyebrow">'+BLOCKS[s.block].n+' · '+BLOCKS[s.block].t+'</span>'
         + '<button class="blkbtn'+(allOn?' on':'')+'" data-block="'+s.block+'">'+(allOn?'Lock this block':'Open this block')+'</button></div>';
     }
+    if(s.gate) return;
     var on = g.unlocked.indexOf(s.id)>=0;
     gates += '<div class="gate"><label class="sw"><input type="checkbox" data-gate="'+s.id+'"'+(on?' checked':'')+' aria-label="Open '+s.code+' '+s.nav+' to participants"><i></i></label>'
       + '<span><span class="rc">'+s.code+'</span>'+s.nav+(slidesFor(s.id)?' <span class="code">'+slidesFor(s.id)+'</span>':'')+'</span>'
@@ -1456,6 +1464,7 @@ function renderAdmin(){
    + '<div class="gates">'+gates+'</div>'
    + '<h3>Room Results Shown to Participants</h3>'
    + '<div class="gates">'+PANELS.map(function(p){ var on=g.show.indexOf(p[0])>=0; return '<div class="gate"><label class="sw"><input type="checkbox" data-show="'+p[0]+'"'+(on?' checked':'')+' aria-label="Show '+p[1]+'"><i></i></label><span>'+p[1]+'</span><span></span></div>'; }).join('')+'</div>'
+   + (dirty ? '<div class="actions"><span style="flex:1"></span><span class="pending">Unpublished changes</span><button class="btn primary" id="a-publish2">Publish</button></div>' : '')
    + '<div id="admin-msg" hidden></div>'
    + '</section>'
    + '<section class="admin" id="admin-responses">'
@@ -1510,7 +1519,7 @@ function seatHtml(){
      + '<p class="code">Assigned by '+esc(SEAT.basis||'')+'. Take your workbook and sit at the table marked '+esc(g)+'.</p></div>';
   }
   if(SEAT && SEAT.unassigned) return '<div class="seat pending"><div class="eyebrow">Your table</div><p>No seat found for this browser. Submit the interest poll above, or ask a facilitator to place you.</p></div>';
-  return '<div class="seat pending"><div class="eyebrow">Your table</div><p>Your table appears here once the facilitators sort the room.</p></div>';
+  return '<div class="seat pending"><div class="eyebrow">Your table</div><p>Your table appears here once the facilitators sort the room. Check back after the break.</p></div>';
 }
 function fetchSeat(){
   if(!API_URL || seatPending || !document.getElementById("seatbox")) return;
@@ -1688,12 +1697,12 @@ function hydrate(){
     }; });
     root.querySelectorAll("[data-show]").forEach(function(el){ el.onchange=function(){ var g=draft(); var k=el.getAttribute("data-show"); var i=g.show.indexOf(k); if(el.checked&&i<0) g.show.push(k); if(!el.checked&&i>=0) g.show.splice(i,1); render({keepScroll:true}); }; });
     root.querySelectorAll("[data-now]").forEach(function(el){ el.onclick=function(){ var g=draft(); var id=el.getAttribute("data-now"); g.current = (g.current===id) ? "welcome" : id; if(g.current!=="welcome" && g.unlocked.indexOf(id)<0) g.unlocked.push(id); render({keepScroll:true}); }; });
-    if(q("a-next")) q("a-next").onclick=function(){ var g=draft(); for(var i=0;i<SECTIONS.length;i++){ if(g.unlocked.indexOf(SECTIONS[i].id)<0){ g.unlocked.push(SECTIONS[i].id); g.current=SECTIONS[i].id; break; } } render({keepScroll:true}); };
+    if(q("a-next")) q("a-next").onclick=function(){ var g=draft(); for(var i=0;i<SECTIONS.length;i++){ if(!SECTIONS[i].gate && g.unlocked.indexOf(SECTIONS[i].id)<0){ g.unlocked.push(SECTIONS[i].id); g.current=SECTIONS[i].id; break; } } render({keepScroll:true}); };
     if(q("a-all")) q("a-all").onclick=function(){ var g=draft(); g.unlocked=ALL_IDS.slice(); render({keepScroll:true}); };
     if(q("a-block1")) q("a-block1").onclick=function(){ var g=draft(); g.unlocked=SECTIONS.filter(function(s){return s.block===1;}).map(function(s){return s.id;}); if(g.unlocked.indexOf(g.current)<0) g.current="orient"; render({keepScroll:true}); };
     if(q("a-lock")) q("a-lock").onclick=function(){ var g=draft(); g.unlocked=[]; g.current="welcome"; g.show=[]; render({keepScroll:true}); };
     if(q("a-discard")) q("a-discard").onclick=function(){ PENDING=null; render({keepScroll:true}); };
-    if(q("a-publish")) q("a-publish").onclick=publishGates;
+    if(q("a-publish")) q("a-publish").onclick=publishGates; if(q("a-publish2")) q("a-publish2").onclick=publishGates;
     if(q("a-assign")) q("a-assign").onclick=function(){
       var b=q("a-assign"), msg=q("assign-msg"); b.disabled=true; msg.textContent="Sorting…";
       apiPost({action:"assign", key:ADMIN_KEY, tableSize:(q("a-size")||{}).value||"", maxTables:(q("a-maxt")||{}).value||""}).then(function(r){
