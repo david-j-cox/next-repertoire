@@ -415,18 +415,22 @@ var SECTIONS = [
  + '<p class="code">Source: Stanford d.school, Design thinking bootleg (see section 17).</p>';
 }},
 
-{id:"notice",code:"02",nav:"Notice",title:"AI by Function",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
+{id:"mydef",code:"02",nav:"Definition",title:"Your Working Definition of AI",block:1,html:function(){ return ''
+ + '<h3>My Current Working Definition of Artificial Intelligence '+who()+'</h3>'
+ + '<p>Write your current understanding in one or two sentences. This is a starting point. You will revise it after the overview on the next page.</p>'
+ + ta("f02-def1","Current working definition",3);
+}},
+
+{id:"notice",code:"02",nav:"AI by Function",title:"AI by Function",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
  + twrap(thead(["Function","Plain-Language Job","ABA-Adjacent Example","Professional Obligation"])+'<tbody>'
    + '<tr><td class="k">Descriptive</td><td>Organize or summarize what has already happened</td><td>Graph patterns; summarize notes</td><td>Check completeness, context, and representation</td></tr>'
    + '<tr><td class="k">Predictive</td><td>Estimate a future value or category</td><td>Forecast attrition or outcome risk</td><td>Check local validity, uncertainty, scope, and consequences</td></tr>'
    + '<tr><td class="k">Generative</td><td>Produce new text, images, code, or options</td><td>Draft goals, summaries, training examples</td><td>Verify facts, logic, fit, authorship, and confidential data handling</td></tr>'
    + '<tr><td class="k">Workflow wrapper</td><td>Connect a model to forms, records, or actions</td><td>Route approvals; prefill documentation</td><td>Map the whole process, access controls, failure paths, and human override</td></tr></tbody>')
  + callout("Watch the category error","A fluent output is not evidence that a recommendation is accurate, appropriate, ethical, or effective in this context.")
- + '<h3>My Current Working Definition of Artificial Intelligence '+who()+'</h3>'
- + '<p>Write your current understanding in one or two sentences. You’ll have an opportunity to revise it after the overview.</p>'
- + ta("f02-def1","Current working definition",3)
  + '<h3>My Revised Working Definition of Artificial Intelligence '+who()+'</h3>'
- + '<p>Come back to this after the AI overview. Leave it blank for now.</p>'
+ + '<p>After working through the table above, return to your first definition and add or revise one distinction.</p>'
+ + (ANSWERS["f02-def1"] ? '<p class="code">Your first definition: '+esc(ANSWERS["f02-def1"])+'</p>' : '')
  + ta("f02-def2","Revised working definition",3)
  + '<h3>One Example I Want to Test Today '+who()+'</h3>'
  + ta("f02-example","One example I want to test today",3)
@@ -580,6 +584,20 @@ var SECTIONS = [
    + '<tr><td class="k">Who can access, reuse, train on, disclose, or retain the data?</td><td>Settings, contracts, integrations, logs, and subprocessors may matter more than the user interface.</td></tr>'
    + '<tr><td class="k">Can the minimum necessary information accomplish the task?</td><td>Reduce exposure; prefer fictional, synthetic, or properly de-identified data for practice and testing.</td></tr>'
    + '<tr><td class="k">How will access end and data be exported or destroyed?</td><td>Exit is part of the design from the start.</td></tr></tbody>')
+ )
+ + '<h3>Example: One Documentation Tool</h3>'
+ + '<p>A fictional tool that drafts monthly progress summaries. Follow the data from source to record, and look for where things can go wrong. Tap the image to open it full size.</p>'
+ + '<a href="img/data-path.png" target="_blank" rel="noopener"><img src="img/data-path.png" alt="Data path for a tool that drafts monthly progress summaries. Session data and BCBA notes go to an approved AI vendor, which produces a draft summary. A BCBA reviews and signs it, and the signed note goes to the EHR, where it may be shared with a supervisor, a payer, or a caregiver. Vendor logs branch off the vendor. A monthly spot check compares signed notes to session data and feeds back to the BCBA. Six risk points are marked." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
+ + ref('The Example as Text',''
+ + '<p>Path: session data export (names and birth dates removed) and the BCBA’s typed notes go to an approved AI vendor covered by a BAA. The vendor returns a draft summary. The BCBA checks it against session data, edits, and signs. The signed note goes to the EHR and may be shared with a supervisor, a payer on request, or a caregiver. Vendor logs keep prompts, outputs, user IDs, and timestamps. A monthly spot check has a second reviewer compare a sample of signed notes to session data, with results going back to the BCBA as feedback and to the team as an error rate.</p>'
+ + '<ol>'
+ + '<li>Identifying details can slip through. Free text may carry names, places, or rare details.</li>'
+ + '<li>The model can change. An update may shift how drafts read, with or without notice.</li>'
+ + '<li>The draft may be wrong. It can add claims the data do not support, or leave out ones they do.</li>'
+ + '<li>Review can weaken over time. When drafts usually look right, checks may get shorter (automation bias).</li>'
+ + '<li>The output becomes a record. Once signed, it may travel further than the tool did.</li>'
+ + '<li>Logs are an easy copy to forget. Ask who can see them and when they are purged.</li>'
+ + '</ol>'
  )
  + '<h3>Sketch the Data Path '+who("rec")+'</h3>'
  + twrap(thead(["Source","What Enters","Where Processed/Stored","Who Receives Output","Retention/Exit"])+'<tbody>'
@@ -865,8 +883,8 @@ var SECTIONS = [
 
 /* Deck slide labels (bottom-right corner of each slide, Oct 9 facilitator-scripted deck) for each site section. */
 var SLIDES = {
-  orient:"1–5, 20–21", notice:"6–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
-  choose:"27A–34", govern:"35, 39, 41–42", safeguard:"36", verify:"37", assign:"38", procure:"40",
+  orient:"1–5, 20–21", mydef:"6", notice:"7–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
+  choose:"27A–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
   define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52–61", anticipate:"62–63", converge:"62–65",
   prototype:"66–67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
 };
