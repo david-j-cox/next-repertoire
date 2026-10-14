@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&amp;family=Public+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');
+      .h { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 23px; fill: #14213D; }
+      .hs { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 20px; fill: #14213D; }
+      .t { font-family: 'Public Sans', Arial, sans-serif; font-size: 19px; fill: #3C4B63; }
+      .tb { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 19px; fill: #14213D; }
+      .eb { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 16px; letter-spacing: 1.5px; fill: #5B6B82; }
+      .ebw { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 16px; letter-spacing: 1.5px; fill: #FFFFFF; }
+      .w { font-family: 'Public Sans', Arial, sans-serif; font-size: 19px; fill: #7A3416; }
+      .wh { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 19px; fill: #7A3416; }
+      .cond { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 24px; fill: #FFFFFF; }
+      .title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 32px; fill: #14213D; }
+      .key { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 26px; fill: #14213D; }
+    </style>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2F5D9E"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text x="50" y="56" class="title">Example: one changed condition, three ways to respond</text>
+
+  <!-- changed condition -->
+  <rect x="50" y="84" width="1500" height="62" rx="12" fill="#A3471F"/>
+  <text x="74" y="121" class="ebw">CHANGED CONDITION</text>
+  <text x="300" y="124" class="cond">The payer now requires two new fields in every progress note.</text>
+
+  <!-- pipeline -->
+  <text x="50" y="190" class="eb">THE PROGRESS-SUMMARY DRAFTER FROM SLIDE 36A</text>
+  <g>
+    <rect x="50"   y="206" width="250" height="84" rx="12" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+    <text x="70" y="256" class="hs">Session data</text>
+    <rect x="362"  y="206" width="250" height="84" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+    <text x="382" y="244" class="hs">AI vendor</text><text x="382" y="272" class="t">fills a note template</text>
+    <rect x="674"  y="206" width="250" height="84" rx="12" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+    <text x="694" y="256" class="hs">Draft summary</text>
+    <rect x="986"  y="206" width="250" height="84" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+    <text x="1006" y="244" class="hs">BCBA review</text><text x="1006" y="272" class="t">uses a checklist</text>
+    <rect x="1298" y="206" width="252" height="84" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+    <text x="1318" y="244" class="hs">Signed note</text><text x="1318" y="272" class="t">EHR note form</text>
+    <line x1="300"  y1="248" x2="358"  y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
+    <line x1="612"  y1="248" x2="670"  y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
+    <line x1="924"  y1="248" x2="982"  y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
+    <line x1="1236" y1="248" x2="1294" y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- connectors from pipeline to options -->
+  <path d="M487,290 L487,330 L245,330 L245,362" fill="none" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+  <path d="M1111,290 L1111,330 L800,330 L800,362" fill="none" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+  <path d="M1424,290 L1424,330 L1355,330 L1355,362" fill="none" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+
+  <!-- option cards -->
+  <g transform="translate(50,366)">
+    <rect width="490" height="360" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+    <rect width="490" height="8" rx="4" fill="#2F5D9E"/>
+    <text x="24" y="48" class="eb">TECHNICAL</text>
+    <text x="24" y="86" class="h">Add the two fields to</text>
+    <text x="24" y="116" class="h">the template the model fills</text>
+    <text x="24" y="166" class="tb">Work moves to</text>
+    <text x="24" y="192" class="t">Whoever maintains the template,</text>
+    <text x="24" y="216" class="t">often the vendor</text>
+    <text x="24" y="266" class="wh">Watch for</text>
+    <text x="24" y="292" class="w">When the data are missing, the model</text>
+    <text x="24" y="316" class="w">may fill the fields with plausible guesses.</text>
+  </g>
+  <g transform="translate(555,366)">
+    <rect width="490" height="360" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+    <rect width="490" height="8" rx="4" fill="#2F5D9E"/>
+    <text x="24" y="48" class="eb">BEHAVIORAL (OBM)</text>
+    <text x="24" y="86" class="h">Add the fields to the BCBA's</text>
+    <text x="24" y="116" class="h">review checklist, with feedback</text>
+    <text x="24" y="146" class="h">on misses from the spot check</text>
+    <text x="24" y="196" class="tb">Work moves to</text>
+    <text x="24" y="222" class="t">The BCBA and the spot-check reviewer</text>
+    <text x="24" y="272" class="wh">Watch for</text>
+    <text x="24" y="298" class="w">A longer checklist may lead to faster,</text>
+    <text x="24" y="322" class="w">shallower reviews.</text>
+  </g>
+  <g transform="translate(1060,366)">
+    <rect width="490" height="360" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+    <rect width="490" height="8" rx="4" fill="#2F5D9E"/>
+    <text x="24" y="48" class="eb">NON-AI</text>
+    <text x="24" y="86" class="h">Change the note form so</text>
+    <text x="24" y="116" class="h">the fields cannot be left blank</text>
+    <text x="24" y="166" class="tb">Work moves to</text>
+    <text x="24" y="192" class="t">Whoever owns the EHR form</text>
+    <text x="24" y="242" class="wh">Watch for</text>
+    <text x="24" y="268" class="w">Required fields may get filler text</text>
+    <text x="24" y="292" class="w">just to let the note save.</text>
+  </g>
+
+  <text x="50" y="820" class="key">Each option moves the work to a different person. Compare who carries it.</text>
+  <text x="50" y="868" class="t" style="font-size:16px;fill:#5B6B82">Fictional example for teaching.</text>
+</svg>

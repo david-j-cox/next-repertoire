@@ -688,7 +688,14 @@ var SECTIONS = [
 
 {id:"ideate",code:"11A",nav:"Ideation Practice",title:"Generate and Compare Alternatives",block:2,html:function(){ return ''
  + '<div class="output"><em>Your output:</em> distinct options and the staff supports each would need.</div>'
- + '<p><em>Generic example</em>: To improve handoffs, compare an AI summary, a checklist, and a revised handoff routine. Each needs a reviewer and a check for missing information.</p>'
+ + '<h3>Example: One Changed Condition, Three Ways to Respond</h3>'
+ + '<p>The progress-summary drafter from 08 is running. Then the payer requires two new fields in every progress note. Each option below moves the work to a different person. Compare who carries it. Tap the image to open it full size.</p>'
+ + '<a href="img/ideate-example.png" target="_blank" rel="noopener"><img src="img/ideate-example.png" alt="Changed condition: the payer now requires two new fields in every progress note. Three options. Technical: add the fields to the template the model fills. Behavioral: add the fields to the BCBA review checklist with feedback from the spot check. Non-AI: change the note form so the fields cannot be left blank." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
+ + ref('The Example as Text',''
+ + '<p><em>Technical</em>: add the two fields to the template the model fills. Work moves to whoever maintains the template, often the vendor. Watch for: when the data are missing, the model may fill the fields with plausible guesses.</p>'
+ + '<p><em>Behavioral (OBM)</em>: add the fields to the BCBA’s review checklist, with feedback on misses from the spot check. Work moves to the BCBA and the spot-check reviewer. Watch for: a longer checklist may lead to faster, shallower reviews.</p>'
+ + '<p><em>Non-AI</em>: change the note form so the fields cannot be left blank. Work moves to whoever owns the EHR form. Watch for: required fields may get filler text just to let the note save.</p>'
+ )
  + '<ul class="steps">'
  + '<li><span class="t">Before break</span><span class="n">Rep 1 · 5 min</span><span class="d">Technical and non-AI options, then 3 minutes of feedback</span></li>'
  + '<li><span class="t">Break 2</span><span class="n">10 min</span><span class="d"></span></li>'
@@ -885,7 +892,7 @@ var SECTIONS = [
 var SLIDES = {
   orient:"1–5, 20–21", mydef:"6", notice:"7–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
   choose:"27A–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
-  define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52–61", anticipate:"62–63", converge:"62–65",
+  define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–61", anticipate:"62–63", converge:"62–65",
   prototype:"66–67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
 };
 function slidesFor(id){ var v=SLIDES[id]; return v ? (v.indexOf(",")>=0||v.indexOf("–")>=0 ? "Slides "+v : "Slide "+v) : ""; }
