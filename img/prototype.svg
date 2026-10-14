@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&amp;family=Public+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');
+      .h { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 30px; fill: #14213D; }
+      .t { font-family: 'Public Sans', Arial, sans-serif; font-size: 25px; fill: #3C4B63; }
+      .eb { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 19px; letter-spacing: 1.5px; fill: #5B6B82; }
+      .wh { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 30px; fill: #7A3416; }
+      .w { font-family: 'Public Sans', Arial, sans-serif; font-size: 25px; fill: #7A3416; }
+      .title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 38px; fill: #14213D; }
+    </style>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F5D9E"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text x="50" y="64" class="title">Example: The Smallest Testable Version</text>
+  <text x="50" y="108" class="eb">THE DENIAL-LETTER TOOL, TESTING THE SUMMARY STEP FIRST</text>
+
+  <text x="50" y="164" class="eb">THE WORKFLOW</text>
+  <rect x="50"   y="182" width="330" height="200" rx="14" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="72" y="236" class="h">Input</text>
+  <text x="72" y="280" class="t">One denial letter</text>
+
+  <rect x="440"  y="182" width="330" height="200" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="462" y="236" class="h">AI Step</text>
+  <text x="462" y="280" class="t">Summarizes the</text>
+  <text x="462" y="314" class="t">reason and deadline</text>
+
+  <rect x="830"  y="182" width="330" height="200" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="852" y="236" class="h">Human Review</text>
+  <text x="852" y="280" class="t">Billing specialist</text>
+  <text x="852" y="314" class="t">checks the letter</text>
+
+  <rect x="1220" y="182" width="330" height="200" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="1242" y="236" class="h">Decision</text>
+  <text x="1242" y="280" class="t">Appeal, fix and</text>
+  <text x="1242" y="314" class="t">resubmit, or accept</text>
+
+  <line x1="380"  y1="282" x2="436" y2="282" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="770"  y1="282" x2="826" y2="282" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="1160" y1="282" x2="1216" y2="282" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+
+  <text x="50" y="462" class="eb">HOW WE TEST IT</text>
+  <rect x="50"   y="480" width="330" height="360" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+  <rect x="50"   y="480" width="330" height="8" rx="4" fill="#2F5D9E"/>
+  <text x="72" y="538" class="h">Release</text>
+  <text x="72" y="582" class="t">One billing specialist,</text>
+  <text x="72" y="616" class="t">30 days</text>
+  <text x="72" y="676" class="t">Can be switched</text>
+  <text x="72" y="710" class="t">off at any time</text>
+
+  <rect x="440"  y="480" width="330" height="360" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+  <rect x="440"  y="480" width="330" height="8" rx="4" fill="#2F5D9E"/>
+  <text x="462" y="538" class="h">Benefit Measure</text>
+  <text x="462" y="582" class="t">Minutes per letter</text>
+  <text x="462" y="642" class="t">Compared with</text>
+  <text x="462" y="676" class="t">last month, no tool</text>
+
+  <rect x="830"  y="480" width="330" height="360" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+  <rect x="830"  y="480" width="330" height="8" rx="4" fill="#2F5D9E"/>
+  <text x="852" y="538" class="h">Error Measure</text>
+  <text x="852" y="582" class="t">Wrong reason or</text>
+  <text x="852" y="616" class="t">deadline, found in a</text>
+  <text x="852" y="650" class="t">weekly spot check</text>
+  <text x="852" y="710" class="t">Checked by a</text>
+  <text x="852" y="744" class="t">second reviewer</text>
+
+  <rect x="1220" y="480" width="330" height="360" rx="14" fill="#F9E8DF" stroke="#A3471F" stroke-width="2.5"/>
+  <rect x="1220" y="480" width="330" height="8" rx="4" fill="#A3471F"/>
+  <text x="1242" y="538" class="wh">Stop Rule</text>
+  <text x="1242" y="582" class="w">Pause if any appeal</text>
+  <text x="1242" y="616" class="w">deadline is missed, or</text>
+  <text x="1242" y="650" class="w">more than 1 in 10</text>
+  <text x="1242" y="684" class="w">summaries is wrong</text>
+  <text x="1242" y="760" class="w">Owner: billing manager</text>
+</svg>

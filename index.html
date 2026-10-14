@@ -356,6 +356,7 @@ function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input
 function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
+function deeper(q){ return ref('Go Deeper','<p>'+q+'</p><p class="code">Optional. For tables that finish early or want more.</p>'); }
 function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
 function callout(kicker,text,cls){ return '<aside class="callout'+(cls?' '+cls:'')+'"><b>'+kicker+'</b>'+text+'</aside>'; }
 function who(kind){ return kind==="rec" ? '<span class="who rec">Table recorder</span>' : '<span class="who">Everyone writes</span>'; }
@@ -562,7 +563,8 @@ var SECTIONS = [
  + (missionsOn()
    ? '<p>Keep the same case through Define, Ideate, and the Field Lab. Keep the A–F envelope sealed until the reveal.</p>'
      + TABLES.map(function(t){ return '<details><summary><span class="code">Table '+t.id+'</span> '+t.name+'</summary><div class="in">'+tableCard(t)+'</div></details>'; }).join('')
-   : '<div class="sealed"><div class="eyebrow">Mission cards</div><p>The mission cards open here when the presenter cues them.</p></div>');
+   : '<div class="sealed"><div class="eyebrow">Mission cards</div><p>The mission cards open here when the presenter cues them.</p></div>')
+ + deeper('Rewrite your shared statement for a different setting (clinic, home, school). What changes? Name who would build and maintain each part of your version.');
 }},
 
 {id:"govern",code:"07",nav:"Govern",title:"A Lifecycle for Responsible Adoption",lede:"Governance changes as the system moves from selection to deployment, monitoring, and retirement.",block:2,html:function(){ return ''
@@ -583,7 +585,8 @@ var SECTIONS = [
  + ref('Operational Training and General AI Literacy', '<p>Identify the behavior required. Instruct, model, rehearse, observe, and provide feedback. Check performance under normal workload. Policy acknowledgments and quiz scores are weak evidence on their own. Sections 10 and 11 connect authority and behavior.</p>')
  + ref('Vendor Conversations and Build or Buy', '<p>Ask for task-specific evidence, data terms, change notice, incident response, export and deletion, and exit support. Compare the total maintenance burden of buying, configuring, fine-tuning, training, or using no AI. Section 14 contains the procurement checklist.</p>')
  + ta("f07a-open","One unresolved question, the owner who can answer it, and the decision it blocks "+who("rec"),3)
- + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>';
+ + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>'
+ + deeper('Pick your unresolved question and draft the email asking the person who can answer it. What would you do if the answer is no?');
 }},
 
 {id:"safeguard",code:"08",nav:"Safeguard",title:"Privacy, Security, and Confidentiality",lede:"A de-identification claim is only as good as the process, context, and residual re-identification risk.",block:2,html:function(){ return ''
@@ -596,25 +599,26 @@ var SECTIONS = [
    + '<tr><td class="k">Can the minimum necessary information accomplish the task?</td><td>Reduce exposure; prefer fictional, synthetic, or properly de-identified data for practice and testing.</td></tr>'
    + '<tr><td class="k">How will access end and data be exported or destroyed?</td><td>Exit is part of the design from the start.</td></tr></tbody>')
  )
- + '<h3>Example: One Documentation Tool</h3>'
- + '<p>A fictional tool that drafts monthly progress summaries. Follow the data from source to record, and look for where things can go wrong. Tap the image to open it full size.</p>'
- + '<a href="img/data-path.png" target="_blank" rel="noopener"><img src="img/data-path.png" alt="Data path for a tool that drafts monthly progress summaries. Session data and BCBA notes go to an approved AI vendor, which produces a draft summary. A BCBA reviews and signs it, and the signed note goes to the EHR, where it may be shared with a supervisor, a payer, or a caregiver. Vendor logs branch off the vendor. A monthly spot check compares signed notes to session data and feeds back to the BCBA. Six risk points are marked." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
+ + '<h3>Example: One Billing Tool</h3>'
+ + '<p>A fictional tool that summarizes payer denial letters and recommends operational changes to reduce denials. Follow the data from source to record, and look for where things can go wrong. The same tool appears in sections 11A and 13. Tap the image to open it full size.</p>'
+ + '<a href="img/data-path-denial.png" target="_blank" rel="noopener"><img src="img/data-path-denial.png" alt="Data path for a tool that summarizes payer denial letters and recommends operational changes. The claim record and the denial letter go to an AI vendor under a BAA, which produces a draft summary of the reason, deadline, and likely fix. A billing specialist checks it against the letter, and the summary is saved in the billing record, where it may go to the payer in an appeal or to operations as change ideas. Vendor logs branch off the vendor. A weekly spot check compares summaries to letters. Six risk points are marked." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
  + ref('The Example as Text',''
- + '<p>Path: session data export (names and birth dates removed) and the BCBA’s typed notes go to an approved AI vendor covered by a BAA. The vendor returns a draft summary. The BCBA checks it against session data, edits, and signs. The signed note goes to the EHR and may be shared with a supervisor, a payer on request, or a caregiver. Vendor logs keep prompts, outputs, user IDs, and timestamps. A monthly spot check has a second reviewer compare a sample of signed notes to session data, with results going back to the BCBA as feedback and to the team as an error rate.</p>'
+ + '<p>Path: the claim record (codes and dates of service) and the denial letter (which carries the client’s name and member ID) go to an AI vendor covered by a BAA. The vendor returns a draft summary of the denial reason, the appeal deadline, and a likely fix. A billing specialist checks it against the letter. The summary is saved in the billing record and may go to the payer in an appeal. Suggested fixes are pooled each month and go to operations as change ideas (for example, a missing authorization step at intake), where the billing manager decides what to act on. Vendor logs keep prompts, outputs, user IDs, and timestamps. A weekly spot check has a second reviewer compare a sample of summaries to the letters, with results going back to the specialist as feedback and to the billing manager as an error rate.</p>'
  + '<ol>'
- + '<li>Identifying details can slip through. Free text may carry names, places, or rare details.</li>'
- + '<li>The model can change. An update may shift how drafts read, with or without notice.</li>'
- + '<li>The draft may be wrong. It can add claims the data do not support, or leave out ones they do.</li>'
- + '<li>Review can weaken over time. When drafts usually look right, checks may get shorter (automation bias).</li>'
- + '<li>The output becomes a record. Once signed, it may travel further than the tool did.</li>'
- + '<li>Logs are an easy copy to forget. Ask who can see them and when they are purged.</li>'
+ + '<li>Letters carry identifiers. Names, member IDs, and diagnosis codes are part of the letter, so removing them may not be practical. The vendor agreement and access settings carry more of the load.</li>'
+ + '<li>The model can change. An update may shift how letters are read, with or without notice.</li>'
+ + '<li>The output may be wrong. It can name the wrong reason or deadline, miss a second reason in the same letter, or suggest a fix based on a pattern from only a few letters.</li>'
+ + '<li>Review can weaken over time. When summaries usually look right, checks may get shorter (automation bias).</li>'
+ + '<li>The record travels further. A saved summary may be reused in appeals and in operational changes well beyond the original check.</li>'
+ + '<li>Logs are easy to forget. Ask who can see them and when they are purged.</li>'
  + '</ol>'
  )
  + '<h3>Sketch the Data Path '+who("rec")+'</h3>'
  + twrap(thead(["Source","What Enters","Where Processed/Stored","Who Receives Output","Retention/Exit"])+'<tbody>'
    + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c,c);}).join('')+'</tr>'
    + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r2-"+i,"Data path row 2 / "+c,c);}).join('')+'</tr></tbody>')
- + '<p class="code">This worksheet is educational. It is not legal advice. Apply organizational policy and obtain qualified privacy, security, compliance, or legal review when needed.</p>';
+ + '<p class="code">This worksheet is educational. It is not legal advice. Apply organizational policy and obtain qualified privacy, security, compliance, or legal review when needed.</p>'
+ + deeper('Add the vendor’s logs and subprocessors to your data path. Where could identifying details slip through in your version?');
 }},
 
 {id:"verify",code:"09",nav:"Verify",title:"Validity, Scope, Drift, and Error",lede:"Ask “For which task, people, setting, data, version, threshold, and consequence does it work?” rather than “Does it work?”",block:2,html:function(){ return ''
@@ -630,7 +634,8 @@ var SECTIONS = [
    + rowFill("f09-error","Error/quality",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-equity","Equity/access",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-time","Time/workload",["Baseline","Criterion","Sample","Owner"])+'</tbody>')
- + '<aside class="callout"><b>Stop rule</b><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14,"who pauses it")+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14,"who reviews it")+' reviews it.</p></aside>';
+ + '<aside class="callout"><b>Stop rule</b><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14,"who pauses it")+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14,"who reviews it")+' reviews it.</p></aside>'
+ + deeper('Set a number for your stop rule and defend it. What result in week 2 would make you stop early?');
 }},
 
 {id:"assign",code:"10",nav:"Assign",title:"Human Decision Rights",lede:"Automation is not one switch. Separate generating, recommending, approving, acting, documenting, and monitoring.",block:2,html:function(){ return ''
@@ -640,7 +645,8 @@ var SECTIONS = [
  + callout("Accountability test","If the output is wrong, who detects it, before what consequence, using what evidence, with what authority to stop the workflow?")
  + '<h3>Statements We Can Defend '+who("rec")+'</h3>'
  + ta("f10-permitted","The AI system is permitted to …",4)
- + ta("f10-not","The AI system is not permitted to …",4);
+ + ta("f10-not","The AI system is not permitted to …",4)
+ + deeper('Take one human decision and describe how review could weaken over six months. What would keep it sharp?');
 }},
 
 {id:"procure",code:"14",nav:"Procure",title:"Questions for a Vendor, or Your Own Build Team",lede:"A polished demonstration is not a substitute for evidence, contracts, operational fit, and an exit plan.",block:2,html:function(){ return ''
@@ -680,7 +686,8 @@ var SECTIONS = [
  + line("f05a-missing","Missing voice or evidence")
  + formBlock("table_reports",["f04-table","f05a-person","f05a-need","f05a-insight","f05a-hmw","f05a-changed","f05a-revised","f05a-missing"],{stage:"define",note:"Table recorder: one submission per table."})
  + livePanel("reports:define")
- + callout("Feedback check","Is the person/context clear? Is the need meaningful? Is the insight supported or labeled as an assumption? Does the question avoid selecting a tool in advance?");
+ + callout("Feedback check","Is the person/context clear? Is the need meaningful? Is the insight supported or labeled as an assumption? Does the question avoid selecting a tool in advance?")
+ + deeper('Rewrite your need statement from the caregiver’s view, then the RBT’s. Which version is most useful?');
 }},
 
 {id:"design",code:"11",nav:"Design",title:"Pair a Technical Solution with an OBM Solution",lede:"A control that exists only in software, or only in policy, will likely fail when work becomes busy.",block:2,html:function(){ return ''
@@ -700,12 +707,12 @@ var SECTIONS = [
 {id:"ideate",code:"11A",nav:"Ideation Practice",title:"Generate and Compare Alternatives",block:2,html:function(){ return ''
  + '<div class="output"><em>Your output:</em> distinct options and the staff supports each would need.</div>'
  + '<h3>Example: One Changed Condition, Three Ways to Respond</h3>'
- + '<p>The progress-summary drafter from 08 is running. Then the payer requires two new fields in every progress note. Each option below moves the work to a different person. Compare who carries it. Tap the image to open it full size.</p>'
- + '<a href="img/ideate-example.png" target="_blank" rel="noopener"><img src="img/ideate-example.png" alt="Changed condition: the payer now requires two new fields in every progress note. Three options. Technical: add the fields to the template the model fills. Behavioral: add the fields to the BCBA review checklist with feedback from the spot check. Non-AI: change the note form so the fields cannot be left blank." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
+ + '<p>The denial-letter tool from 08 is running. Then a new payer starts sending letters in a different layout. Each option below moves the work to a different person. Compare who carries it. Tap the image to open it full size.</p>'
+ + '<a href="img/ideate-denial.png" target="_blank" rel="noopener"><img src="img/ideate-denial.png" alt="Changed condition: a new payer sends denial letters in a different layout. Three options. Technical: add sample letters to the tool setup. Behavioral: add a deadline check to the billing specialist review. Non-AI: use the payer denial codes in the billing system." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
  + ref('The Example as Text',''
- + '<p><em>Technical</em>: add the two fields to the template the model fills. Work moves to whoever maintains the template, often the vendor. Watch for: when the data are missing, the model may fill the fields with plausible guesses.</p>'
- + '<p><em>Behavioral (OBM)</em>: add the fields to the BCBA’s review checklist, with feedback on misses from the spot check. Work moves to the BCBA and the spot-check reviewer. Watch for: a longer checklist may lead to faster, shallower reviews.</p>'
- + '<p><em>Non-AI</em>: change the note form so the fields cannot be left blank. Work moves to whoever owns the EHR form. Watch for: required fields may get filler text just to let the note save.</p>'
+ + '<p><em>Technical</em>: add sample letters in the new layout to the tool setup. Work moves to whoever maintains the setup, often the vendor. Watch for: letters in the old layouts may start to read wrong after the change.</p>'
+ + '<p><em>Behavioral (OBM)</em>: add a deadline check to the billing specialist’s review, with feedback on misses from the weekly spot check. Work moves to the billing specialist and the spot-check reviewer. Watch for: a longer review may lead to faster, shallower checks.</p>'
+ + '<p><em>Non-AI</em>: use the denial codes the payer sends with its electronic remittance, which already land in the billing system. Work moves to whoever owns the billing system. Watch for: codes may miss details the letter explains, including some deadlines.</p>'
  )
  + '<ul class="steps">'
  + '<li><span class="t">Before break</span><span class="n">Rep 1 · 5 min</span><span class="d">Technical and non-AI options, then 3 minutes of feedback</span></li>'
@@ -725,7 +732,8 @@ var SECTIONS = [
  + '<p>Name the performer, observable response, opportunity, and consequence. Pair each candidate with the time, training, rehearsal, feedback, authority, and workload support it needs. “Human review” alone is not a design.</p>'
  + '<p class="stem">When '+fill("f11a-when","When",20,"opportunity or antecedent")+', '+fill("f11a-performer","performer",14)+' will '+fill("f11a-will","will",24,"observable response")+'.</p>'
  + '<p class="stem">The supporting consequence/feedback will be '+fill("f11a-consequence","supporting consequence/feedback",30)+'.</p>'
- + ta("f11a-feedback","Feedback received and one revision",3);
+ + ta("f11a-feedback","Feedback received and one revision",3)
+ + deeper('Add a fourth option that removes the task entirely. Who loses practice if the tool does this work?');
 }},
 
 {id:"anticipate",code:"12",nav:"Anticipate",title:"Scan for Second-Order Effects",lede:"The first-order effect is what the tool does. The second-order effect is how behavior and systems change because the tool is present (e.g., who checks less, who waits longer, which skills go unpracticed).",block:3,html:function(){ return ''
@@ -750,16 +758,28 @@ var SECTIONS = [
  + formBlock("table_reports",["f04-table","f11b-selected","f11b-assumption"],{stage:"selected",note:"Table recorder: one submission per table."})
  + livePanel("reports:selected")
  + '<h3>Prepare the Prototype</h3>'
- + '<p>In section 13, walk one ordinary fictional case through input, AI contribution, review, decision, and release/monitoring. Specify benefit and error/burden measures plus a stop condition. The Field Lab continues this prototype; it does not introduce a new case.</p>';
+ + '<p>In section 13, walk one ordinary fictional case through input, AI contribution, review, decision, and release/monitoring. Specify benefit and error/burden measures plus a stop condition. The Field Lab continues this prototype; it does not introduce a new case.</p>'
+ + deeper('Trace your choice two steps further. Who carries the burden a year from now?');
 }},
 
 {id:"prototype",code:"13",nav:"Prototype",title:"Build the Smallest Testable Workflow",lede:"A prototype should be cheap enough to change and clear enough to fail informatively.",block:3,html:function(){ return ''
+ + '<h3>Example: The Smallest Testable Version</h3>'
+ + '<p>The denial-letter tool from 08 and 11A. The smallest testable version tests the summary step first; suggested fixes wait until summaries prove accurate. No table works on billing, so borrow the structure for your own case. Tap the image to open it full size.</p>'
+ + '<a href="img/prototype.png" target="_blank" rel="noopener"><img src="img/prototype.png" alt="Prototype for a tool that summarizes payer denial letters. Workflow: one denial letter goes in, the AI summarizes the reason and deadline, a billing specialist checks the summary against the letter, then decides to appeal, fix and resubmit, or accept. Test: one billing specialist for 30 days, switchable off at any time. Benefit measure: minutes per letter compared with last month. Error measure: wrong reason or deadline found in a weekly spot check by a second reviewer. Stop rule: pause if any appeal deadline is missed or more than 1 in 10 summaries is wrong; owner is the billing manager." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
+ + ref('The Example as Text',''
+ + '<p><em>Workflow</em>: one denial letter goes in. The AI step summarizes the denial reason and the appeal deadline. A billing specialist checks the summary against the letter. The specialist decides to appeal, fix and resubmit, or accept the denial.</p>'
+ + '<p><em>Release</em>: one billing specialist for 30 days. The tool can be switched off at any time.</p>'
+ + '<p><em>Benefit measure</em>: minutes per letter, compared with last month without the tool.</p>'
+ + '<p><em>Error measure</em>: a wrong reason or deadline, found in a weekly spot check where a second reviewer compares a sample of summaries to the letters.</p>'
+ + '<p><em>Stop rule</em>: pause if any appeal deadline is missed, or if more than 1 in 10 checked summaries is wrong. The billing manager owns the decision to pause.</p>'
+ )
  + '<h3>Prototype Elements '+who("rec")+'</h3>'
  + twrap(thead(["Prototype Element","Decision"])+'<tbody>'
    + ["User and setting","Trigger / start condition","Minimum data input","AI function and output","Required human verification","Action or handoff","Outcome and error measures","Escalation and stop rule"].map(function(e,i){ return '<tr><td class="k">'+e+'</td>'+cell("f13-e"+i,e,"Decision")+'</tr>'; }).join('')+'</tbody>')
  + '<h3>Test Record and Next Test '+who("rec")+'</h3>'
  + twrap(thead(["Rep","Input Case","Predicted Result","Observed Result","Change Before Next Rep"])+'<tbody>'
-   + [1,2,3].map(function(n){ return rowFill("f13-t"+n,"Rep "+n,["Input case","Predicted","Observed","Change"]); }).join('')+'</tbody>');
+   + [1,2,3].map(function(n){ return rowFill("f13-t"+n,"Rep "+n,["Input case","Predicted","Observed","Change"]); }).join('')+'</tbody>')
+ + deeper('Write the case most likely to break your workflow. Which measure would catch it first?');
 }},
 
 {id:"fieldlab",code:"13A",nav:"Chiron Field Lab",title:"Run the 25-Minute Prototype and Test",block:3,html:function(){ return ''
@@ -815,7 +835,8 @@ var SECTIONS = [
  + formBlock("table_reports",["f13a-table","f13a-purpose","f13a-r1","f13a-r2","f13a-r3","f13a-r4","f13a-r5","f13a-benefit","f13a-errm","f13a-stop"],{stage:"fieldlab",note:"Table recorder: submit before the debrief so the report can go on screen."})
  + livePanel("reports:fieldlab")
  + ta("f13a-neighbor","Neighbor’s question or unresolved evidence need",2)
- + '<p class="code">A useful test can lead to revise, constrain, choose a non-AI option, or not deploy. This fictional tabletop exercise does not validate a clinical intervention.</p>';
+ + '<p class="code">A useful test can lead to revise, constrain, choose a non-AI option, or not deploy. This fictional tabletop exercise does not validate a clinical intervention.</p>'
+ + deeper('Swap envelopes with another table and revise again. Did your stop rule hold?');
 }},
 
 {id:"commit",code:"15",nav:"Commit",title:"Your 30-Day Repertoire Experiment",lede:"Choose a small professional behavior you can practice with feedback. A vague intention to “use more AI” will not work.",block:3,html:function(){ return ''
@@ -904,7 +925,7 @@ var SLIDES = {
   orient:"1–5, 20–21", mydef:"6", notice:"7–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
   choose:"27A–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
   define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–61", anticipate:"62–63", converge:"62–65",
-  prototype:"66–67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
+  prototype:"66, 66A, 67", fieldlab:"68–79", commit:"80–81", retain:"82–84", references:"91"
 };
 function slidesFor(id){ var v=SLIDES[id]; return v ? (v.indexOf(",")>=0||v.indexOf("–")>=0 ? "Slides "+v : "Slide "+v) : ""; }
 

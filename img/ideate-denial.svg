@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&amp;family=Public+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');
+      .h { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 30px; fill: #14213D; }
+      .hs { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 25px; fill: #14213D; }
+      .lab { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 22px; fill: #14213D; }
+      .labw { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 22px; fill: #7A3416; }
+      .t { font-family: 'Public Sans', Arial, sans-serif; font-size: 25px; fill: #3C4B63; }
+      .w { font-family: 'Public Sans', Arial, sans-serif; font-size: 25px; fill: #7A3416; }
+      .eb { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 19px; letter-spacing: 1.5px; fill: #5B6B82; }
+      .ebw { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 19px; letter-spacing: 1.5px; fill: #FFFFFF; }
+      .cond { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 29px; fill: #FFFFFF; }
+      .title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 38px; fill: #14213D; }
+      .key { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 31px; fill: #14213D; }
+    </style>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F5D9E"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text x="50" y="64" class="title">Example: One Changed Condition, Three Ways to Respond</text>
+
+  <rect x="50" y="94" width="1500" height="74" rx="12" fill="#A3471F"/>
+  <text x="76" y="138" class="ebw">CHANGED CONDITION</text>
+  <text x="330" y="141" class="cond">A new payer sends letters in a different layout.</text>
+
+  <!-- pipeline -->
+  <rect x="50"   y="200" width="270" height="100" rx="12" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="70" y="260" class="hs">Denial Letter</text>
+  <rect x="357"  y="200" width="270" height="100" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="377" y="244" class="hs">AI Vendor</text><text x="377" y="280" class="t" style="font-size:22px">Tool setup</text>
+  <rect x="664"  y="200" width="270" height="100" rx="12" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="684" y="260" class="hs">Draft Summary</text>
+  <rect x="971"  y="200" width="270" height="100" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="991" y="244" class="hs">Billing Review</text><text x="991" y="280" class="t" style="font-size:22px">Checklist</text>
+  <rect x="1278" y="200" width="272" height="100" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="1298" y="244" class="hs">Billing Record</text><text x="1298" y="280" class="t" style="font-size:22px">Payer codes</text>
+  <line x1="320"  y1="250" x2="353"  y2="250" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="627"  y1="250" x2="660"  y2="250" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="934"  y1="250" x2="967"  y2="250" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="1241" y1="250" x2="1274" y2="250" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+
+  <path d="M492,300 L492,330 L270,330 L270,358" fill="none" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+  <path d="M1106,300 L1106,330 L800,330 L800,358" fill="none" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+  <path d="M1414,300 L1414,330 L1330,330 L1330,358" fill="none" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+
+  <!-- cards -->
+  <g transform="translate(50,362)">
+    <rect width="480" height="420" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+    <rect width="480" height="8" rx="4" fill="#2F5D9E"/>
+    <text x="26" y="52" class="eb">TECHNICAL</text>
+    <text x="26" y="98" class="h">Add sample letters</text>
+    <text x="26" y="136" class="h">to the tool setup</text>
+    <text x="26" y="208" class="lab">Work Moves To</text>
+    <text x="26" y="244" class="t">Usually the vendor</text>
+    <text x="26" y="316" class="labw">Watch For</text>
+    <text x="26" y="352" class="w">Old layouts read</text>
+    <text x="26" y="386" class="w">wrong after the change</text>
+  </g>
+  <g transform="translate(560,362)">
+    <rect width="480" height="420" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+    <rect width="480" height="8" rx="4" fill="#2F5D9E"/>
+    <text x="26" y="52" class="eb">BEHAVIORAL (OBM)</text>
+    <text x="26" y="98" class="h">Add a deadline check</text>
+    <text x="26" y="136" class="h">to the review</text>
+    <text x="26" y="208" class="lab">Work Moves To</text>
+    <text x="26" y="244" class="t">The billing specialist</text>
+    <text x="26" y="316" class="labw">Watch For</text>
+    <text x="26" y="352" class="w">Faster, shallower</text>
+    <text x="26" y="386" class="w">reviews</text>
+  </g>
+  <g transform="translate(1070,362)">
+    <rect width="480" height="420" rx="14" fill="#FFFFFF" stroke="#D3DAE5" stroke-width="2"/>
+    <rect width="480" height="8" rx="4" fill="#2F5D9E"/>
+    <text x="26" y="52" class="eb">NON-AI</text>
+    <text x="26" y="98" class="h">Use the payer's</text>
+    <text x="26" y="136" class="h">denial codes</text>
+    <text x="26" y="208" class="lab">Work Moves To</text>
+    <text x="26" y="244" class="t">The billing system owner</text>
+    <text x="26" y="316" class="labw">Watch For</text>
+    <text x="26" y="352" class="w">Codes can miss the</text>
+    <text x="26" y="386" class="w">letter's details</text>
+  </g>
+
+  <text x="50" y="850" class="key">Each option moves the work to a different person.</text>
+</svg>

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&amp;family=Public+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');
+      .h { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 29px; fill: #14213D; }
+      .t { font-family: 'Public Sans', Arial, sans-serif; font-size: 24px; fill: #3C4B63; }
+      .eb { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 19px; letter-spacing: 1.5px; fill: #5B6B82; }
+      .w { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 25px; fill: #7A3416; }
+      .n { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 21px; fill: #FFFFFF; }
+      .title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 38px; fill: #14213D; }
+    </style>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F5D9E"/></marker>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#A3471F"/></marker>
+    <g id="b"><circle r="19" fill="#A3471F"/></g>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text x="50" y="56" class="title">Example: A Tool That Summarizes Denial Letters</text>
+  <text x="50" y="104" class="eb">AND RECOMMENDS OPERATIONAL CHANGES TO REDUCE DENIALS</text>
+  <g transform="translate(0,34)">
+
+  <text x="50"   y="126" class="eb">SOURCE</text>
+  <text x="440"  y="126" class="eb">MODEL OR TOOL</text>
+  <text x="830"  y="126" class="eb">OUTPUT AND REVIEW</text>
+  <text x="1220" y="126" class="eb">RECORD</text>
+
+  <!-- row 1/2 -->
+  <rect x="50" y="144" width="330" height="140" rx="14" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="72" y="200" class="h">Claim Record</text>
+  <text x="72" y="240" class="t">Codes and dates</text>
+
+  <rect x="50" y="304" width="330" height="140" rx="14" fill="#F9E8DF" stroke="#A3471F" stroke-width="2.5"/>
+  <text x="72" y="360" class="h">Denial Letter</text>
+  <text x="72" y="400" class="t">Name, member ID</text>
+
+  <rect x="440" y="144" width="330" height="300" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="462" y="200" class="h">AI Vendor</text>
+  <text x="462" y="240" class="t">Under a BAA</text>
+  <text x="462" y="280" class="t">Model can update</text>
+
+  <rect x="830" y="144" width="330" height="140" rx="14" fill="#F9E8DF" stroke="#A3471F" stroke-width="2.5"/>
+  <text x="852" y="200" class="h">Draft Summary</text>
+  <text x="852" y="240" class="t">Reason, deadline, likely fix</text>
+
+  <rect x="830" y="304" width="330" height="140" rx="14" fill="#F9E8DF" stroke="#A3471F" stroke-width="2.5"/>
+  <text x="852" y="360" class="h">Billing Review</text>
+  <text x="852" y="400" class="t">Checks the letter</text>
+
+  <rect x="1220" y="144" width="330" height="300" rx="14" fill="#F9E8DF" stroke="#A3471F" stroke-width="2.5"/>
+  <text x="1242" y="200" class="h">Billing Record</text>
+  <text x="1242" y="240" class="t">Summary saved</text>
+  <text x="1242" y="296" class="eb">MAY GO TO</text>
+  <text x="1242" y="334" class="t">Payer, in an appeal</text>
+  <text x="1242" y="368" class="t">Operations, as</text>
+  <text x="1242" y="402" class="t">change ideas</text>
+
+  <!-- row 3 -->
+  <rect x="440" y="480" width="330" height="120" rx="14" fill="#F9E8DF" stroke="#A3471F" stroke-width="2.5" stroke-dasharray="10 7"/>
+  <text x="462" y="530" class="h">Vendor Logs</text>
+  <text x="462" y="570" class="t">Prompts and outputs</text>
+
+  <rect x="830" y="480" width="720" height="120" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="2.5" stroke-dasharray="10 7"/>
+  <text x="852" y="530" class="h">Weekly Spot Check</text>
+  <text x="852" y="570" class="t">A second reviewer compares summaries to letters</text>
+
+  <!-- arrows -->
+  <line x1="380" y1="214" x2="436" y2="214" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="380" y1="374" x2="436" y2="374" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="770" y1="214" x2="826" y2="214" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="995" y1="284" x2="995" y2="300" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="1160" y1="374" x2="1216" y2="374" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="605" y1="444" x2="605" y2="476" stroke="#A3471F" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arw)"/>
+  <line x1="1385" y1="444" x2="1385" y2="476" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+  <line x1="995" y1="480" x2="995" y2="448" stroke="#2F5D9E" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>
+
+  <!-- badges -->
+  <use href="#b" x="380" y="304"/><text x="380" y="312" class="n" text-anchor="middle">1</text>
+  <use href="#b" x="770" y="144"/><text x="770" y="152" class="n" text-anchor="middle">2</text>
+  <use href="#b" x="1160" y="144"/><text x="1160" y="152" class="n" text-anchor="middle">3</text>
+  <use href="#b" x="1160" y="304"/><text x="1160" y="312" class="n" text-anchor="middle">4</text>
+  <use href="#b" x="1550" y="144"/><text x="1550" y="152" class="n" text-anchor="middle">5</text>
+  <use href="#b" x="770" y="480"/><text x="770" y="488" class="n" text-anchor="middle">6</text>
+
+  <!-- risks -->
+  <text x="50" y="648" class="eb">WHERE THINGS CAN GO WRONG</text>
+  <g transform="translate(50,688)">
+    <use href="#b" x="19" y="0"/><text x="19" y="8" class="n" text-anchor="middle">1</text>
+    <text x="54" y="9" class="w">Letters carry identifiers</text>
+    <use href="#b" x="19" y="56"/><text x="19" y="64" class="n" text-anchor="middle">2</text>
+    <text x="54" y="65" class="w">The model can change</text>
+    <use href="#b" x="19" y="112"/><text x="19" y="120" class="n" text-anchor="middle">3</text>
+    <text x="54" y="121" class="w">The output may be wrong</text>
+  </g>
+  <g transform="translate(830,688)">
+    <use href="#b" x="19" y="0"/><text x="19" y="8" class="n" text-anchor="middle">4</text>
+    <text x="54" y="9" class="w">Review can weaken over time</text>
+    <use href="#b" x="19" y="56"/><text x="19" y="64" class="n" text-anchor="middle">5</text>
+    <text x="54" y="65" class="w">The record travels further</text>
+    <use href="#b" x="19" y="112"/><text x="19" y="120" class="n" text-anchor="middle">6</text>
+    <text x="54" y="121" class="w">Logs are easy to forget</text>
+  </g>
+</g>
+</svg>
