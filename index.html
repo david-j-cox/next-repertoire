@@ -45,9 +45,9 @@ h1{font-size:clamp(2rem,5vw,3.1rem);font-variation-settings:"opsz" 144}
 h2{font-size:clamp(1.5rem,3vw,2rem)}
 h3{font-size:1.2rem;margin-top:1.75rem;margin-bottom:.5rem}
 h4{font-family:var(--body);font-size:.95rem;font-weight:600;margin-top:1.25rem;margin-bottom:.35rem}
-p{margin:.6rem 0;max-width:68ch}
+p{margin:.6rem 0}
 p.code{max-width:none}
-ul,ol{max-width:68ch;padding-left:1.3rem}
+ul,ol{padding-left:1.3rem}
 li{margin:.25rem 0}
 .eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .code{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
@@ -421,7 +421,7 @@ var SECTIONS = [
  + ta("f02-def1","Current working definition",3);
 }},
 
-{id:"notice",code:"02",nav:"AI by Function",title:"AI by Function",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
+{id:"notice",code:"02",nav:"AI by Function",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"AI by Function",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
  + twrap(thead(["Function","Plain-Language Job","ABA-Adjacent Example","Professional Obligation"])+'<tbody>'
    + '<tr><td class="k">Descriptive</td><td>Organize or summarize what has already happened</td><td>Graph patterns; summarize notes</td><td>Check completeness, context, and representation</td></tr>'
    + '<tr><td class="k">Predictive</td><td>Estimate a future value or category</td><td>Forecast attrition or outcome risk</td><td>Check local validity, uncertainty, scope, and consequences</td></tr>'
@@ -1289,12 +1289,21 @@ function renderLanding(){
    + '</div>';
 }
 
+function blockedBy(s){
+  if(!s || !s.after || ADMIN) return "";
+  var missing = s.after.fields.some(function(f){ return !String(ANSWERS[f]||"").trim(); });
+  return missing ? s.after.msg : "";
+}
 function renderSection(id){
   var s = sectionById(id);
   if(!s) return renderLanding();
   var idx = SECTIONS.indexOf(s);
   if(!ADMIN && !isUnlocked(id)){
     return '<div class="locked-note"><div class="eyebrow">'+s.code+' · '+BLOCKS[s.block].n+'</div><h2>'+s.title+'</h2><p>Not open yet.</p><p><a class="btn" href="#welcome">Back</a></p></div>';
+  }
+  if(blockedBy(s)){
+    var b = sectionById(s.after.id);
+    return '<div class="locked-note"><div class="eyebrow">'+s.code+' · '+BLOCKS[s.block].n+'</div><h2>'+s.title+'</h2><p>'+blockedBy(s)+'</p><p><a class="btn primary" href="#s/'+b.id+'">Go to '+b.code+' · '+b.nav+'</a></p></div>';
   }
   CUR_SECTION = s.code+" "+s.title;
   var body = s.html();
@@ -1312,8 +1321,15 @@ function renderSection(id){
    + '</article>'
    + '<div class="pager">'
    + (prev ? '<a href="#s/'+prev.id+'"><small>Previous</small>'+prev.code+' · '+prev.nav+'</a>' : '<a href="#welcome"><small>Previous</small>Welcome</a>')
-   + (next ? '<a class="next" href="#s/'+next.id+'"><small>Next</small>'+next.code+' · '+next.nav+'</a>' : (nextLocked ? '<a class="next disabled"><small>Next (locked)</small>'+nextLocked.code+' · '+nextLocked.nav+'</a>' : ''))
+   + (next ? '<a class="next'+(blockedBy(next)?' disabled':'')+'" id="pager-next" data-sec="'+next.id+'" href="#s/'+next.id+'"><small>'+(blockedBy(next)?'Next (write your definition first)':'Next')+'</small>'+next.code+' · '+next.nav+'</a>' : (nextLocked ? '<a class="next disabled"><small>Next (locked)</small>'+nextLocked.code+' · '+nextLocked.nav+'</a>' : ''))
    + '</div>';
+}
+
+function refreshPagerNext(){
+  var a = document.getElementById("pager-next"); if(!a) return;
+  var n = sectionById(a.getAttribute("data-sec")), blocked = !!blockedBy(n);
+  a.classList.toggle("disabled", blocked);
+  a.querySelector("small").textContent = blocked ? "Next (write your definition first)" : "Next";
 }
 
 /* ---------- submissions ---------- */
@@ -1700,7 +1716,7 @@ function renderTableCard(){
 }
 
 root.addEventListener("focusout", function(e){ var id=e.target && e.target.id; if(id && HELD[id]!==undefined){ var v=HELD[id]; delete HELD[id]; if(OUT[id]===undefined && ANSWERS[id]!==v) setTimeout(function(){ applyOne(id,v); },0); } });
-root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key" || el.id==="sync-toggle") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); });
+root.addEventListener("input", function(e){ var el=e.target; if(!el.id || el.id==="admin-key" || el.id==="sync-toggle") return; saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); refreshPagerNext(); });
 root.addEventListener("change", function(e){ var el=e.target; if(!el.id || el.id==="admin-key") return; if(el.id!=="sync-toggle") saveAnswer(el.id, el.type==="checkbox"?el.checked:el.value); if(el.id==="f04-table"){ renderTableCard(); SHIFT=null; }
   if(el.id==="f04-table" || el.id==="f04-tablenum"){ var t=ANSWERS["f04-table"], n=ANSWERS["f04-tablenum"]; var was=myGroup(); setGroup(t && n ? t+"-"+n : ""); if(myGroup()!==was){ render({keepScroll:true}); pollGatesNow(); } }
   if(el.id==="sync-toggle"){ lsSet(LS_SYNC, el.checked?"1":"0"); GROUP_NOW=0; render({keepScroll:true}); pollGatesNow(); } });
