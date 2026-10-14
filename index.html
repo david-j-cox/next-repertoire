@@ -1418,7 +1418,7 @@ function adminLogin(){
 function refreshAdmin(){
   if(!ADMIN || !API_URL) return;
   apiGet({action:"admin", key:ADMIN_KEY}).then(function(r){
-    if(r && !r.error){ ADMIN_DATA=r; if(r.gates) applyGates(r.gates); var box=document.getElementById("responses"); if(box) box.innerHTML=renderResponses(); var t=document.getElementById("resp-time"); if(t) t.textContent="Updated "+fmtTime(new Date().toISOString()); }
+    if(r && !r.error){ ADMIN_DATA=r; if(r.gates) applyGates(r.gates); var box=document.getElementById("responses"); if(box) box.innerHTML=renderResponses(); var ss=document.getElementById("sort-status"); if(ss) ss.textContent=sortStatus(); var t=document.getElementById("resp-time"); if(t) t.textContent="Updated "+fmtTime(new Date().toISOString()); }
     else if(r && r.error==="unauthorized"){ ADMIN=false; ssSet(SS_KEY,null); ADMIN_MSG="Session ended. Enter the passcode again."; render(); }
   }).catch(function(){});
 }
@@ -1459,8 +1459,8 @@ function renderAdmin(){
    + '<div id="admin-msg" hidden></div>'
    + '</section>'
    + '<section class="admin" id="admin-responses">'
-   + '<div class="admin-head"><h2>Sort the Room</h2><span class="status">'+(ADMIN_DATA&&ADMIN_DATA.assigned&&ADMIN_DATA.assigned.n ? ADMIN_DATA.assigned.n+' people seated: '+groupTally(ADMIN_DATA.assigned) : 'Not sorted yet')+'</span></div>'
-   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone in a topic (first choice, then second, then third, then the emptiest topic), then splits each topic into physical tables (A-1, A-2) with a mix of expected roles. Mark the tents to match. Switch on <strong>Table assignments</strong> above and Publish so people can see their seat. Paper-only people: place them by hand where the counts are low.</p>'
+   + '<div class="admin-head"><h2>Sort the Room</h2><span class="status" id="sort-status">'+sortStatus()+'</span></div>'
+   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone in a topic (first choice, then second, then third, then the emptiest topic), then splits each topic into physical tables (A-1, A-2) with a mix of expected roles. Mark the tents to match. Switch on Table Assignments (04) above and Publish so people can see their seat. Paper-only people: place them by hand where the counts are low.</p>'
    + '<div class="actions"><label style="font-size:.85rem;color:var(--muted)">People per table <input type="text" id="a-size" size="3" value="6" style="width:4rem;display:inline-block"></label>'
    + '<label style="font-size:.85rem;color:var(--muted)">Max tables per topic <input type="text" id="a-maxt" size="3" value="2" style="width:4rem;display:inline-block"></label>'
    + '<button class="btn primary" id="a-assign">Assign tables</button><span id="assign-msg" class="status"></span></div>'
@@ -1469,6 +1469,10 @@ function renderAdmin(){
    + '<div class="admin-head"><h2>Responses</h2><span class="status" id="resp-time"></span><span style="flex:1"></span><button class="btn small" id="a-refresh">Refresh</button><button class="btn small quiet" id="a-logout">Sign out</button></div>'
    + '<div id="responses">'+renderResponses()+'</div>'
    + '</section>';
+}
+function sortStatus(){
+  var a=ADMIN_DATA&&ADMIN_DATA.assigned;
+  return a&&a.n ? a.n+(a.n===1?' person':' people')+' seated: '+groupTally(a) : 'Not sorted yet';
 }
 function groupTally(a){
   var g=a.groups||{}, keys=Object.keys(g).sort();
