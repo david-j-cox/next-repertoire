@@ -840,6 +840,8 @@ var SECTIONS = [
  + '<p>Move at least one token on the board. The System Map is in '+nextLink("fieldlab")+'.</p>'
  + ta("f13a-envelope","What changed in the envelope, and which assumption no longer holds?",3)
  + ta("f13a-after","After the reveal: token moved, design revision, and why it matters",3)
+ + '<p>Your measures from before the reveal. Revise them here if the envelope changed what you should track.</p>'
+ + '<p class="stem">Benefit measure: '+fill("f13a-benefit","Benefit measure",20)+' &nbsp; Error/burden measure: '+fill("f13a-errm","Error/burden measure",20)+'</p>'
  + ta("f13a-stop","Stop condition, responsible person, and next step",2)
  + '<h3>Five Stems for the 60-Second Report</h3>'
  + line("f13a-r1","Our purpose is…")
@@ -1657,8 +1659,9 @@ function exportAnswers(){
   var saveFields = FIELDS, saveCur = CUR_SECTION;
   SECTIONS.forEach(function(s){ FIELDS=[]; CUR_SECTION=s.code+" "+s.title; s.html(); all = all.concat(FIELDS); });
   FIELDS = saveFields; CUR_SECTION = saveCur;
-  var n = 0;
+  var n = 0, seen = {};
   all.forEach(function(f){
+    if(seen[f.id]) return; seen[f.id] = true;
     var v = ANSWERS[f.id];
     if(v===undefined || v==="" || v===false) return;
     if(f.section!==lastSec){ lines.push("", "=== "+f.section+" ===", ""); lastSec=f.section; }
