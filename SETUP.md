@@ -1,6 +1,6 @@
 # The Next Repertoire website: setup
 
-Two files: `index.html` (the site) and `Code.gs` (the backend, a Google Apps Script bound to a Google Sheet).
+Two files run the site: `index.html` (the site) and `Code.gs` (the backend, a Google Apps Script bound to a Google Sheet). Two optional helper scripts, `DryRun.gs` and `ResetData.gs`, go in the same Apps Script project (see Section 3).
 
 ## 1. Backend (about 10 minutes)
 
@@ -25,6 +25,11 @@ Until `API_URL` is set, the site runs in preview mode: all sections open, submis
 ## How it works
 
 - Gates (which sections are open, and the "Now" marker) live in the `config` tab of the Sheet. Participants' pages check every 8 seconds.
+- Three sections are split across two pages. The second page has no switch of its own; it opens and locks with the first.
+  - 04 Choose (interest poll) and 04 My Table (seat, problem statement, mission cards). Submitting the poll moves people to My Table.
+  - 11A Ideation Practice (Rep 1) and 11A Ideation Rep 2 (after Break 2).
+  - 13A Chiron Field Lab (map and before-reveal record) and 13A Field Lab Reveal (reveal, revise, report). The two measure boxes appear on both pages and hold the same answer.
+- Switches and room-result toggles are staged until you click Publish. Publish appears at the top of the panel and again under the room-result switches whenever there are unpublished changes.
 - Each Submit button appends a row to a tab named after the form: `pre`, `demographics`, `quadrant`, `interests`, `table_reports`, `commit`, `post`. Columns are created from the field ids on first write.
 - Every participant gets a random anonymous id (`pid`) stored in their browser, so `pre` and `post` rows can be paired without identifying anyone. The `table` column comes from the table they picked in section 04.
 - Sorting the room (facilitator panel, Sort the Room): people go to a topic (A-F) by first, second, then third choice, and each topic splits into at most "Max tables per topic" physical tables of about "People per table" (A-1, A-2). Expected roles are dealt across the tables so each gets a mix. Results go to the `assignments` tab. Mark the table tents to match (A-1, A-2).
@@ -35,6 +40,15 @@ Until `API_URL` is set, the site runs in preview mode: all sections open, submis
 - Result panels (interest poll tallies, snapshot counts, confidence means, table statements) appear on participant pages only when you switch them on in the facilitator panel. They refresh every 15 seconds. Aggregates come from `?action=summary`, which returns counts and table-level statements only, never individual free-text answers.
 - The facilitator panel (`#admin`) shows counts, interest-poll tallies by table (for sorting the room), the latest table report per table for each stage, mean confidence pre vs post, and demographic counts. It refreshes every 20 seconds and on Refresh.
 - Participants' own answers stay in their browser (localStorage) and can be exported as Markdown or printed.
+
+## 3. Helper scripts (optional)
+
+Add each as a new script file in the Sheet's Apps Script project (Extensions > Apps Script > + > Script). No redeploy is needed; run them from the editor and read the Execution log.
+
+- `DryRun.gs`, `dryRunSort()`: adds 14 fake interest-poll rows, runs the real sort with tables of 3, logs each seat, then removes the fake rows and clears `assignments`. Run it before participants sort, never after, because it clears real seats.
+- `ResetData.gs`, `previewReset()` then `resetAll()`: clears every response row, `assignments`, and `group_notes` (keeping header rows), empties the backend cache, and turns off all room-result switches. Opened sections stay open. Use it before a run-through or the live session. After the workshop, save what you need first.
+
+Test data also lives in the tester's browser. Clear it with the site icon left of the address bar > Cookies and site data > Manage on-device site data > delete github.io, or test in a private window.
 
 ## Limits
 
