@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&amp;family=Public+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');
+      .h { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 29px; fill: #14213D; }
+      .hs { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 26px; fill: #14213D; }
+      .t { font-family: 'Public Sans', Arial, sans-serif; font-size: 24px; fill: #3C4B63; }
+      .eb { font-family: 'IBM Plex Mono', Menlo, monospace; font-weight: 500; font-size: 19px; letter-spacing: 1.5px; fill: #5B6B82; }
+      .rh { font-family: 'Public Sans', Arial, sans-serif; font-weight: 600; font-size: 27px; fill: #7A4A1E; }
+      .rt { font-family: 'Public Sans', Arial, sans-serif; font-size: 24px; fill: #6B4A2A; }
+      .title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 38px; fill: #14213D; }
+    </style>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2F5D9E"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text x="50" y="64" class="title">Example: Flagging Clients at Risk Before Reauthorization</text>
+
+  <text x="50"   y="126" class="eb">SOURCES</text>
+  <text x="356"  y="126" class="eb">PREPARE</text>
+  <text x="662"  y="126" class="eb">MODEL</text>
+  <text x="968"  y="126" class="eb">OUTPUT</text>
+  <text x="1274" y="126" class="eb">ACTION</text>
+
+  <!-- sources -->
+  <rect x="50" y="144" width="276" height="120" rx="14" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="70" y="184" class="hs">Assessments</text>
+  <text x="70" y="220" class="t">AIM, VABS, VSA,</text>
+  <text x="70" y="250" class="t">VB-MAPP Barriers</text>
+  <rect x="50" y="280" width="276" height="120" rx="14" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="70" y="328" class="hs">Clinical Records</text>
+  <text x="70" y="366" class="t">Goals, hours billed</text>
+  <rect x="50" y="416" width="276" height="120" rx="14" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="70" y="464" class="hs">Scheduling</text>
+  <text x="70" y="502" class="t">Staff continuity</text>
+
+  <!-- prepare -->
+  <rect x="356" y="144" width="276" height="392" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="376" y="196" class="h">Clean and</text>
+  <text x="376" y="232" class="h">Score</text>
+  <text x="376" y="280" class="t">Raw data becomes</text>
+  <text x="376" y="312" class="t">outcome scores</text>
+
+  <!-- model -->
+  <rect x="662" y="144" width="276" height="240" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="682" y="196" class="h">Prediction</text>
+  <text x="682" y="232" class="h">Models</text>
+  <text x="682" y="280" class="t">One per outcome</text>
+  <rect x="662" y="400" width="276" height="136" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="2.5" stroke-dasharray="9 6"/>
+  <text x="682" y="448" class="hs">Drift Monitors</text>
+  <text x="682" y="486" class="t">Data and predictions</text>
+
+  <!-- output -->
+  <rect x="968" y="144" width="276" height="240" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="988" y="196" class="h">Risk Score</text>
+  <text x="988" y="238" class="t">Authorizations</text>
+  <text x="988" y="268" class="t">ending in 120 days</text>
+  <g transform="translate(1106,364)">
+    <path d="M-50,0 A50,50 0 0 1 -25,-43.3" fill="none" stroke="#2E7D5B" stroke-width="12"/>
+    <path d="M-25,-43.3 A50,50 0 0 1 25,-43.3" fill="none" stroke="#D9A43A" stroke-width="12"/>
+    <path d="M25,-43.3 A50,50 0 0 1 50,0" fill="none" stroke="#A3471F" stroke-width="12"/>
+    <line x1="0" y1="0" x2="18" y2="-36" stroke="#14213D" stroke-width="4"/>
+    <circle r="5" fill="#14213D"/>
+  </g>
+  <rect x="968" y="400" width="276" height="136" rx="14" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
+  <text x="988" y="448" class="hs">Ranked Client List</text>
+  <text x="988" y="486" class="t">Spreadsheet</text>
+
+  <!-- action -->
+  <rect x="1274" y="144" width="276" height="392" rx="14" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
+  <text x="1294" y="196" class="h">Training and</text>
+  <text x="1294" y="232" class="h">Compliance</text>
+  <text x="1294" y="280" class="t">Plans support</text>
+  <text x="1294" y="312" class="t">with BCBAs</text>
+
+  <!-- arrows -->
+  <line x1="326" y1="204" x2="352" y2="204" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="326" y1="340" x2="352" y2="340" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="326" y1="476" x2="352" y2="476" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="632" y1="264" x2="658" y2="264" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="800" y1="384" x2="800" y2="396" stroke="#2F5D9E" stroke-width="3" marker-end="url(#ar)"/>
+  <line x1="938" y1="264" x2="964" y2="264" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+  <line x1="1106" y1="384" x2="1106" y2="396" stroke="#2F5D9E" stroke-width="3" marker-end="url(#ar)"/>
+  <line x1="1244" y1="468" x2="1270" y2="468" stroke="#2F5D9E" stroke-width="4" marker-end="url(#ar)"/>
+
+  <!-- roles -->
+  <text x="50" y="622" class="eb">WHO BUILDS AND MAINTAINS IT</text>
+  <rect x="50"   y="640" width="276" height="200" rx="14" fill="#F6EBE0" stroke="#E2C7A8" stroke-width="1.5"/>
+  <text x="70" y="692" class="rh">BCBAs</text>
+  <text x="70" y="748" class="rh">Software Engineer</text>
+  <text x="70" y="804" class="rh">Data Engineer</text>
+
+  <rect x="356"  y="640" width="276" height="200" rx="14" fill="#F6EBE0" stroke="#E2C7A8" stroke-width="1.5"/>
+  <text x="376" y="692" class="rh">Data Engineer</text>
+  <text x="376" y="732" class="rt">Cleans, joins,</text>
+  <text x="376" y="764" class="rt">and scores</text>
+
+  <rect x="662"  y="640" width="276" height="200" rx="14" fill="#F6EBE0" stroke="#E2C7A8" stroke-width="1.5"/>
+  <text x="682" y="692" class="rh">Data Scientist</text>
+  <text x="682" y="732" class="rt">Builds, validates,</text>
+  <text x="682" y="764" class="rt">watches drift</text>
+
+  <rect x="968"  y="640" width="276" height="200" rx="14" fill="#F6EBE0" stroke="#E2C7A8" stroke-width="1.5"/>
+  <text x="988" y="692" class="rh">Clinical</text>
+  <text x="988" y="726" class="rh">Leadership</text>
+  <text x="988" y="766" class="rt">Sets the risk cutoffs</text>
+
+  <rect x="1274" y="640" width="276" height="200" rx="14" fill="#F6EBE0" stroke="#E2C7A8" stroke-width="1.5"/>
+  <text x="1294" y="692" class="rh">Training and</text>
+  <text x="1294" y="726" class="rh">Compliance Team</text>
+  <text x="1294" y="784" class="rh">BCBAs</text>
+</svg>

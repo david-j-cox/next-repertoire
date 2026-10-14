@@ -524,6 +524,17 @@ var SECTIONS = [
 }},
 
 {id:"choose",code:"04",nav:"Choose",title:"Select a Problem Worth Working On",lede:"Choose the table where the outcome matters and the workflow is familiar enough to analyze.",block:1,html:function(){ return ''
+ + '<h3>What It Takes to Run One System</h3>'
+ + '<p>Before choosing a problem, look at what one working system needed. This one flags clients at risk of poor progress before their authorization comes up for renewal. Tap the image to open it full size.</p>'
+ + '<a href="img/architecture.png" target="_blank" rel="noopener"><img src="img/architecture.png" alt="Architecture of a system that flags clients at risk before reauthorization. Assessments, clinical records, and scheduling data are cleaned and scored, fed to prediction models with drift monitors, and turned into a risk score and ranked client list for clients whose authorizations end in 120 days. The training and compliance team plans support with BCBAs. Roles: BCBAs, software engineer, data engineer, data scientist, clinical leadership, and the training and compliance team." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
+ + ref('The System as Text',''
+ + '<p><em>Sources</em>: assessments (AIM, VABS, VSA, VB-MAPP Barriers, and parent satisfaction) collected through a survey platform; clinical records (authorizations, active clients, demographics, goals mastered, trials recorded, hours billed, supervision hours); and scheduling data (hours received, staff continuity).</p>'
+ + '<p><em>Prepare</em>: raw assessment data are cleaned and turned into outcome scores, then joined to each client’s records.</p>'
+ + '<p><em>Model</em>: classifiers and regressors for each assessment outcome, with monitors that watch for drift in the incoming data and in the predictions.</p>'
+ + '<p><em>Output</em>: a low, medium, or high risk score for each client whose authorization ends in the next 120 days, exported as a ranked list.</p>'
+ + '<p><em>Action</em>: the training and compliance team reviews the list and plans support with the client’s BCBA.</p>'
+ + '<p><em>Who builds and maintains it</em>: BCBAs administer the assessments. A software engineer builds and maintains the survey forms. A data engineer keeps the warehouse feeds running and cleans, joins, and scores the data. A data scientist builds and validates the models and watches for drift. Clinical leadership sets the risk cutoffs and checks that the list makes sense. The training and compliance team acts on the list, with BCBAs carrying out support.</p>'
+ )
  + twrap(thead(["Table","Likely Use Case","Question to Define"])+'<tbody>'
    + TABLES.map(function(t){ return '<tr><td class="k">'+t.id+'</td><td>'+t.name+'</td><td>'+t.q+'</td></tr>'; }).join('')+'</tbody>')
  + callout("Table round","Introduce yourself with role, setting, and a fictional workshop handle. Name one measurable work problem. Products come later.")

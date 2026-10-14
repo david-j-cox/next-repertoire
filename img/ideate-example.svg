@@ -20,7 +20,7 @@
   </defs>
 
   <rect width="1600" height="900" fill="#FFFFFF"/>
-  <text x="50" y="56" class="title">Example: one changed condition, three ways to respond</text>
+  <text x="50" y="56" class="title">Example: One Changed Condition, Three Ways to Respond</text>
 
   <!-- changed condition -->
   <rect x="50" y="84" width="1500" height="62" rx="12" fill="#A3471F"/>
@@ -31,15 +31,15 @@
   <text x="50" y="190" class="eb">THE PROGRESS-SUMMARY DRAFTER FROM SLIDE 36A</text>
   <g>
     <rect x="50"   y="206" width="250" height="84" rx="12" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
-    <text x="70" y="256" class="hs">Session data</text>
+    <text x="70" y="256" class="hs">Session Data</text>
     <rect x="362"  y="206" width="250" height="84" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
-    <text x="382" y="244" class="hs">AI vendor</text><text x="382" y="272" class="t">fills a note template</text>
+    <text x="382" y="244" class="hs">AI Vendor</text><text x="382" y="272" class="t">Fills a note template</text>
     <rect x="674"  y="206" width="250" height="84" rx="12" fill="#E9EDF4" stroke="#D3DAE5" stroke-width="2"/>
-    <text x="694" y="256" class="hs">Draft summary</text>
+    <text x="694" y="256" class="hs">Draft Summary</text>
     <rect x="986"  y="206" width="250" height="84" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
-    <text x="1006" y="244" class="hs">BCBA review</text><text x="1006" y="272" class="t">uses a checklist</text>
+    <text x="1006" y="244" class="hs">BCBA Review</text><text x="1006" y="272" class="t">Uses a checklist</text>
     <rect x="1298" y="206" width="252" height="84" rx="12" fill="#FFFFFF" stroke="#2F5D9E" stroke-width="3"/>
-    <text x="1318" y="244" class="hs">Signed note</text><text x="1318" y="272" class="t">EHR note form</text>
+    <text x="1318" y="244" class="hs">Signed Note</text><text x="1318" y="272" class="t">EHR note form</text>
     <line x1="300"  y1="248" x2="358"  y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
     <line x1="612"  y1="248" x2="670"  y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
     <line x1="924"  y1="248" x2="982"  y2="248" stroke="#2F5D9E" stroke-width="3.5" marker-end="url(#ar)"/>
@@ -58,10 +58,10 @@
     <text x="24" y="48" class="eb">TECHNICAL</text>
     <text x="24" y="86" class="h">Add the two fields to</text>
     <text x="24" y="116" class="h">the template the model fills</text>
-    <text x="24" y="166" class="tb">Work moves to</text>
+    <text x="24" y="166" class="tb">Work Moves To</text>
     <text x="24" y="192" class="t">Whoever maintains the template,</text>
     <text x="24" y="216" class="t">often the vendor</text>
-    <text x="24" y="266" class="wh">Watch for</text>
+    <text x="24" y="266" class="wh">Watch For</text>
     <text x="24" y="292" class="w">When the data are missing, the model</text>
     <text x="24" y="316" class="w">may fill the fields with plausible guesses.</text>
   </g>
@@ -72,9 +72,9 @@
     <text x="24" y="86" class="h">Add the fields to the BCBA's</text>
     <text x="24" y="116" class="h">review checklist, with feedback</text>
     <text x="24" y="146" class="h">on misses from the spot check</text>
-    <text x="24" y="196" class="tb">Work moves to</text>
+    <text x="24" y="196" class="tb">Work Moves To</text>
     <text x="24" y="222" class="t">The BCBA and the spot-check reviewer</text>
-    <text x="24" y="272" class="wh">Watch for</text>
+    <text x="24" y="272" class="wh">Watch For</text>
     <text x="24" y="298" class="w">A longer checklist may lead to faster,</text>
     <text x="24" y="322" class="w">shallower reviews.</text>
   </g>
@@ -84,9 +84,9 @@
     <text x="24" y="48" class="eb">NON-AI</text>
     <text x="24" y="86" class="h">Change the note form so</text>
     <text x="24" y="116" class="h">the fields cannot be left blank</text>
-    <text x="24" y="166" class="tb">Work moves to</text>
+    <text x="24" y="166" class="tb">Work Moves To</text>
     <text x="24" y="192" class="t">Whoever owns the EHR form</text>
-    <text x="24" y="242" class="wh">Watch for</text>
+    <text x="24" y="242" class="wh">Watch For</text>
     <text x="24" y="268" class="w">Required fields may get filler text</text>
     <text x="24" y="292" class="w">just to let the note save.</text>
   </g>
