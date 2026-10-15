@@ -178,6 +178,12 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
   .flips.rows .flip.gs{grid-column:1 / span 2}
   .flips.rows .flip.lone{grid-column:2 / span 2}
 }
+.strip{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 1.1rem;font-size:.85rem}
+.strip .st{padding:.3rem .6rem;border:1px solid var(--line);border-radius:999px;color:var(--muted);text-decoration:none;white-space:nowrap}
+.strip a.st:hover{border-color:var(--accent);color:var(--ink)}
+.strip .st.on{border:2px solid var(--accent);color:var(--ink);font-weight:600;background:var(--surface-2)}
+.strip .st.brk{border-style:dashed}
+.strip .sep{color:var(--muted)}
 .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 0 1.1rem;font-size:.9rem}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend span::before{content:"";width:14px;height:14px;border-radius:4px;border:2px solid var(--cc)}
@@ -385,6 +391,8 @@ function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input
 function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
+var IDEA_STEPS=[["rep1","Rep 1 · 5 min","ideate"],["break","Break 2 · 10 min",""],["rep2","Rep 2 · 7 min","ideate2"],["rep3","Rep 3 · 6 min","anticipate"],["select","Select · 4 min","converge"],["prepare","Prepare · 5 min","prototype"]];
+function ideaStrip(cur){ return '<nav class="strip" aria-label="Ideation schedule">'+IDEA_STEPS.map(function(s){ var on=cur.indexOf(s[0])>=0; return s[2] ? '<a href="#s/'+s[2]+'" class="st'+(on?' on':'')+'"'+(on?' aria-current="step"':'')+'>'+s[1]+'</a>' : '<span class="st brk">'+s[1]+'</span>'; }).join('<span class="sep" aria-hidden="true">›</span>')+'</nav>'; }
 function flips(list,rows,per){
   per = per || 4;
   var len={}, seen={}; list.forEach(function(c){ len[c[2]]=(len[c[2]]||0)+1; });
@@ -742,19 +750,12 @@ var SECTIONS = [
 }},
 
 {id:"ideate",code:"11A",nav:"Ideation Practice",title:"Generate and Compare Alternatives",block:2,html:function(){ return ''
+ + ideaStrip(["rep1"])
+ + '<p>Keep the same defined use case throughout.</p>'
  + '<div class="output"><em>Your output:</em> distinct options and the staff supports each would need.</div>'
  + '<h3>Example: One Changed Condition, Three Ways to Respond</h3>'
  + '<p>The denial-letter tool from 08 is running. Then a new payer starts sending letters in a different layout. Each option below moves the work to a different person. Compare who carries it. Tap the image to open it full size.</p>'
  + '<a href="img/ideate-denial.png" target="_blank" rel="noopener"><img src="img/ideate-denial.png" alt="Changed condition: a new payer sends denial letters in a different layout. Three options. Technical: add sample letters to the tool setup. Behavioral: add a deadline check to the billing specialist review. Non-AI: use the payer denial codes in the billing system." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
- + '<ul class="steps">'
- + '<li><span class="t">Before break</span><span class="n">Rep 1 · 5 min</span><span class="d">Technical and non-AI options, then 3 minutes of feedback</span></li>'
- + '<li><span class="t">Break 2</span><span class="n">10 min</span><span class="d"></span></li>'
- + '<li><span class="t">After break</span><span class="n">Rep 2 · 7 min</span><span class="d">OBM arrangements, then 3 minutes of feedback</span></li>'
- + '<li><span class="t"></span><span class="n">Rep 3 · 6 min</span><span class="d">Second-order effects (next section)</span></li>'
- + '<li><span class="t"></span><span class="n">Select · 4 min</span><span class="d">Converge using explicit criteria</span></li>'
- + '<li><span class="t"></span><span class="n">Prepare · 5 min</span><span class="d">Prototype preparation in section 13</span></li>'
- + '</ul>'
- + '<p>Keep the same defined use case throughout.</p>'
  + '<h3>Rep 1 · Technical and Non-AI Alternatives '+who("rec")+'</h3>'
  + '<p>Write silently for 1 minute, combine ideas for 3, then group distinct options for 1. Keep at least one non-AI option. Defer judgment while generating.</p>'
  + ta("f11a-optA","Option A and the mechanism it changes",2)
@@ -765,6 +766,7 @@ var SECTIONS = [
 }},
 
 {id:"ideate2",code:"11A",nav:"Ideation Rep 2",gate:"ideate",title:"Rep 2: Behavioral Arrangements",lede:"Same table, same use case, same options from Rep 1. Now design the behavior that makes each option work.",block:3,html:function(){ return ''
+ + ideaStrip(["rep2"])
  + '<p>Your Rep 1 options are in '+nextLink("ideate")+'.</p>'
  + '<h3>Rep 2 · OBM Arrangements '+who("rec")+'</h3>'
  + '<p>Name the performer, observable response, opportunity, and consequence. Pair each candidate with the time, training, rehearsal, feedback, authority, and workload support it needs. “Human review” alone is not a design.</p>'
@@ -774,6 +776,7 @@ var SECTIONS = [
 }},
 
 {id:"anticipate",code:"12",nav:"Anticipate",title:"Scan for Second-Order Effects",lede:"The first-order effect is what the tool does. The second-order effect is how behavior and systems change because the tool is present (e.g., who checks less, who waits longer, which skills go unpracticed).",block:3,html:function(){ return ''
+ + ideaStrip(["rep3"])
  + '<h3>Domains '+who("rec")+'</h3>'
  + '<p>Complete at least three rows. Choose the domains where your use case is most likely to shift something.</p>'
  + twrap(thead(["Domain","Possible Benefit","Possible Cost or Shifted Burden","What We Will Observe"])+'<tbody>'
@@ -783,6 +786,7 @@ var SECTIONS = [
 }},
 
 {id:"converge",code:"11A+",nav:"Trace and Select",title:"Trace Effects and Select a Test",block:3,html:function(){ return ''
+ + ideaStrip(["rep3","select"])
  + '<h3>Rep 3 · Second-Order Effects '+who("rec")+'</h3>'
  + '<p>Trace a possible downstream consequence through at least two links. Use section 12 to consider client choice, quality, skill, workload, access, documentation, and resources. Treat these as hypotheses to examine.</p>'
  + ta("f11b-chain","Immediate change → next consequence → effect on people or work",3)
@@ -800,6 +804,7 @@ var SECTIONS = [
 }},
 
 {id:"prototype",code:"13",nav:"Prototype",title:"Build the Smallest Testable Workflow",lede:"A prototype should be cheap enough to change and clear enough to fail informatively.",block:3,html:function(){ return ''
+ + ideaStrip(["prepare"])
  + '<h3>Example: The Smallest Testable Version</h3>'
  + '<p>The denial-letter tool from 08 and 11A. The smallest testable version tests the summary step first; suggested fixes wait until summaries prove accurate. No table works on billing, so borrow the structure for your own case. Tap the image to open it full size.</p>'
  + '<a href="img/prototype.png" target="_blank" rel="noopener"><img src="img/prototype.png" alt="Prototype for a tool that summarizes payer denial letters. Workflow: one denial letter goes in, the AI summarizes the reason and deadline, a billing specialist checks the summary against the letter, then decides to appeal, fix and resubmit, or accept. Test: one billing specialist for 30 days, switchable off at any time. Benefit measure: minutes per letter compared with last month. Error measure: wrong reason or deadline found in a weekly spot check by a second reviewer. Stop rule: pause if any appeal deadline is missed or more than 1 in 10 summaries is wrong; owner is the billing manager." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
