@@ -234,8 +234,19 @@ var TABLE_IDS = ["A", "B", "C", "D", "E", "F"];
  * each topic into at most `maxTables` physical tables of about `tableSize` people
  * (groups A-1, A-2, ...). Honors first choice, then second, then third, then fills
  * the emptiest topic. Earlier responses are seated first when a topic is full.
- * Within a topic, people are dealt round-robin by expected role so each table gets a mix.
+ * Two mix rules sit on top of the preferences:
+ *   - Colleagues: at most MAX_SAME_ORG people with the same organization code per physical table.
+ *     Someone who would break that moves to their next choice.
+ *   - Drivers: every physical table should have at least one Leadership or BCBA participant.
+ *     A table without one borrows a driver from a table with two or more, but only someone
+ *     who listed that topic among their choices.
+ * Within a topic, people are dealt so positions and organizations spread evenly.
  */
+var MAX_SAME_ORG = 2;
+var MIN_TOPIC = 3; // in a room of 12+, a topic with fewer people than this is closed and its people move to their next choice
+var DRIVER_POSITIONS = ["Leadership or administration", "BCBA-D or BCBA"];
+function isDriver(p) { return DRIVER_POSITIONS.indexOf(p.position) >= 0; }
+
 function assignTables(opts) {
   opts = opts || {};
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -258,7 +269,9 @@ function assignTables(opts) {
       first: cell(r, "fint-first").toUpperCase(),
       second: cell(r, "fint-second").toUpperCase(),
       third: cell(r, "fint-third").toUpperCase(),
-      role: cell(r, "fint-role")
+      role: cell(r, "fint-role"),
+      position: cell(r, "fint-position"),
+      org: cell(r, "fint-org")
     };
   });
   var people = Object.keys(latest).map(function (k) { return latest[k]; });
@@ -271,34 +284,124 @@ function assignTables(opts) {
   var overflow = false;
   if (cap * TABLE_IDS.length < people.length) { cap = Math.ceil(people.length / TABLE_IDS.length); overflow = true; }
 
-  var counts = {};
-  TABLE_IDS.forEach(function (t) { counts[t] = 0; });
-  function seat(p, t, basis) { counts[t]++; p.table = t; p.basis = basis; }
+  var counts = {}, orgIn = {};
+  TABLE_IDS.forEach(function (t) { counts[t] = 0; orgIn[t] = {}; });
+  function tablesFor(n) { return Math.min(maxT, Math.max(1, Math.ceil(n / size))); }
+  function orgOk(p, t) {
+    if (!p.org) return true;
+    var have = orgIn[t][p.org] || 0;
+    return have < MAX_SAME_ORG * tablesFor(counts[t] + 1);
+  }
+  function seat(p, t, basis) { counts[t]++; p.table = t; p.basis = basis; if (p.org) orgIn[t][p.org] = (orgIn[t][p.org] || 0) + 1; }
 
   [["first", "first choice"], ["second", "second choice"], ["third", "third choice"]].forEach(function (pass) {
     people.forEach(function (p) {
       var t = p[pass[0]];
-      if (!p.table && counts[t] !== undefined && counts[t] < cap) seat(p, t, pass[1]);
+      if (!p.table && counts[t] !== undefined && counts[t] < cap && orgOk(p, t)) seat(p, t, pass[1]);
     });
   });
   people.forEach(function (p) {
     if (p.table) return;
-    var t = TABLE_IDS.slice().sort(function (a, b) { return counts[a] - counts[b]; })[0];
+    var order = TABLE_IDS.slice().sort(function (a, b) { return counts[a] - counts[b]; });
+    var t = order.filter(function (x) { return orgOk(p, x); })[0] || order[0];
     seat(p, t, "balanced");
   });
 
-  /* split each topic into physical tables */
-  var groups = {};
-  TABLE_IDS.forEach(function (t) {
-    var members = people.filter(function (p) { return p.table === t; });
-    if (!members.length) return;
-    var k = Math.min(maxT, Math.max(1, Math.ceil(members.length / size)));
-    members.sort(function (a, b) { return a.role < b.role ? -1 : (a.role > b.role ? 1 : a.ts - b.ts); });
-    members.forEach(function (p, i) {
-      p.group = t + "-" + ((i % k) + 1);
-      groups[p.group] = (groups[p.group] || 0) + 1;
+  /* close topics too small to work as a table; their people move to their next open choice */
+  function unseat(p) { counts[p.table]--; if (p.org) orgIn[p.table][p.org]--; p.table = ""; }
+  var closed = [];
+  TABLE_IDS.slice().sort(function (a, b) { return counts[a] - counts[b]; }).forEach(function (t) {
+    if (people.length < MIN_TOPIC * 4 || counts[t] === 0 || counts[t] >= MIN_TOPIC) return; // small dry runs keep everyone's first choice
+    var open = TABLE_IDS.filter(function (x) { return x !== t && closed.indexOf(x) < 0 && counts[x] > 0; });
+    if (!open.length) return;
+    closed.push(t);
+    people.filter(function (p) { return p.table === t; }).forEach(function (p) {
+      unseat(p);
+      var choices = [[p.first, "first choice"], [p.second, "second choice"], [p.third, "third choice"]];
+      for (var i = 0; i < choices.length; i++) {
+        var c = choices[i][0];
+        if (open.indexOf(c) >= 0 && counts[c] < cap && orgOk(p, c)) { seat(p, c, choices[i][1]); return; }
+      }
+      var order = open.slice().sort(function (a, b) { return counts[a] - counts[b]; });
+      seat(p, order.filter(function (x) { return orgOk(p, x); })[0] || order[0], "balanced");
     });
   });
+
+  /* split each topic into physical tables, spreading positions and organizations */
+  var groups = {}, members = {};
+  TABLE_IDS.forEach(function (t) {
+    var ms = people.filter(function (p) { return p.table === t; });
+    if (!ms.length) return;
+    var k = tablesFor(ms.length), g = [];
+    for (var i = 0; i < k; i++) g.push([]);
+    ms.sort(function (a, b) {
+      var da = isDriver(a) ? 0 : 1, db = isDriver(b) ? 0 : 1;
+      if (da !== db) return da - db;
+      if (a.position !== b.position) return a.position < b.position ? -1 : 1;
+      if (a.role !== b.role) return a.role < b.role ? -1 : 1;
+      return a.ts - b.ts;
+    });
+    ms.forEach(function (p) {
+      function sameOrg(x) { return p.org ? x.filter(function (q) { return q.org === p.org; }).length : 0; }
+      function samePos(x) { return x.filter(function (q) { return q.position === p.position; }).length; }
+      function sameRole(x) { return p.role ? x.filter(function (q) { return q.role === p.role; }).length : 0; }
+      var min = Math.min.apply(null, g.map(function (x) { return x.length; }));
+      var pick = -1, best = null;
+      g.forEach(function (x, i) {
+        var over = sameOrg(x) >= MAX_SAME_ORG ? 1 : 0;
+        var score = [over, x.length > min ? 1 : 0, sameOrg(x), samePos(x), sameRole(x), x.length];
+        if (!best || compare(score, best) < 0) { best = score; pick = i; }
+      });
+      g[pick].push(p);
+    });
+    g.forEach(function (x, i) { x.forEach(function (p) { p.group = t + "-" + (i + 1); }); members[t + "-" + (i + 1)] = x; });
+  });
+  function compare(a, b) { for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) return a[i] - b[i]; } return 0; }
+
+  /* every physical table gets a driver when one can be borrowed */
+  function drivers(x) { return x.filter(isDriver).length; }
+  function orgCount(x, org) { return org ? x.filter(function (q) { return q.org === org; }).length : 0; }
+  Object.keys(members).forEach(function (gid) {
+    var x = members[gid], t = gid.split("-")[0];
+    if (drivers(x)) return;
+    var donor = null;
+    /* look for a spare driver (from a table with two or more), in this order:
+       same topic's other table; someone who listed this topic; someone not at their first choice; anyone */
+    [function (p) { return p.table === t; },
+     function (p) { return [p.first, p.second, p.third].indexOf(t) >= 0; },
+     function (p) { return p.basis !== "first choice"; },
+     function () { return true; }].forEach(function (eligible) {
+      Object.keys(members).forEach(function (other) {
+        if (donor || other === gid) return;
+        var y = members[other];
+        if (drivers(y) < 2 || y.length <= MIN_TOPIC) return;
+        y.filter(isDriver).forEach(function (p) {
+          if (donor || !eligible(p)) return;
+          if (orgCount(x, p.org) >= MAX_SAME_ORG) return;
+          donor = { p: p, from: other };
+        });
+      });
+    });
+    if (!donor) return;
+    var y = members[donor.from];
+    y.splice(y.indexOf(donor.p), 1);
+    x.push(donor.p);
+    donor.p.table = t; donor.p.group = gid; donor.p.basis = "table mix";
+  });
+
+  /* report each table's mix */
+  var mix = {}, flags = [];
+  Object.keys(members).sort().forEach(function (gid) {
+    var x = members[gid]; if (!x.length) return;
+    groups[gid] = x.length;
+    var pos = {}; x.forEach(function (p) { var k = p.position || "(not given)"; pos[k] = (pos[k] || 0) + 1; });
+    var orgs = {}; x.forEach(function (p) { if (p.org) orgs[p.org] = (orgs[p.org] || 0) + 1; });
+    var maxOrg = Object.keys(orgs).reduce(function (m, o) { return Math.max(m, orgs[o]); }, 0);
+    mix[gid] = { n: x.length, drivers: drivers(x), positions: pos, maxSameOrg: maxOrg };
+    if (!drivers(x)) flags.push(gid + " has no Leadership or BCBA participant");
+    if (maxOrg > MAX_SAME_ORG) flags.push(gid + " has " + maxOrg + " people from one organization");
+  });
+  counts = {}; TABLE_IDS.forEach(function (t) { counts[t] = 0; }); people.forEach(function (p) { counts[p.table]++; });
 
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
@@ -315,9 +418,9 @@ function assignTables(opts) {
     CacheService.getScriptCache().remove("assign");
   } finally { lock.releaseLock(); }
 
-  var basis = { "first choice": 0, "second choice": 0, "third choice": 0, "balanced": 0 };
+  var basis = { "first choice": 0, "second choice": 0, "third choice": 0, "balanced": 0, "table mix": 0 };
   people.forEach(function (p) { basis[p.basis]++; });
-  return { ok: true, n: people.length, tableSize: size, maxTables: maxT, overflow: overflow, counts: counts, groups: groups, basis: basis };
+  return { ok: true, n: people.length, tableSize: size, maxTables: maxT, overflow: overflow, counts: counts, groups: groups, basis: basis, mix: mix, flags: flags };
 }
 
 /* The participant's own seat. Withheld until the facilitator shows assignments. */

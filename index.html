@@ -602,7 +602,10 @@ var SECTIONS = [
  + sel("fint-second","Second choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-third","Third choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-role","Role you expect to play",["Designer","Implementer","Supporter","Not sure"])
- + formBlock("interests",["fint-first","fint-second","fint-third","fint-role"],{next:"mytable"})
+ + sel("fint-position","Your position",["Leadership or administration","BCBA-D or BCBA","BCaBA","RBT or behavior technician","Student or trainee","Other"])
+ + line("fint-orgname","Your organization (optional)")
+ + '<p class="code" style="margin-top:-.3rem">Used only to spread colleagues across tables. The name is turned into a short code on your device before it is sent, so no one sees it.</p>'
+ + formBlock("interests",["fint-first","fint-second","fint-third","fint-role","fint-position","fint-org"],{next:"mytable"})
  + livePanel("interests");
 }},
 
@@ -1426,6 +1429,15 @@ function refreshPagerNext(){
 function subKey(form,stage){ return form+(stage?":"+stage:""); }
 function nextLink(id){ return '<a href="#s/'+id+'">'+nextLabel(id)+'</a>'; }
 function nextLabel(id){ var s=sectionById(id); return s ? s.code+' '+s.nav : ''; }
+/* Organization name to a short code, computed on the device. Same name (ignoring case, punctuation, and endings like LLC) gives the same code. */
+function orgCode(name){
+  var s = String(name||"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]+/g," ")
+    .replace(/\b(llc|pllc|inc|incorporated|corp|corporation|co|company|ltd|the|pc|pa|group)\b/g," ").replace(/\s+/g," ").trim();
+  if(!s) return "";
+  var h = 0x811c9dc5, salt = "next-repertoire-sdaba";
+  (salt+"|"+s).split("").forEach(function(c){ h ^= c.charCodeAt(0); h = Math.imul(h, 0x01000193) >>> 0; });
+  return "org-" + h.toString(36);
+}
 function formBlock(form,fields,opts){
   opts = opts||{};
   var st = SUBMITTED[subKey(form,opts.stage)];
@@ -1441,7 +1453,7 @@ function submitBlock(box){
   var status = box.querySelector(".submit-status"), btn = box.querySelector("button");
   if(!API_URL){ status.textContent = "Not connected to the response sheet yet."; return; }
   var data = {}; var any=false;
-  ids.forEach(function(id){ var el=document.getElementById(id); var v = el ? (el.type==="checkbox"?el.checked:el.value) : ANSWERS[id]; if(v===undefined) v=""; data[id]=v; if(v!=="" && v!==false) any=true; });
+  ids.forEach(function(id){ var el=document.getElementById(id); var v = el ? (el.type==="checkbox"?el.checked:el.value) : ANSWERS[id]; if(id==="fint-org"){ var on=document.getElementById("fint-orgname"); v=orgCode(on?on.value:ANSWERS["fint-orgname"]); } if(v===undefined) v=""; data[id]=v; if(v!=="" && v!==false && id!=="fint-org") any=true; });
   if(!any){ status.textContent = "Nothing to send yet."; return; }
   if(stage) data.stage = stage;
   if(form==="table_reports"){ data.group = myGroup(); data.voice = syncOn() ? "table" : "own"; }
@@ -1517,7 +1529,7 @@ function renderAdmin(){
    + '</section>'
    + '<section class="admin" id="admin-responses">'
    + '<div class="admin-head"><h2>Sort the Room</h2><span class="status" id="sort-status">'+sortStatus()+'</span></div>'
-   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone in a topic (first choice, then second, then third, then the emptiest topic), then splits each topic into physical tables (A-1, A-2) with a mix of expected roles. Mark the tents to match. Switch on Table Assignments (04) above and Publish so people can see their seat. Paper-only people: place them by hand where the counts are low.</p>'
+   + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone in a topic (first choice, then second, then third, then the emptiest topic), with no more than 2 people from one organization per table. It splits each topic into physical tables (A-1, A-2) with a mix of positions, then makes sure each table has a Leadership or BCBA participant, borrowing one from a table that has two or more when needed.</p>'
    + '<div class="actions"><label style="font-size:.85rem;color:var(--muted)">People per table <input type="text" id="a-size" size="3" value="6" style="width:4rem;display:inline-block"></label>'
    + '<label style="font-size:.85rem;color:var(--muted)">Max tables per topic <input type="text" id="a-maxt" size="3" value="2" style="width:4rem;display:inline-block"></label>'
    + '<button class="btn primary" id="a-assign">Assign tables</button><span id="assign-msg" class="status"></span></div>'
@@ -1758,7 +1770,10 @@ function hydrate(){
         if(r && r.ok){
           msg.textContent = r.n+" seated: "+groupTally(r)
             + ". "+r.basis["first choice"]+" first choice, "+r.basis["second choice"]+" second, "+(r.basis["third choice"]||0)+" third, "+r.basis["balanced"]+" balanced."
-            + (r.overflow ? " More people than seats at "+r.tableSize+" per table, so tables run larger." : "");
+            + (r.basis["table mix"] ? " "+r.basis["table mix"]+" moved for table mix." : "")
+            + (r.overflow ? " More people than seats at "+r.tableSize+" per table, so tables run larger." : "")
+            + (r.mix ? " Leadership or BCBA per table: "+Object.keys(r.mix).map(function(g){ return g+" "+r.mix[g].drivers; }).join(", ")+"." : "")
+            + (r.flags && r.flags.length ? " Check by hand: "+r.flags.join("; ")+"." : (r.mix ? " Every table has a Leadership or BCBA participant and no more than 2 from one organization." : ""));
           refreshAdmin();
         } else msg.textContent = (r&&r.error) || "Could not sort.";
       }).catch(function(){ msg.textContent="Could not reach the sheet."; })
