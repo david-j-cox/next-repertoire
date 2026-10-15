@@ -142,6 +142,7 @@ th,td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px 
 th{background:var(--surface-2);font-weight:600;font-size:.82rem}
 tr:last-child td{border-bottom:none}
 td.k{font-weight:500;white-space:nowrap}
+table:has(colgroup) td.k{white-space:normal}
 td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .quad{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;margin:1rem 0}
 .quad .qh{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);align-self:end;padding:4px}
@@ -813,7 +814,7 @@ var SECTIONS = [
  + '<p>The denial-letter tool from 08 and 11A. The smallest testable version tests the summary step first; suggested fixes wait until summaries prove accurate. No table works on billing, so borrow the structure for your own case. Tap the image to open it full size.</p>'
  + '<a href="img/prototype.png" target="_blank" rel="noopener"><img src="img/prototype.png" alt="Prototype for a tool that summarizes payer denial letters. Workflow: one denial letter goes in, the AI summarizes the reason and deadline, a billing specialist checks the summary against the letter, then decides to appeal, fix and resubmit, or accept. Test: one billing specialist for 30 days, switchable off at any time. Benefit measure: minutes per letter compared with last month. Error measure: wrong reason or deadline found in a weekly spot check by a second reviewer. Stop rule: pause if any appeal deadline is missed or more than 1 in 10 summaries is wrong; owner is the billing manager." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
  + '<h3>Prototype Elements '+who("rec")+'</h3>'
- + twrap(thead(["Prototype Element","Decision"])+'<tbody>'
+ + twrap('<colgroup><col style="width:28%"><col style="width:72%"></colgroup>'+thead(["Prototype Element","Decision"])+'<tbody>'
    + ["User and setting","Trigger / start condition","Minimum data input","AI function and output","Required human verification","Action or handoff","Outcome and error measures","Escalation and stop rule"].map(function(e,i){ return '<tr><td class="k">'+e+'</td>'+cell("f13-e"+i,e,"Decision")+'</tr>'; }).join('')+'</tbody>')
  + '<h3>Test Record and Next Test '+who("rec")+'</h3>'
  + twrap(thead(["Rep","Input Case","Predicted Result","Observed Result","Change Before Next Rep"])+'<tbody>'
@@ -890,7 +891,7 @@ var SECTIONS = [
 
 {id:"commit",code:"15",nav:"Commit",title:"Your 30-Day Repertoire Experiment",lede:"Choose a small professional behavior you can practice with feedback. A vague intention to “use more AI” will not work.",block:3,html:function(){ return ''
  + '<h3>My Commitment '+who()+'</h3>'
- + twrap(thead(["Element","My Commitment"])+'<tbody>'
+ + twrap('<colgroup><col style="width:28%"><col style="width:72%"></colgroup>'+thead(["Element","My Commitment"])+'<tbody>'
    + [["Use case and socially significant aim","f15-e0",""],
       ["My likely role","f15-e1","role"],
       ["Skill or discrimination to practice","f15-e2",""],
