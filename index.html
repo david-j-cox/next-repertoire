@@ -1216,7 +1216,7 @@ function applyGroup(res){
 function syncBar(){
   if(!API_URL) return '';
   var g=myGroup();
-  if(!g) return '<div class="syncbar"><span><b>Write with your table</b><small>Once you have a table and table number (section 04), Table recorder entries can be shared with your tablemates.</small></span></div>';
+  if(!g) return '<div class="syncbar"><span><b>Write with your table</b><small>It doesn\'t look like you\'re assigned a table in the system yet. <a href="#s/mytable">Click here to enter your table number.</a></small></span></div>';
   var on=syncWanted();
   return '<div class="syncbar'+(on?' on':'')+'"><label class="sw"><input type="checkbox" id="sync-toggle"'+(on?' checked':'')+' aria-label="Write with my table"><i></i></label>'
     + '<span><b>'+(on?'Writing with Table '+esc(g):'Writing on my own')+'</b><small>'
