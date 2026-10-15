@@ -162,6 +162,8 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .flip.on .fi{transform:rotateY(180deg)}
 .flip .ff,.flip .fb{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:10px;padding:.8rem .9rem;display:flex;flex-direction:column;justify-content:center}
 .flip .ff{background:var(--surface);font-family:var(--display);font-size:1.2rem;font-weight:600;line-height:1.2;text-align:center;align-items:center}
+.flip .ff .cnt{display:block;font-family:var(--body);font-size:.85rem;font-weight:500;color:var(--muted);margin-top:.25rem}
+.flip .fb em .cnt{display:none}
 .flip .ff small{display:block;font-family:var(--mono);font-size:.68rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.6rem}
 .flip .fb{background:var(--surface-2);transform:rotateY(180deg);font-size:.9rem;line-height:1.4;text-align:center;align-items:center}
 .flip .fb em{font-style:normal;font-weight:600;display:block;margin-bottom:.3rem}
@@ -638,14 +640,12 @@ var SECTIONS = [
 
 {id:"safeguard",code:"08",nav:"Safeguard",title:"Privacy, Security, and Confidentiality",lede:"A de-identification claim is only as good as the process, context, and residual re-identification risk.",block:2,html:function(){ return ''
  + callout("Workshop rule","No real protected health information, personally identifiable information, workforce-sensitive information, or payer credentials in workshop tools.","rule")
- + ref('Five Questions to Ask Before Data Enter',''
- + twrap(thead(["Ask Before Data Enter","Why It Matters"])+'<tbody>'
-   + '<tr><td class="k">Is the tool approved for this information and purpose?</td><td>Consumer access is not the same as an organizationally approved, contractually governed service.</td></tr>'
-   + '<tr><td class="k">Does a service provider create, receive, maintain, or transmit electronic protected health information (ePHI)?</td><td>HIPAA obligations may apply even when a provider cannot view encrypted data; a compliant business associate agreement (BAA) and safeguards may be required.</td></tr>'
-   + '<tr><td class="k">Who can access, reuse, train on, disclose, or retain the data?</td><td>Settings, contracts, integrations, logs, and subprocessors may matter more than the user interface.</td></tr>'
-   + '<tr><td class="k">Can the minimum necessary information accomplish the task?</td><td>Reduce exposure; prefer fictional, synthetic, or properly de-identified data for practice and testing.</td></tr>'
-   + '<tr><td class="k">How will access end and data be exported or destroyed?</td><td>Exit is part of the design from the start.</td></tr></tbody>')
- )
+ + '<h3>Five Questions to Ask Before Data Enter</h3><p>Tap a card to see why it matters.</p>'
+ + flips([["Is the tool approved for this information and purpose?","Consumer access is not the same as an organizationally approved, contractually governed service."],
+   ["Does a service provider create, receive, maintain, or transmit electronic protected health information (ePHI)?","HIPAA obligations may apply even when a provider cannot view encrypted data; a compliant business associate agreement (BAA) and safeguards may be required."],
+   ["Who can access, reuse, train on, disclose, or retain the data?","Settings, contracts, integrations, logs, and subprocessors may matter more than the user interface."],
+   ["Can the minimum necessary information accomplish the task?","Reduce exposure; prefer fictional, synthetic, or properly de-identified data for practice and testing."],
+   ["How will access end and data be exported or destroyed?","Exit is part of the design from the start."]],true,3)
  + '<h3>Example: One Billing Tool</h3>'
  + '<p>A fictional tool that summarizes payer denial letters and recommends operational changes to reduce denials. Follow the data from source to record, and look for where things can go wrong. The same tool appears in sections 11A and 13. Tap the image to open it full size.</p>'
  + '<a href="img/data-path-denial.png" target="_blank" rel="noopener"><img src="img/data-path-denial.png" alt="Data path for a tool that summarizes payer denial letters and recommends operational changes. The claim record and the denial letter go to an AI vendor under a BAA, which produces a draft summary of the reason, deadline, and likely fix. A billing specialist checks it against the letter, and the summary is saved in the billing record, where it may go to the payer in an appeal or to operations as change ideas. Vendor logs branch off the vendor. A weekly spot check compares summaries to letters. Six risk points are marked." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
@@ -688,7 +688,7 @@ var SECTIONS = [
 }},
 
 {id:"procure",code:"14",nav:"Procure",title:"Questions for a Vendor, or Your Own Build Team",lede:"A polished demonstration is not a substitute for evidence, contracts, operational fit, and an exit plan.",block:2,html:function(){ return ''
- + '<p>Tick the questions you could not answer today for your use case. Those are the ones to ask before anything goes live.</p>'
+ + '<p>Tick each question you can already answer for your use case. The ones left blank are the ones to ask before anything goes live.</p>'
  + '<div class="checks" style="grid-template-columns:1fr">'
  + ["What exact problem and intended use does the system support?","What data were used to develop and evaluate it?","For which populations, settings, languages, and tasks is performance known?","What error measures, uncertainty, limitations, and boundary conditions are documented?","What client or workforce data enter the system, including logs and metadata?","Where are data processed and stored; who are the subprocessors?","Can data or outputs be reused to train models or improve services? Can that be disabled?","What agreement, including a BAA when applicable, governs the service?","How are access, encryption, incident response, deletion, and audit supported?","How are model, prompt, policy, and product changes communicated and versioned?","Can we export our records and terminate use without workflow lock-in?","What monitoring, human override, escalation, rollback, and retirement functions exist?"].map(function(q,i){ return cb("f14-q"+i,q); }).join('')
  + '</div>'
@@ -741,7 +741,7 @@ var SECTIONS = [
 
 {id:"design",code:"11",nav:"Design",title:"Pair a Technical Solution with an OBM Solution",lede:"A control that exists only in software, or only in policy, will likely fail when work becomes busy.",block:2,html:function(){ return ''
  + '<h3>Design Layers '+who("rec")+'</h3>'
- + twrap(thead(["Design Layer","Examples","Our Choice"])+'<tbody>'
+ + twrap('<colgroup><col style="width:17%"><col style="width:38%"><col style="width:45%"></colgroup>'+thead(["Design Layer","Examples","Our Choice"])+'<tbody>'
    + '<tr><td class="k">Technical</td><td data-h="Examples">'+chipsFor("f11-tech","Access Controls; Data Minimization; Templates; Required Fields; Confidence Display; Sampled Review; Version Lock; Logging; Rollback")+'</td>'+cellTA("f11-tech","Technical / Our choice","Our choice",3)+'</td></tr>'
    + '<tr><td class="k">Behavioral (OBM)</td><td data-h="Examples">'+chipsFor("f11-obm","Task Clarification; Skills Practice; Prompts; Modeling; Checklists; Performance Feedback; Reinforcement; Escalation; Workload Redesign")+'</td>'+cellTA("f11-obm","Behavioral OBM / Our choice","Our choice",3)+'</td></tr>'
    + '<tr><td class="k">Measurement</td><td data-h="Examples">'+chipsFor("f11-measure","Accuracy; Completeness; Latency; Rework; Override; Incident; Acceptability; Client Outcome; Equity; Opportunity Cost")+'</td>'+cellTA("f11-measure","Measurement / Our choice","Our choice",3)+'</td></tr></tbody>')
@@ -824,12 +824,14 @@ var SECTIONS = [
 {id:"fieldlab",code:"13A",nav:"Chiron Field Lab",title:"Run the 25-Minute Prototype and Test",block:3,html:function(){ return ''
  + '<p>Keep your A–F use case and prototype. There are no points or winners. The purpose is to expose assumptions and improve the design.</p>'
  + '<h3>Roles and Materials</h3>'
- + '<p>The <em>Navigator</em> reads and paces; the <em>Recorder</em> moves notes and records revisions; the <em>Challenger</em> asks for evidence. Roles may be shared. Use the System Map board, sticky notes, Operations card, matching sealed envelope, and eight decision tokens.</p>'
- + '<div class="cards">'
- + '<div class="card"><div class="eyebrow">3 tokens</div><h4>AI May</h4><p>Permitted contributions</p></div>'
- + '<div class="card"><div class="eyebrow">3 tokens</div><h4>Human Must</h4><p>Required judgment or action</p></div>'
- + '<div class="card"><div class="eyebrow">2 tokens</div><h4>Stop / Escalate</h4><p>Detectable condition, responsible person, and next step</p></div>'
- + '</div>'
+ + '<p>Materials: the System Map board, sticky notes, Operations card, matching sealed envelope, and eight decision tokens. Roles may be shared.</p>'
+ + '<div class="legend"><span data-cat="1">Roles</span><span data-cat="2">Decision Tokens</span></div>'
+ + flips([["Navigator","Reads and paces.",1],
+   ["Recorder","Moves notes and records revisions.",1],
+   ["Challenger","Asks for evidence.",1],
+   ["AI May<br><span class=\"cnt\">3 tokens</span>","Permitted contributions.",2],
+   ["Human Must<br><span class=\"cnt\">3 tokens</span>","Required judgment or action.",2],
+   ["Stop / Escalate<br><span class=\"cnt\">2 tokens</span>","Detectable condition, responsible person, and next step.",2]],true,3)
  + '<p>These counts scaffold the exercise. They are not a rule for clinical design. Tokens can share a zone, and you can mark a role AI should not have.</p>'
  + ref('The 25-Minute Sequence',''
  + '<h3>Sequence</h3>'
