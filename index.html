@@ -578,7 +578,6 @@ var SECTIONS = [
 {id:"choose",code:"04",nav:"Choose",title:"Select a Problem Worth Working On",lede:"Choose the table where the outcome matters and the workflow is familiar enough to analyze.",block:1,html:function(){ return ''
  + twrap(thead(["Table","Likely Use Case","Question to Define"])+'<tbody>'
    + TABLES.map(function(t){ return '<tr><td class="k">'+t.id+'</td><td>'+t.name+'</td><td>'+t.q+'</td></tr>'; }).join('')+'</tbody>')
- + callout("Table round","Introduce yourself with role, setting, and a fictional workshop handle. Name one measurable work problem. Products come later.")
  + '<h3>Interest Poll '+who()+'</h3><p>Used to sort the room into tables.</p>'
  + sel("fint-first","First choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
  + sel("fint-second","Second choice",TABLES.map(function(t){return [t.id,"Table "+t.id+" - "+t.name];}))
