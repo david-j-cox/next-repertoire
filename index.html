@@ -451,7 +451,7 @@ var SECTIONS = [
  + '<p>Write your current understanding in one or two sentences. This is a starting point. You will revise it after we cover a few terms.</p>'
  + ta("f02-def1","Current working definition",3)
  + '<h3>Baseline '+who()+'</h3><p>How confident are you right now that you can do each of these?</p>'
- + scale("fpre-c1","Differentiate descriptive, predictive, and generative AI")
+ + scale("fpre-c1","Identify what an AI system does (describe, predict, generate, or connect) and how to check its output")
  + scale("fpre-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
  + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
  + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency");
@@ -614,8 +614,8 @@ var SECTIONS = [
  + '<h3>My Table</h3>'
  + '<div class="field"><label for="f04-table">Which table did you join?</label><select id="f04-table"><option value="">Choose a table</option>'
  + TABLES.map(function(t){ return '<option value="'+t.id+'">Table '+t.id+': '+t.name+'</option>'; }).join('')+'</select></div>'
- + '<div class="field"><label for="f04-tablenum">Which table number? Topics with many people use two tables (e.g., A-1 and A-2).</label><select id="f04-tablenum"><option value="">Choose a number</option>'
- + [1,2,3,4].map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('')+'</select></div>'
+ + '<div class="field"><label for="f04-tablenum">Which table number? Topics with many people use more than one table (e.g., A-1, A-2, A-3).</label><select id="f04-tablenum"><option value="">Choose a number</option>'
+ + [1,2,3,4,5].map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('')+'</select></div>'
  + '<div id="table-card"></div>'
  + '<h3>My Table and Problem Statement '+who("rec")+'</h3>'
  + '<p>Fill the sentence, then tick each statement that is true for your problem.</p>'
@@ -946,7 +946,7 @@ var SECTIONS = [
  + ta("f16-k2","2. Identify one professional decision that should remain explicitly assigned to a qualified human in your use case.",2)
  + ta("f16-k3","3. State one benefit measure, one error measure, and one stop rule for your prototype.",2)
  + '<h3>Post-Workshop Check '+who()+'</h3><p>How confident are you now that you can do each of these?</p>'
- + scale("fpost-c1","Differentiate descriptive, predictive, and generative AI")
+ + scale("fpost-c1","Identify what an AI system does (describe, predict, generate, or connect) and how to check its output")
  + scale("fpost-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
  + scale("fpost-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
  + scale("fpost-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
@@ -1531,7 +1531,7 @@ function renderAdmin(){
    + '<div class="admin-head"><h2>Sort the Room</h2><span class="status" id="sort-status">'+sortStatus()+'</span></div>'
    + '<p style="font-size:.9rem;color:var(--muted);max-width:none">Reads the interest poll and seats everyone in a topic (first choice, then second, then third, then the emptiest topic), with no more than 2 people from one organization per table. It splits each topic into physical tables (A-1, A-2) with a mix of positions, then makes sure each table has a Leadership or BCBA participant, borrowing one from a table that has two or more when needed.</p>'
    + '<div class="actions"><label style="font-size:.85rem;color:var(--muted)">People per table <input type="text" id="a-size" size="3" value="6" style="width:4rem;display:inline-block"></label>'
-   + '<label style="font-size:.85rem;color:var(--muted)">Max tables per topic <input type="text" id="a-maxt" size="3" value="2" style="width:4rem;display:inline-block"></label>'
+   + '<label style="font-size:.85rem;color:var(--muted)">Max tables per topic <input type="text" id="a-maxt" size="3" value="5" style="width:4rem;display:inline-block"></label>'
    + '<button class="btn primary" id="a-assign">Assign tables</button><span id="assign-msg" class="status"></span></div>'
    + '</section>'
    + '<section class="admin" id="admin-responses">'
@@ -1614,7 +1614,7 @@ var STAGES = {
   selected:{title:"Selected Options (11A)",text:function(r){ return r["f11b-selected"]+(r["f11b-assumption"]?' Assumption: '+r["f11b-assumption"]:''); }},
   fieldlab:{title:"Field Lab Reports (13A)",text:function(r){ return 'Our purpose is '+r["f13a-r1"]+' | AI may '+r["f13a-r2"]+' | A human must '+r["f13a-r3"]+' | We will measure '+r["f13a-r4"]+' | We stop or escalate when '+r["f13a-r5"]; }}
 };
-var OBJS = [["c1","Differentiate AI types"],["c2","Analyze a workflow with the canvas"],["c3","Evaluate governance considerations"],["c4","Produce a 30-day prototype"]];
+var OBJS = [["c1","Identify what a system does"],["c2","Analyze a workflow with the canvas"],["c3","Evaluate governance considerations"],["c4","Produce a 30-day prototype"]];
 function livePanel(kind){
   if(!ADMIN && GATES.show.indexOf(kind)<0) return '';
   return '<div class="live" data-live="'+kind+'"><div class="live-head"><span class="eyebrow">Room results</span><span class="code live-time"></span></div><div class="live-body">'+(API_URL?'Loading…':'Results appear here once the site is connected.')+'</div></div>';

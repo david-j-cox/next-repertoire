@@ -10,7 +10,7 @@
  * GET  ?action=summary            -> aggregate counts for the live panels on participant pages
  * GET  ?action=shift&table=A       -> that table's context shift, only after the reveal is opened
  * GET  ?action=myTable&pid=p-xxx   -> that participant's assigned table and group, once assignments are shown
- * POST {action:"assign", key, tableSize, maxTables} -> sort everyone into topic tables (A-F) and table groups (A-1, A-2)
+ * POST {action:"assign", key, tableSize, maxTables} -> sort everyone into topic tables (A-F) and table groups (A-1, A-2, ...)
  * GET  ?action=admin&key=PASSCODE -> counts and recent rows for the facilitator panel
  * POST {action:"submit", form, pid, table, data:{...}}
  * POST {action:"setGates", key, gates:{unlocked:[],current:"",show:[]}}
@@ -531,7 +531,7 @@ function groupDelta(group, since) {
 /* Copy every cached table document to the group_notes tab. Also runnable from the editor. */
 function flushGroups() {
   var keys = [];
-  TABLE_IDS.forEach(function (t) { for (var i = 1; i <= 4; i++) keys.push("grp:" + t + "-" + i); });
+  TABLE_IDS.forEach(function (t) { for (var i = 1; i <= 9; i++) keys.push("grp:" + t + "-" + i); });
   var got = CacheService.getScriptCache().getAll(keys), docs = {};
   Object.keys(got).forEach(function (k) { docs[k.slice(4)] = got[k]; });
   writeGroupRows(docs);
