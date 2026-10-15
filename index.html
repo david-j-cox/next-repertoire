@@ -746,11 +746,6 @@ var SECTIONS = [
  + '<h3>Example: One Changed Condition, Three Ways to Respond</h3>'
  + '<p>The denial-letter tool from 08 is running. Then a new payer starts sending letters in a different layout. Each option below moves the work to a different person. Compare who carries it. Tap the image to open it full size.</p>'
  + '<a href="img/ideate-denial.png" target="_blank" rel="noopener"><img src="img/ideate-denial.png" alt="Changed condition: a new payer sends denial letters in a different layout. Three options. Technical: add sample letters to the tool setup. Behavioral: add a deadline check to the billing specialist review. Non-AI: use the payer denial codes in the billing system." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
- + ref('The Example as Text',''
- + '<p><em>Technical</em>: add sample letters in the new layout to the tool setup. Work moves to whoever maintains the setup, often the vendor. Watch for: letters in the old layouts may start to read wrong after the change.</p>'
- + '<p><em>Behavioral (OBM)</em>: add a deadline check to the billing specialist’s review, with feedback on misses from the weekly spot check. Work moves to the billing specialist and the spot-check reviewer. Watch for: a longer review may lead to faster, shallower checks.</p>'
- + '<p><em>Non-AI</em>: use the denial codes the payer sends with its electronic remittance, which already land in the billing system. Work moves to whoever owns the billing system. Watch for: codes may miss details the letter explains, including some deadlines.</p>'
- )
  + '<ul class="steps">'
  + '<li><span class="t">Before break</span><span class="n">Rep 1 · 5 min</span><span class="d">Technical and non-AI options, then 3 minutes of feedback</span></li>'
  + '<li><span class="t">Break 2</span><span class="n">10 min</span><span class="d"></span></li>'
@@ -808,13 +803,6 @@ var SECTIONS = [
  + '<h3>Example: The Smallest Testable Version</h3>'
  + '<p>The denial-letter tool from 08 and 11A. The smallest testable version tests the summary step first; suggested fixes wait until summaries prove accurate. No table works on billing, so borrow the structure for your own case. Tap the image to open it full size.</p>'
  + '<a href="img/prototype.png" target="_blank" rel="noopener"><img src="img/prototype.png" alt="Prototype for a tool that summarizes payer denial letters. Workflow: one denial letter goes in, the AI summarizes the reason and deadline, a billing specialist checks the summary against the letter, then decides to appeal, fix and resubmit, or accept. Test: one billing specialist for 30 days, switchable off at any time. Benefit measure: minutes per letter compared with last month. Error measure: wrong reason or deadline found in a weekly spot check by a second reviewer. Stop rule: pause if any appeal deadline is missed or more than 1 in 10 summaries is wrong; owner is the billing manager." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
- + ref('The Example as Text',''
- + '<p><em>Workflow</em>: one denial letter goes in. The AI step summarizes the denial reason and the appeal deadline. A billing specialist checks the summary against the letter. The specialist decides to appeal, fix and resubmit, or accept the denial.</p>'
- + '<p><em>Release</em>: one billing specialist for 30 days. The tool can be switched off at any time.</p>'
- + '<p><em>Benefit measure</em>: minutes per letter, compared with last month without the tool.</p>'
- + '<p><em>Error measure</em>: a wrong reason or deadline, found in a weekly spot check where a second reviewer compares a sample of summaries to the letters.</p>'
- + '<p><em>Stop rule</em>: pause if any appeal deadline is missed, or if more than 1 in 10 checked summaries is wrong. The billing manager owns the decision to pause.</p>'
- )
  + '<h3>Prototype Elements '+who("rec")+'</h3>'
  + twrap(thead(["Prototype Element","Decision"])+'<tbody>'
    + ["User and setting","Trigger / start condition","Minimum data input","AI function and output","Required human verification","Action or handoff","Outcome and error measures","Escalation and stop rule"].map(function(e,i){ return '<tr><td class="k">'+e+'</td>'+cell("f13-e"+i,e,"Decision")+'</tr>'; }).join('')+'</tbody>')
