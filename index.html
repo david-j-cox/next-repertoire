@@ -637,7 +637,8 @@ var SECTIONS = [
  + '<h3>Example: One Billing Tool</h3>'
  + '<p>A fictional tool that summarizes payer denial letters and recommends operational changes to reduce denials. Follow the data from source to record, and look for where things can go wrong. The same tool appears in sections 11A and 13. Tap the image to open it full size.</p>'
  + '<a href="img/data-path-denial.png" target="_blank" rel="noopener"><img src="img/data-path-denial.png" alt="Data path for a tool that summarizes payer denial letters and recommends operational changes. The claim record and the denial letter go to an AI vendor under a BAA, which produces a draft summary of the reason, deadline, and likely fix. A billing specialist checks it against the letter, and the summary is saved in the billing record, where it may go to the payer in an appeal or to operations as change ideas. Vendor logs branch off the vendor. A weekly spot check compares summaries to letters. Six risk points are marked." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
- + '<h3>Sketch the Data Path '+who("rec")+'</h3>'
+ + '<h3>Sketch Your Table\'s Data Path '+who("rec")+'</h3>'
+ + '<p>Now do the same for your table\'s use case. Use one row for each source of data your tool would use.</p>'
  + twrap(thead(["Source","What Enters","Where Processed/Stored","Who Receives Output","Retention/Exit"])+'<tbody>'
    + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c,c);}).join('')+'</tr>'
    + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r2-"+i,"Data path row 2 / "+c,c);}).join('')+'</tr></tbody>')
