@@ -191,6 +191,7 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .strip .st.on{border:2px solid var(--accent);color:var(--ink);font-weight:600;background:var(--surface-2)}
 .strip .st.brk{border-style:dashed}
 .strip .sep{color:var(--muted)}
+.gate small.when{display:block;font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:2px}
 .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 0 1.1rem;font-size:.9rem}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend span::before{content:"";width:14px;height:14px;border-radius:4px;border:2px solid var(--cc)}
@@ -434,15 +435,11 @@ var SECTIONS = [
 {id:"orient",code:"01",nav:"Process",title:"The Process We Will Practice",block:1,html:function(){ return ''
  + callout("Privacy boundary","Use entirely fictional examples. Do not enter client, caregiver, employee, payer, or other identifying information into workshop tools. Optional polls use broad categories; facilitators do not retain individual responses.","rule")
  + '<p><em>Design thinking</em> is an iterative, human-centered approach to understanding a problem, generating alternatives, and learning from a tangible test. We use the familiar five modes; governance runs through all of them.</p>'
- + ref('The Five Modes',''
- + '<div class="cards">'
- + '<div class="card"><h4>Empathize</h4><p>Learn about people’s work, needs, and constraints through observation and conversation.</p></div>'
- + '<div class="card"><h4>Define</h4><p>Synthesize a focused point of view and an open “How might we” question.</p></div>'
- + '<div class="card"><h4>Ideate</h4><p>Generate alternatives before choosing against explicit criteria.</p></div>'
- + '<div class="card"><h4>Prototype</h4><p>Make a small version of the workflow that people can inspect.</p></div>'
- + '<div class="card"><h4>Test</h4><p>Observe what happens, revise, and revisit earlier modes when needed.</p></div>'
- + '</div>'
- )
+ + flips([["Empathize","Learn about people’s work, needs, and constraints through observation and conversation."],
+   ["Define","Synthesize a focused point of view and an open “How might we” question."],
+   ["Ideate","Generate alternatives before choosing against explicit criteria."],
+   ["Prototype","Make a small version of the workflow that people can inspect."],
+   ["Test","Observe what happens, revise, and revisit earlier modes when needed."]],true,3)
  + '<h4>What This Workshop Can and Cannot Establish</h4>'
  + '<p>Peer interviews illuminate professional experience. They do not substitute for client, caregiver, or other stakeholder input. Label assumptions and identify whose perspective is missing. A table exercise can expose weaknesses in a design; it cannot establish clinical effectiveness or authorize deployment.</p>'
  + '<p>'+who()+' is your own answer. '+who("rec")+' is one answer per table.</p>'
@@ -1145,17 +1142,17 @@ var PID = lsGet(LS_PID);
 if(!PID){ PID = "p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); lsSet(LS_PID,PID); }
 var ALL_IDS = SECTIONS.map(function(s){return s.id;});
 var PANELS = [
-  ["confidence-pre","Confidence, Pre (02)"],
-  ["demographics","Role and Setting Snapshot (03A)"],
-  ["interests","Interest Poll (04)"],
-  ["assignment","Table Assignments (04)"],
-  ["missions","Mission Cards (04)"],
-  ["reports:problem","Problem Statements (04)"],
-  ["reports:define","Define Statements (05A)"],
-  ["reports:selected","Selected Options (11A)"],
-  ["reveal","Field Lab Context-Shift Reveal (13A)"],
-  ["reports:fieldlab","Field Lab Reports (13A)"],
-  ["confidence-post","Confidence, Pre and Post (16)"]
+  ["confidence-pre","Confidence, Pre (02)","Slide 20 · Trade-Offs tab"],
+  ["demographics","Role and Setting Snapshot (03A)","Slide 22 · Empathize tab"],
+  ["interests","Interest Poll (04)","Slide 30 · Choose tab"],
+  ["assignment","Table Assignments (04)","Slide 31, after the sort · My Table tab"],
+  ["missions","Mission Cards (04)","Slide 33 · My Table tab"],
+  ["reports:problem","Problem Statements (04)","Slide 34 · My Table tab"],
+  ["reports:define","Define Statements (05A)","Slide 51 · Define Practice tab"],
+  ["reports:selected","Selected Options (11A)","Slide 65 · Trace and Select tab"],
+  ["reveal","Field Lab Context-Shift Reveal (13A)","Slide 72 · Field Lab Reveal tab"],
+  ["reports:fieldlab","Field Lab Reports (13A)","Slide 79 · Field Lab Reveal tab"],
+  ["confidence-post","Confidence, Pre and Post (16)","Slide 84 · Retain tab"]
 ];
 var ALL_PANELS = PANELS.map(function(p){return p[0];});
 var REVEAL_KEY = "reveal";
@@ -1514,7 +1511,7 @@ function renderAdmin(){
    + '</div>'
    + '<div class="gates">'+gates+'</div>'
    + '<h3>Room Results Shown to Participants</h3>'
-   + '<div class="gates">'+PANELS.map(function(p){ var on=g.show.indexOf(p[0])>=0; return '<div class="gate"><label class="sw"><input type="checkbox" data-show="'+p[0]+'"'+(on?' checked':'')+' aria-label="Show '+p[1]+'"><i></i></label><span>'+p[1]+'</span><span></span></div>'; }).join('')+'</div>'
+   + '<div class="gates">'+PANELS.map(function(p){ var on=g.show.indexOf(p[0])>=0; return '<div class="gate"><label class="sw"><input type="checkbox" data-show="'+p[0]+'"'+(on?' checked':'')+' aria-label="Show '+p[1]+'"><i></i></label><span>'+p[1]+(p[2]?'<small class="when">Open at '+p[2]+'</small>':'')+'</span><span></span></div>'; }).join('')+'</div>'
    + (dirty ? '<div class="actions"><span style="flex:1"></span><span class="pending">Unpublished changes</span><button class="btn primary" id="a-publish2">Publish</button></div>' : '')
    + '<div id="admin-msg" hidden></div>'
    + '</section>'
