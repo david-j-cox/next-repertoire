@@ -154,6 +154,17 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .card .eyebrow{margin-bottom:.25rem}
 .card h4{margin-top:0}
 .card p{font-size:.9rem}
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:10px;margin:.6rem 0 1rem}
+.flip{all:unset;box-sizing:border-box;cursor:pointer;perspective:900px;display:block;min-height:130px;min-width:0}
+.flip:focus-visible .fi{outline:2px solid var(--accent);outline-offset:2px}
+.flip .fi{display:grid;height:100%;transition:transform .45s ease;transform-style:preserve-3d}
+.flip.on .fi{transform:rotateY(180deg)}
+.flip .ff,.flip .fb{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:10px;padding:1rem;display:flex;flex-direction:column;justify-content:center}
+.flip .ff{background:var(--surface);font-family:var(--display);font-size:1.35rem;font-weight:600;line-height:1.2;text-align:center;align-items:center}
+.flip .ff small{display:block;font-family:var(--mono);font-size:.68rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.6rem}
+.flip .fb{background:var(--surface-2);transform:rotateY(180deg);font-size:.9rem;line-height:1.4}
+.flip .fb em{font-style:normal;font-weight:600;display:block;margin-bottom:.3rem}
+@media (prefers-reduced-motion:reduce){.flip .fi{transition:none}}
 details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background:var(--paper)}
 .seat{border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:8px;padding:.7rem 1rem;margin:.8rem 0;background:var(--surface-2)}
 .seat.pending{border-color:var(--line);border-left-color:var(--lock);color:var(--muted)}
@@ -357,6 +368,8 @@ function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input
 function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
+function flips(list){ return '<div class="flips">'+list.map(function(c){ return '<button type="button" class="flip" aria-pressed="false"><span class="fi"><span class="ff">'+c[0]+'<small>Tap to flip</small></span><span class="fb"><em>'+c[0]+'</em>'+c[1]+'</span></span></button>'; }).join("")+'</div>'; }
+document.addEventListener("click",function(ev){ var f=ev.target.closest&&ev.target.closest(".flip"); if(!f) return; f.classList.toggle("on"); f.setAttribute("aria-pressed",f.classList.contains("on")?"true":"false"); });
 function deeper(q){ return ref('Go Deeper','<p>'+q+'</p><p class="code">Optional. For tables that finish early or want more.</p>'); }
 function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
 function callout(kicker,text,cls){ return '<aside class="callout'+(cls?' '+cls:'')+'"><b>'+kicker+'</b>'+text+'</aside>'; }
@@ -432,21 +445,29 @@ var SECTIONS = [
  + callout("Watch the category error","A fluent output is not evidence that a recommendation is accurate, appropriate, ethical, or effective in this context.");
 }},
 
-{id:"literacy",code:"02A",nav:"AI Terms",title:"Terms Worth Keeping",block:1,html:function(){ return ''
- + '<div class="terms">'
- + '<p><em>Model</em>: a system with learned statistical relationships. A large language model (LLM) processes and generates language sequences. A token is a unit of input or output, sometimes only part of a word.</p>'
- + '<p><em>Prompt and context</em>: the instructions and information supplied for a request. The context window limits the information available to that request.</p>'
- + '<p><em>Context window</em>: how much information the model can use for one request.</p>'
- + '<p><em>Drift</em>: a change in the data, the setting, or the model that makes past performance a poor guide to current performance.</p>'
- + '<p><em>Decision rights</em>: who may draft, recommend, approve, act, and stop.</p>'
- + '<p><em>Baseline</em>: how the task performs now, without the tool.</p>'
- + '<p><em>OBM</em>: organizational behavior management.</p>'
- + '<p><em>BAA</em>: business associate agreement, the HIPAA contract with a vendor that handles PHI.</p>'
- + '<p><em>Stop rule</em>: the observable condition that pauses or escalates the workflow.</p>'
- + '<p>Training changes learned parameters. Inference uses a trained model. Input reuse, logging, retention, and further training depend on the service and contract.</p>'
- + '<p><em>Retrieval</em> supplies selected external material to a request. <em>Fine-tuning</em> changes parameters through further training. Neither guarantees accuracy.</p>'
- + '<p>Generated content can contain unsupported claims, omissions, or fabricated citations. Fluency is not evidence of authority. Verify claims against appropriate sources and context.</p>'
- + '</div>';
+{id:"literacy",code:"02A",nav:"AI Terms",title:"Terms Worth Keeping",lede:"Tap a card to see the definition. Tap again to flip it back.",block:1,html:function(){ return ''
+ + '<h3>Model Basics</h3>'
+ + flips([["Model","A set of statistical relationships learned from data."],
+   ["LLM","Large language model. A model trained on a large amount of text. Given the text so far, it predicts what is likely to come next."],
+   ["Prompt and Context","Everything you hand the model right now: your question plus any notes or documents you include."],
+   ["Token","The unit the model works with. Often only part of a word."],
+   ["Context Window","How much the model can take in for one request. More is not automatically better evidence."],
+   ["Drift","A change in the data, the setting, or the model that makes past performance a poor guide to current performance."],
+   ["Decision Rights","Who may draft, recommend, approve, act, and stop."]])
+ + '<h3>Training and Use</h3>'
+ + flips([["Training","The model works through many examples, and its internal parameters change."],
+   ["Inference","Using the trained model to produce a result. Your prompt usually does not retrain it. Whether inputs are stored, logged, or used for future training depends on the service and the contract."],
+   ["Application Layer","Everything wrapped around the model: the interface, the documents it can pull from, who can use it, and what it records."]])
+ + '<h3>Retrieval and Fine-Tuning</h3>'
+ + flips([["Retrieval","The system finds source material that looks relevant and hands it to the model with the question. The model itself does not change."],
+   ["Fine-Tuning","Further training on more examples, which changes the model's parameters."]])
+ + '<p>Either can still get it wrong. Retrieval can pull the wrong document, or the model can summarize the right one incorrectly.</p>'
+ + '<h3>When Output Goes Wrong</h3>'
+ + flips([["Fabrication","The model makes something up."],
+   ["Omission","It leaves out something important."],
+   ["Unsupported Inference","It goes further than the data allow."],
+   ["Scope Error","It answers a different question, or applies to the wrong situation."]])
+ + callout("Calibration","Fluency is not authority. A citation is a claim to verify.");
 }},
 
 {id:"revise",code:"02",nav:"Revised Definition",gate:"literacy",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"Your Revised Working Definition of AI",block:1,html:function(){ return ''
@@ -590,7 +611,7 @@ var SECTIONS = [
  + '<h3>Governance Check: Five Questions Across Eight Domains <span class="code">07A</span></h3>'
  + '<p>Use this during the governance block and keep it as a reference. A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.</p>'
  + ref('Privacy and Security', '<p>Map source, access, retention, reuse, disclosure, deletion, and downstream services. Section 08 holds the data-flow worksheet.</p>')
- + ref('Model Validation and Scope', '<p>Specify task, population, setting, data, version, and consequence. Compare with a meaningful baseline. Generated claims and predictive estimates require different checks. Section 09 records evidence and limits.</p>')
+ + ref('Model Validation and Scope', '<p>Specify task, population, setting, data, version, and consequence. Compare with a meaningful baseline, meaning how the task performs now without the tool. Generated claims and predictive estimates require different checks. Section 09 records evidence and limits.</p>')
  + ref('Model and Data Drift', '<p>Watch input distributions, missingness, workflow changes, version changes, error, and burden. Name an owner, cadence, and condition for re-evaluation, restriction, or retirement. An error is not automatically evidence of drift.</p>')
  + ref('Operational Training and General AI Literacy', '<p>Identify the behavior required. Instruct, model, rehearse, observe, and provide feedback. Check performance under normal workload. Policy acknowledgments and quiz scores are weak evidence on their own. Sections 10 and 11 connect authority and behavior.</p>')
  + ref('Vendor Conversations and Build or Buy', '<p>Ask for task-specific evidence, data terms, change notice, incident response, export and deletion, and exit support. Compare the total maintenance burden of buying, configuring, fine-tuning, training, or using no AI. Section 14 contains the procurement checklist.</p>')
@@ -639,12 +660,13 @@ var SECTIONS = [
    + '<tr><td>Identify affected groups and context</td><td>Inspect differences that could create inequitable impact</td><td>Pause, constrain, retrain, replace, or retire when thresholds fail</td></tr></tbody>')
  )
  + '<h3>Define a Minimum Test '+who("rec")+'</h3>'
+ + '<p>Baseline is how the task performs now, without the tool.</p>'
  + twrap(thead(["Measure","Current Baseline","Pilot Criterion","Sample/Interval","Owner"])+'<tbody>'
    + rowFill("f09-benefit","Benefit/outcome",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-error","Error/quality",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-equity","Equity/access",["Baseline","Criterion","Sample","Owner"])
    + rowFill("f09-time","Time/workload",["Baseline","Criterion","Sample","Owner"])+'</tbody>')
- + '<aside class="callout"><b>Stop rule</b><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14,"who pauses it")+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14,"who reviews it")+' reviews it.</p></aside>'
+ + '<aside class="callout"><b>Stop rule</b><p style="margin:0 0 .4rem">The observable condition that pauses or escalates the workflow.</p><p class="stem" style="margin:0">If '+fill("f09-s1","measure",14)+' exceeds/falls below '+fill("f09-s2","threshold",12)+' for '+fill("f09-s3","interval",12)+', then '+fill("f09-s4","who",14,"who pauses it")+' will pause or constrain the use case while '+fill("f09-s5","reviewer",14,"who reviews it")+' reviews it.</p></aside>'
  + deeper('Set a number for your stop rule and defend it. What result in week 2 would make you stop early?');
 }},
 
