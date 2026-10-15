@@ -169,7 +169,14 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .flip[data-cat] .fb em{color:var(--cc)}
 .flip[data-cat="1"],.legend [data-cat="1"]{--cc:var(--cat1)} .flip[data-cat="2"],.legend [data-cat="2"]{--cc:var(--cat2)}
 .flip[data-cat="3"],.legend [data-cat="3"]{--cc:var(--cat3)} .flip[data-cat="4"],.legend [data-cat="4"]{--cc:var(--cat4)}
-.flip.nr{grid-column-start:1}
+.flips.rows{grid-template-columns:repeat(8,minmax(0,1fr))}
+.flips.rows .flip{grid-column:span 2}
+.flips.rows .flip.nr{grid-column:var(--start) / span 2}
+@media (max-width:700px){
+  .flips.rows{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .flips.rows .flip.nr{grid-column:1 / span 2}
+  .flips.rows .flip.lone{grid-column:2 / span 2}
+}
 .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 0 1.1rem;font-size:.9rem}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend span::before{content:"";width:14px;height:14px;border-radius:4px;border:2px solid var(--cc)}
@@ -377,7 +384,13 @@ function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input
 function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
-function flips(list,rows){ return '<div class="flips">'+list.map(function(c,i){ var nr = rows && i>0 && c[2]!==list[i-1][2]; return '<button type="button" class="flip'+(nr?' nr':'')+'"'+(c[2]?' data-cat="'+c[2]+'"':'')+' aria-pressed="false"><span class="fi"><span class="ff">'+c[0]+'<small>Tap to flip</small></span><span class="fb"><em>'+c[0]+'</em>'+c[1]+'</span></span></button>'; }).join("")+'</div>'; }
+function flips(list,rows){
+  var len={}, seen={}; list.forEach(function(c){ len[c[2]]=(len[c[2]]||0)+1; });
+  return '<div class="flips'+(rows?' rows':'')+'">'+list.map(function(c){
+    var k=c[2], n=len[k], idx=(seen[k]=(seen[k]||0)+1), cls='', st='';
+    if(rows && idx===1){ cls+=' nr'; st=' style="--start:'+(1+(4-Math.min(n,4)))+'"'; }
+    if(rows && idx===n && n%2===1) cls+=' lone';
+    return '<button type="button" class="flip'+cls+'"'+st+(k?' data-cat="'+k+'"':'')+' aria-pressed="false"><span class="fi"><span class="ff">'+c[0]+'<small>Tap to flip</small></span><span class="fb"><em>'+c[0]+'</em>'+c[1]+'</span></span></button>'; }).join("")+'</div>'; }
 document.addEventListener("click",function(ev){ var f=ev.target.closest&&ev.target.closest(".flip"); if(!f) return; f.classList.toggle("on"); f.setAttribute("aria-pressed",f.classList.contains("on")?"true":"false"); });
 function deeper(q){ return ref('Go Deeper','<p>'+q+'</p><p class="code">Optional. For tables that finish early or want more.</p>'); }
 function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
