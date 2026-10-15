@@ -15,7 +15,7 @@
   --ink:#14213D; --paper:#F2F4F8; --surface:#FFFFFF; --surface-2:#E9EDF4;
   --line:#D3DAE5; --muted:#5B6B82; --accent:#2F5D9E; --accent-ink:#FFFFFF;
   --foil:#B26E3A; --foil-soft:#F6EBE0; --lock:#8A96A8; --ok:#2E7D5B; --ok-soft:#E3F1EA;
-  --warn:#A3471F; --warn-soft:#F9E8DF; --shadow:0 1px 2px rgba(20,33,61,.06),0 8px 24px rgba(20,33,61,.06);
+  --warn:#A3471F; --warn-soft:#F9E8DF; --cat1:#2F5D9E; --cat2:#2E7D5B; --cat3:#6B4FA0; --cat4:#B5532F; --shadow:0 1px 2px rgba(20,33,61,.06),0 8px 24px rgba(20,33,61,.06);
   --display:"Fraunces",Georgia,"Times New Roman",serif;
   --body:"Public Sans","Helvetica Neue",Arial,sans-serif;
   --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
@@ -25,14 +25,14 @@
     --ink:#E6ECF5; --paper:#0F1726; --surface:#172238; --surface-2:#1E2B45;
     --line:#2C3B56; --muted:#9AA9BF; --accent:#82A9E3; --accent-ink:#0F1726;
     --foil:#D89A62; --foil-soft:#33261A; --lock:#6C7A92; --ok:#6CC39A; --ok-soft:#173226;
-    --warn:#E0906B; --warn-soft:#3A2418; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    --warn:#E0906B; --warn-soft:#3A2418; --cat1:#82A9E3; --cat2:#6CC39A; --cat3:#B9A3E3; --cat4:#E0906B; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
   }
 }
 :root[data-theme="dark"]{
   --ink:#E6ECF5; --paper:#0F1726; --surface:#172238; --surface-2:#1E2B45;
   --line:#2C3B56; --muted:#9AA9BF; --accent:#82A9E3; --accent-ink:#0F1726;
   --foil:#D89A62; --foil-soft:#33261A; --lock:#6C7A92; --ok:#6CC39A; --ok-soft:#173226;
-  --warn:#E0906B; --warn-soft:#3A2418; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  --warn:#E0906B; --warn-soft:#3A2418; --cat1:#82A9E3; --cat2:#6CC39A; --cat3:#B9A3E3; --cat4:#E0906B; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -165,6 +165,13 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .flip .ff small{display:block;font-family:var(--mono);font-size:.68rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.6rem}
 .flip .fb{background:var(--surface-2);transform:rotateY(180deg);font-size:.9rem;line-height:1.4;text-align:center;align-items:center}
 .flip .fb em{font-style:normal;font-weight:600;display:block;margin-bottom:.3rem}
+.flip[data-cat] .ff,.flip[data-cat] .fb{border-width:2px;border-color:var(--cc)}
+.flip[data-cat] .fb em{color:var(--cc)}
+.flip[data-cat="1"],.legend [data-cat="1"]{--cc:var(--cat1)} .flip[data-cat="2"],.legend [data-cat="2"]{--cc:var(--cat2)}
+.flip[data-cat="3"],.legend [data-cat="3"]{--cc:var(--cat3)} .flip[data-cat="4"],.legend [data-cat="4"]{--cc:var(--cat4)}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 0 1.1rem;font-size:.9rem}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend span::before{content:"";width:14px;height:14px;border-radius:4px;border:2px solid var(--cc)}
 @media (prefers-reduced-motion:reduce){.flip .fi{transition:none}}
 details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background:var(--paper)}
 .seat{border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:8px;padding:.7rem 1rem;margin:.8rem 0;background:var(--surface-2)}
@@ -369,7 +376,7 @@ function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input
 function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
-function flips(list){ return '<div class="flips">'+list.map(function(c){ return '<button type="button" class="flip" aria-pressed="false"><span class="fi"><span class="ff">'+c[0]+'<small>Tap to flip</small></span><span class="fb"><em>'+c[0]+'</em>'+c[1]+'</span></span></button>'; }).join("")+'</div>'; }
+function flips(list){ return '<div class="flips">'+list.map(function(c){ return '<button type="button" class="flip"'+(c[2]?' data-cat="'+c[2]+'"':'')+' aria-pressed="false"><span class="fi"><span class="ff">'+c[0]+'<small>Tap to flip</small></span><span class="fb"><em>'+c[0]+'</em>'+c[1]+'</span></span></button>'; }).join("")+'</div>'; }
 document.addEventListener("click",function(ev){ var f=ev.target.closest&&ev.target.closest(".flip"); if(!f) return; f.classList.toggle("on"); f.setAttribute("aria-pressed",f.classList.contains("on")?"true":"false"); });
 function deeper(q){ return ref('Go Deeper','<p>'+q+'</p><p class="code">Optional. For tables that finish early or want more.</p>'); }
 function ref(title,html){ return '<details class="ref"><summary>'+title+'</summary><div class="in">'+html+'</div></details>'; }
@@ -447,22 +454,23 @@ var SECTIONS = [
 }},
 
 {id:"literacy",code:"02A",nav:"AI Terms",title:"Terms Worth Keeping",lede:"Tap a card to see the definition. Tap again to flip it back.",block:1,html:function(){ return ''
- + flips([["Model","A set of statistical relationships learned from data."],
-   ["LLM","Large language model. A model trained on a large amount of text to predict what comes next."],
-   ["Prompt and Context","The instructions and information you give the model for a request."],
-   ["Token","The unit of text a model processes, often part of a word."],
-   ["Context Window","How much information the model can take in for one request."],
-   ["Drift","A change in the data, the setting, or the model that makes past performance a poor guide to current performance."],
-   ["Decision Rights","Who may draft, recommend, approve, act, and stop."],
-   ["Training","The process in which a model learns from examples and its parameters change."],
-   ["Inference","Using a trained model to produce a result."],
-   ["Application Layer","Everything wrapped around the model, such as the interface, data sources, permissions, and records."],
-   ["Retrieval","Finding source material and supplying it to the model with a request."],
-   ["Fine-Tuning","Further training on new examples that changes a model's parameters."],
-   ["Fabrication","Content the model makes up."],
-   ["Omission","Leaving out something important."],
-   ["Unsupported Inference","A conclusion that goes beyond what the data support."],
-   ["Scope Error","An answer to a different question, or one applied to the wrong situation."]])
+ + '<div class="legend"><span data-cat="1">Model Basics</span><span data-cat="2">Training and Use</span><span data-cat="3">Retrieval and Fine-Tuning</span><span data-cat="4">When Output Goes Wrong</span></div>'
+ + flips([["Model","A set of statistical relationships learned from data.",1],
+   ["LLM","Large language model. A model trained on a large amount of text to predict what comes next.",1],
+   ["Prompt and Context","The instructions and information you give the model for a request.",1],
+   ["Token","The unit of text a model processes, often part of a word.",1],
+   ["Context Window","How much information the model can take in for one request.",1],
+   ["Drift","A change in the data, the setting, or the model that makes past performance a poor guide to current performance.",1],
+   ["Decision Rights","Who may draft, recommend, approve, act, and stop.",1],
+   ["Training","The process in which a model learns from examples and its parameters change.",2],
+   ["Inference","Using a trained model to produce a result.",2],
+   ["Application Layer","Everything wrapped around the model, such as the interface, data sources, permissions, and records.",2],
+   ["Retrieval","Finding source material and supplying it to the model with a request.",3],
+   ["Fine-Tuning","Further training on new examples that changes a model's parameters.",3],
+   ["Fabrication","Content the model makes up.",4],
+   ["Omission","Leaving out something important.",4],
+   ["Unsupported Inference","A conclusion that goes beyond what the data support.",4],
+   ["Scope Error","An answer to a different question, or one applied to the wrong situation.",4]])
  + callout("Calibration","Fluency is not authority. A citation is a claim to verify.");
 }},
 
@@ -480,9 +488,9 @@ var SECTIONS = [
  + ref('Environmental and Economic Effects',''
  + '<p>Training and inference both use resources. Data centers also support non-AI workloads. Energy and water demands depend on the workload, hardware, location, and infrastructure; avoid a universal per-prompt claim. Ask whether the task warrants the system, its scale, and the frequency of calls (IEA, 2025).</p>'
  )
- + ref('Protecting Professional Skill',''
- + '<p><em>De-skilling</em> means an established repertoire is no longer maintained once the opportunities to respond and the feedback that supported it are removed. <em>Never-skilling</em> means a needed repertoire is never acquired because those opportunities never occur. Both are effects of how the work is arranged. They are not inevitable outcomes of AI. Keep the opportunities to perform, observe, and receive feedback in place.</p>'
- )
+ + '<h3>Protecting Professional Skill</h3>'
+ + flips([["De-Skilling","Losing a repertoire you already have when the opportunities to practice and get feedback are removed."],
+   ["Never-Skilling","Never building a needed repertoire because the opportunities to practice never occur."]])
  + '<h3>Trade-Offs to Examine</h3>'
  + '<div class="cards">'
  + '<div class="card"><h4>Speed &lt; &gt; Verification</h4></div>'
