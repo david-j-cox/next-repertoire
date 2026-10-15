@@ -76,6 +76,10 @@ button{font:inherit;cursor:pointer}
 .railbtn[aria-expanded="true"] svg{stroke:var(--accent)}
 .layout{max-width:1180px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px}
 .layout.with-rail{grid-template-columns:270px minmax(0,1fr)}
+@media (min-width:1400px){
+  .layout,.topbar-in{max-width:min(1760px,96vw)}
+  .sec-body > p:not(.code):not(.stem),.sec-body > ul:not(.route):not(.steps),.sec-body > ol,.sec-body .ref .in > p,.sec-hd .lede,.sec-body > h3 + p{max-width:85ch}
+}
 .rail{display:none}
 .layout.with-rail .rail{display:block}
 .rail{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));align-self:start;max-height:calc(100vh - 56px);overflow:auto;padding-block:24px 40px}
