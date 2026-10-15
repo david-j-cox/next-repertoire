@@ -424,15 +424,8 @@ var BLOCKS = {
 };
 
 var SECTIONS = [
-{id:"orient",code:"01",nav:"Orient",title:"How to Use This Workbook",block:1,html:function(){ return ''
+{id:"orient",code:"01",nav:"Process",title:"The Process We Will Practice",block:1,html:function(){ return ''
  + callout("Privacy boundary","Use entirely fictional examples. Do not enter client, caregiver, employee, payer, or other identifying information into workshop tools. Optional polls use broad categories; facilitators do not retain individual responses.","rule")
- + '<h3>By the End of the Workshop, You Will Be Able to …</h3><ol>'
- + '<li>Differentiate descriptive, predictive, and generative AI by what each system receives, does, produces, and leaves for a professional to decide.</li>'
- + '<li>Analyze an AI-augmented ABA workflow using an act-in-context canvas that makes stakeholders, data boundaries, scope, decision rights, and feedback loops explicit.</li>'
- + '<li>Evaluate a likely use case against privacy and security, validation and generalizability, scope, monitoring and drift, training, vendor, payer, and build-or-buy considerations.</li>'
- + '<li>Produce a 30-day prototype that combines at least one technical safeguard with one organizational behavior management (OBM) contingency.</li></ol>'
- + '<p>Three instructional blocks with two 10-minute breaks. You leave with a professional repertoire hypothesis, a defined use case with alternatives, and a tested workflow with a practice plan. Up to 3 Learning CEUs, subject to ACE Provider confirmation.</p>'
- + '<h3>The Process We Will Practice <span class="code">01A • Design thinking</span></h3>'
  + '<p><em>Design thinking</em> is an iterative, human-centered approach to understanding a problem, generating alternatives, and learning from a tangible test. We use the familiar five modes; governance runs through all of them.</p>'
  + ref('The Five Modes',''
  + '<div class="cards">'
@@ -445,20 +438,6 @@ var SECTIONS = [
  )
  + '<h4>What This Workshop Can and Cannot Establish</h4>'
  + '<p>Peer interviews illuminate professional experience. They do not substitute for client, caregiver, or other stakeholder input. Label assumptions and identify whose perspective is missing. A table exercise can expose weaknesses in a design; it cannot establish clinical effectiveness or authorize deployment.</p>'
- + '<h4>Our Route</h4>'
- + '<ul class="route">'
- + '<li><span class="t">00:00–00:27</span><span>Introduction and AI overview</span></li>'
- + '<li><span class="t">00:27–00:42</span><span>Capture, map, and compare professional repertoires</span></li>'
- + '<li><span class="t">00:42–00:50</span><span>Use cases, examples, and table assignments</span></li>'
- + '<li class="brk"><span class="t">00:50–01:00</span><span>Break 1; return to your assigned interest table</span></li>'
- + '<li><span class="t">01:00–01:27</span><span>Use-case exercise and governance</span></li>'
- + '<li><span class="t">01:27–01:41</span><span>Define</span></li>'
- + '<li><span class="t">01:41–01:50</span><span>Ideate</span></li>'
- + '<li class="brk"><span class="t">01:50–02:00</span><span>Break 2</span></li>'
- + '<li><span class="t">02:00–02:25</span><span>Ideate and prototype</span></li>'
- + '<li><span class="t">02:25–02:50</span><span>Chiron Field Lab</span></li>'
- + '<li><span class="t">02:50–03:00</span><span>Commit and close</span></li>'
- + '</ul>'
  + '<p>'+who()+' is your own answer. '+who("rec")+' is one answer per table.</p>'
  + '<p class="code">Source: Stanford d.school, Design thinking bootleg (see section 17).</p>';
 }},
@@ -513,16 +492,16 @@ var SECTIONS = [
    ["Train From Scratch","Build a new model from your own data.",1],
    ["Training and Inference","Both use energy and water, at different times and scales.",2],
    ["Data Centers","Facilities that run many workloads beyond AI.",2],
-   ["Proportion","Whether this task warrants this system, its size, and how often it runs.",2],
+   ["Proportioned Justification","Whether this task warrants this system, its size, and how often it runs.",2],
    ["De-Skilling","Reduced fluency in a learned skill when opportunities to practice it become infrequent.",3],
    ["Never-Skilling","Never gaining fluency with a needed skill because opportunities to practice never occur.",3]],true);
 }},
 
 {id:"tradeoffs",code:"02A",nav:"Trade-Offs",gate:"literacy",title:"Trade-Offs Worth Examining",lede:"Tap a card to see what the trade-off means. Tap again to flip it back.",block:1,html:function(){ return ''
- + flips([["Speed ↔ Verification","Faster output can leave less time to check it. More checking slows the work."],
-   ["Access ↔ Privacy","Giving a tool more data can make it more useful and expose more of that data."],
-   ["Scale ↔ Local Fit","A tool built for many settings may not fit your clients, staff, or workflow."],
-   ["Automation ↔ Skill Practice","Each task a tool takes over can remove a chance to practice and get feedback."]])
+ + flips([["Speed ↔<br>Verification","Faster output can leave less time to check it. More checking slows the work."],
+   ["Access ↔<br>Privacy","Giving a tool more data can make it more useful and expose more of that data."],
+   ["Scale ↔<br>Local&nbsp;Fit","A tool built for many settings may not fit your clients, staff, or workflow."],
+   ["Automation ↔<br>Skill&nbsp;Practice","Each task a tool takes over can remove a chance to practice and get feedback."]])
  + '<h3>Pick One Trade-Off '+who()+'</h3>'
  + ta("f02a-condition","Choose one of the four trade-offs above, for example speed versus verification. Which of its two sides does your work currently favor, and what would have to change for the other side to win?",4)
  + '<h3>One Example I Want to Test Today '+who()+'</h3>'
@@ -534,6 +513,31 @@ var SECTIONS = [
  + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
  + formBlock("pre",["f02-def1","f02-example","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{note:"Anonymous. Sends your definition, example, and ratings to the facilitators."})
  + livePanel("confidence-pre");
+}},
+
+{id:"route",code:"01",nav:"Our Route",gate:"orient",title:"Our Route",block:1,html:function(){ return ''
+ + '<ul class="route">'
+ + '<li><span class="t">00:00–00:27</span><span>Introduction and AI overview</span></li>'
+ + '<li><span class="t">00:27–00:42</span><span>Capture, map, and compare professional repertoires</span></li>'
+ + '<li><span class="t">00:42–00:50</span><span>Use cases, examples, and table assignments</span></li>'
+ + '<li class="brk"><span class="t">00:50–01:00</span><span>Break 1; return to your assigned interest table</span></li>'
+ + '<li><span class="t">01:00–01:27</span><span>Use-case exercise and governance</span></li>'
+ + '<li><span class="t">01:27–01:41</span><span>Define</span></li>'
+ + '<li><span class="t">01:41–01:50</span><span>Ideate</span></li>'
+ + '<li class="brk"><span class="t">01:50–02:00</span><span>Break 2</span></li>'
+ + '<li><span class="t">02:00–02:25</span><span>Ideate and prototype</span></li>'
+ + '<li><span class="t">02:25–02:50</span><span>Chiron Field Lab</span></li>'
+ + '<li><span class="t">02:50–03:00</span><span>Commit and close</span></li>'
+ + '</ul>';
+}},
+
+{id:"outcomes",code:"01",nav:"By the End",gate:"orient",title:"By the End of the Workshop, You Will Be Able to …",block:1,html:function(){ return ''
+ + '<ol>'
+ + '<li>Differentiate descriptive, predictive, and generative AI by what each system receives, does, produces, and leaves for a professional to decide.</li>'
+ + '<li>Analyze an AI-augmented ABA workflow using an act-in-context canvas that makes stakeholders, data boundaries, scope, decision rights, and feedback loops explicit.</li>'
+ + '<li>Evaluate a likely use case against privacy and security, validation and generalizability, scope, monitoring and drift, training, vendor, payer, and build-or-buy considerations.</li>'
+ + '<li>Produce a 30-day prototype that combines at least one technical safeguard with one organizational behavior management (OBM) contingency.</li></ol>'
+ + '<p>Three instructional blocks with two 10-minute breaks. You leave with a professional repertoire hypothesis, a defined use case with alternatives, and a tested workflow with a practice plan. Up to 3 Learning CEUs, subject to ACE Provider confirmation.</p>';
 }},
 
 {id:"empathize",code:"03A",nav:"Empathize",title:"Capture Experience and Compare Conditions",block:1,html:function(){ return ''
@@ -965,7 +969,7 @@ var SECTIONS = [
 
 /* Deck slide labels (bottom-right corner of each slide, Oct 9 facilitator-scripted deck) for each site section. */
 var SLIDES = {
-  orient:"1–5, 20–21", mydef:"6", notice:"7–8", literacy:"9–12", revise:"13", beforebuild:"14–16", tradeoffs:"17–19", empathize:"22–23, 26–27", map:"24–25",
+  orient:"1–5", route:"20", outcomes:"21", mydef:"6", notice:"7–8", literacy:"9–12", revise:"13", beforebuild:"14–16", tradeoffs:"17–19", empathize:"22–23, 26–27", map:"24–25",
   sysexample:"27A", choose:"28–31", mytable:"32–34", govern:"35, 39", govcheck:"41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
   define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–57", ideate2:"58–61", anticipate:"62–63", converge:"62–65",
   prototype:"66, 66A, 67", fieldlab:"68–71", fieldlab2:"72–79", commit:"80–81", retain:"82–84", references:"91"
@@ -1367,7 +1371,7 @@ function renderLanding(){
    + '</div>'
    + '<div class="section" style="margin-top:20px">'
    + '<div class="blockcards">'+rows+'</div>'
-   + (nowS ? '<p><a class="btn primary" href="#s/'+nowS.id+'">Current section: '+nowS.code+' '+nowS.nav+'</a></p>' : '<p><a class="btn primary" href="#s/orient">Start: 01 Orient</a></p>')
+   + (nowS ? '<p><a class="btn primary" href="#s/'+nowS.id+'">Current section: '+nowS.code+' '+nowS.nav+'</a></p>' : '<p><a class="btn primary" href="#s/orient">Start: 01 Process</a></p>')
    + '</div>';
 }
 
