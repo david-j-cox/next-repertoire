@@ -173,8 +173,9 @@ td input[type=text]{padding:.35rem .5rem;font-size:.88rem;min-width:9rem}
 .flips.rows .flip{grid-column:span 2}
 .flips.rows .flip.nr{grid-column:var(--start) / span 2}
 @media (max-width:700px){
-  .flips.rows{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .flips.rows .flip.nr{grid-column:1 / span 2}
+  .flips.rows{grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+  .flips.rows .flip.nr{grid-column:auto / span 2}
+  .flips.rows .flip.gs{grid-column:1 / span 2}
   .flips.rows .flip.lone{grid-column:2 / span 2}
 }
 .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 0 1.1rem;font-size:.9rem}
@@ -384,11 +385,13 @@ function cb(id,label){ reg(id,"[ ] "+label); return '<label class="check"><input
 function cellTA(id,label,h,rows){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><textarea id="'+id+'" rows="'+(rows||2)+'" aria-label="'+esc(label)+'"></textarea>'; }
 function cell(id,label,h){ reg(id,label); return '<td'+(h?' data-h="'+esc(h)+'"':'')+'><input type="text" id="'+id+'" aria-label="'+esc(label)+'"></td>'; }
 function fill(id,label,size,hint){ reg(id,label); return '<input class="inline" type="text" id="'+id+'" aria-label="'+esc(label)+'" placeholder="'+esc(hint||label)+'" size="'+(size||16)+'">'; }
-function flips(list,rows){
+function flips(list,rows,per){
+  per = per || 4;
   var len={}, seen={}; list.forEach(function(c){ len[c[2]]=(len[c[2]]||0)+1; });
-  return '<div class="flips'+(rows?' rows':'')+'">'+list.map(function(c){
+  return '<div class="flips'+(rows?' rows':'')+'"'+(rows&&per!==4?' style="grid-template-columns:repeat('+(per*2)+',minmax(0,1fr))"':'')+'>'+list.map(function(c){
     var k=c[2], n=len[k], idx=(seen[k]=(seen[k]||0)+1), cls='', st='';
-    if(rows && idx===1){ cls+=' nr'; st=' style="--start:'+(1+(4-Math.min(n,4)))+'"'; }
+    if(rows && idx===1) cls+=' gs';
+    if(rows && (idx-1)%per===0){ cls+=' nr'; st=' style="--start:'+(1+(per-Math.min(n-idx+1,per)))+'"'; }
     if(rows && idx===n && n%2===1) cls+=' lone';
     return '<button type="button" class="flip'+cls+'"'+st+(k?' data-cat="'+k+'"':'')+' aria-pressed="false"><span class="fi"><span class="ff">'+c[0]+'<small>Tap to flip</small></span><span class="fb"><em>'+c[0]+'</em>'+c[1]+'</span></span></button>'; }).join("")+'</div>'; }
 document.addEventListener("click",function(ev){ var f=ev.target.closest&&ev.target.closest(".flip"); if(!f) return; f.classList.toggle("on"); f.setAttribute("aria-pressed",f.classList.contains("on")?"true":"false"); });
@@ -619,13 +622,13 @@ var SECTIONS = [
  + '<h3>Our Minimum Viable Governance '+who("rec")+'</h3>'
  + '<p>Tick each item your table can already name an answer or an owner for. What stays blank is your to-do list.</p>'
  + '<div class="checks">'+cb("f07-g1","Named owner")+cb("f07-g2","Approved use and prohibited use")+cb("f07-g3","Data boundary")+cb("f07-g4","Human verification")+cb("f07-g5","Pilot measure")+cb("f07-g6","Error-report path")+cb("f07-g7","Stop threshold")+cb("f07-g8","Retirement/data plan")+'</div>'
- + '<h3>Governance Check: Five Questions Across Eight Domains <span class="code">07A</span></h3>'
+ + '<h3>Governance Check: Five Domains <span class="code">07A</span></h3>'
  + '<p>Use this during the governance block and keep it as a reference. A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.</p>'
- + ref('Privacy and Security', '<p>Map source, access, retention, reuse, disclosure, deletion, and downstream services. Section 08 holds the data-flow worksheet.</p>')
- + ref('Model Validation and Scope', '<p>Specify task, population, setting, data, version, and consequence. Compare with a meaningful baseline, meaning how the task performs now without the tool. Generated claims and predictive estimates require different checks. Section 09 records evidence and limits.</p>')
- + ref('Model and Data Drift', '<p>Watch input distributions, missingness, workflow changes, version changes, error, and burden. Name an owner, cadence, and condition for re-evaluation, restriction, or retirement. An error is not automatically evidence of drift.</p>')
- + ref('Operational Training and General AI Literacy', '<p>Identify the behavior required. Instruct, model, rehearse, observe, and provide feedback. Check performance under normal workload. Policy acknowledgments and quiz scores are weak evidence on their own. Sections 10 and 11 connect authority and behavior.</p>')
- + ref('Vendor Conversations and Build or Buy', '<p>Ask for task-specific evidence, data terms, change notice, incident response, export and deletion, and exit support. Compare the total maintenance burden of buying, configuring, fine-tuning, training, or using no AI. Section 14 contains the procurement checklist.</p>')
+ + flips([["Privacy and Security","Where does the data go, who can see it, how long is it kept, and how is it deleted?"],
+   ["Model Validation and Scope","Does it work for this task, population, and setting, compared with how the task performs now?"],
+   ["Model and Data Drift","Who watches for changes in data, workflow, or model version, how often, and what triggers a review?"],
+   ["Operational Training and General AI Literacy","Can staff perform the required behavior under a normal workload, as shown by observation and feedback?"],
+   ["Vendor Conversations and Build or Buy","What evidence, data terms, and exit support does the vendor offer, and how does that compare with other options, including no AI?"]],true,3)
  + ta("f07a-open","One unresolved question, the owner who can answer it, and the decision it blocks "+who("rec"),3)
  + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>'
  + deeper('Pick your unresolved question and draft the email asking the person who can answer it. What would you do if the answer is no?');
@@ -644,17 +647,6 @@ var SECTIONS = [
  + '<h3>Example: One Billing Tool</h3>'
  + '<p>A fictional tool that summarizes payer denial letters and recommends operational changes to reduce denials. Follow the data from source to record, and look for where things can go wrong. The same tool appears in sections 11A and 13. Tap the image to open it full size.</p>'
  + '<a href="img/data-path-denial.png" target="_blank" rel="noopener"><img src="img/data-path-denial.png" alt="Data path for a tool that summarizes payer denial letters and recommends operational changes. The claim record and the denial letter go to an AI vendor under a BAA, which produces a draft summary of the reason, deadline, and likely fix. A billing specialist checks it against the letter, and the summary is saved in the billing record, where it may go to the payer in an appeal or to operations as change ideas. Vendor logs branch off the vendor. A weekly spot check compares summaries to letters. Six risk points are marked." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
- + ref('The Example as Text',''
- + '<p>Path: the claim record (codes and dates of service) and the denial letter (which carries the client’s name and member ID) go to an AI vendor covered by a BAA. The vendor returns a draft summary of the denial reason, the appeal deadline, and a likely fix. A billing specialist checks it against the letter. The summary is saved in the billing record and may go to the payer in an appeal. Suggested fixes are pooled each month and go to operations as change ideas (for example, a missing authorization step at intake), where the billing manager decides what to act on. Vendor logs keep prompts, outputs, user IDs, and timestamps. A weekly spot check has a second reviewer compare a sample of summaries to the letters, with results going back to the specialist as feedback and to the billing manager as an error rate.</p>'
- + '<ol>'
- + '<li>Letters carry identifiers. Names, member IDs, and diagnosis codes are part of the letter, so removing them may not be practical. The vendor agreement and access settings carry more of the load.</li>'
- + '<li>The model can change. An update may shift how letters are read, with or without notice.</li>'
- + '<li>The output may be wrong. It can name the wrong reason or deadline, miss a second reason in the same letter, or suggest a fix based on a pattern from only a few letters.</li>'
- + '<li>Review can weaken over time. When summaries usually look right, checks may get shorter (automation bias).</li>'
- + '<li>The record travels further. A saved summary may be reused in appeals and in operational changes well beyond the original check.</li>'
- + '<li>Logs are easy to forget. Ask who can see them and when they are purged.</li>'
- + '</ol>'
- )
  + '<h3>Sketch the Data Path '+who("rec")+'</h3>'
  + twrap(thead(["Source","What Enters","Where Processed/Stored","Who Receives Output","Retention/Exit"])+'<tbody>'
    + '<tr>'+["Source","What enters","Where processed/stored","Who receives output","Retention/exit"].map(function(c,i){return cell("f08-r1-"+i,"Data path row 1 / "+c,c);}).join('')+'</tr>'
