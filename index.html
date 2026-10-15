@@ -419,7 +419,7 @@ var SECTIONS = [
 
 {id:"mydef",code:"02",nav:"Definition",title:"Your Working Definition of AI",block:1,html:function(){ return ''
  + '<h3>My Current Working Definition of Artificial Intelligence '+who()+'</h3>'
- + '<p>Write your current understanding in one or two sentences. This is a starting point. You will revise it after the overview on the next page.</p>'
+ + '<p>Write your current understanding in one or two sentences. This is a starting point. You will revise it after we cover a few terms.</p>'
  + ta("f02-def1","Current working definition",3);
 }},
 
@@ -429,24 +429,11 @@ var SECTIONS = [
    + '<tr><td class="k">Predictive</td><td>Estimate a future value or category</td><td>Forecast attrition or outcome risk</td><td>Check local validity, uncertainty, scope, and consequences</td></tr>'
    + '<tr><td class="k">Generative</td><td>Produce new text, images, code, or options</td><td>Draft goals, summaries, training examples</td><td>Verify facts, logic, fit, authorship, and confidential data handling</td></tr>'
    + '<tr><td class="k">Workflow wrapper</td><td>Connect a model to forms, records, or actions</td><td>Route approvals; prefill documentation</td><td>Map the whole process, access controls, failure paths, and human override</td></tr></tbody>')
- + callout("Watch the category error","A fluent output is not evidence that a recommendation is accurate, appropriate, ethical, or effective in this context.")
- + '<h3>My Revised Working Definition of Artificial Intelligence '+who()+'</h3>'
- + '<p>After working through the table above, return to your first definition and add or revise one distinction.</p>'
- + (ANSWERS["f02-def1"] ? '<p class="code">Your first definition: '+esc(ANSWERS["f02-def1"])+'</p>' : '')
- + ta("f02-def2","Revised working definition",3)
- + '<h3>One Example I Want to Test Today '+who()+'</h3>'
- + ta("f02-example","One example I want to test today",3)
- + '<h3>Baseline '+who()+'</h3><p>How confident are you right now that you can do each of these?</p>'
- + scale("fpre-c1","Differentiate descriptive, predictive, and generative AI")
- + scale("fpre-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
- + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
- + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
- + formBlock("pre",["f02-def1","f02-example","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{note:"Anonymous. Sends your definition, example, and ratings to the facilitators."})
- + livePanel("confidence-pre");
+ + callout("Watch the category error","A fluent output is not evidence that a recommendation is accurate, appropriate, ethical, or effective in this context.");
 }},
 
-{id:"literacy",code:"02A",nav:"AI Literacy",title:"Terms and Trade-Offs Worth Keeping",block:1,html:function(){ return ''
- + ref('Terms',''
+{id:"literacy",code:"02A",nav:"AI Terms",title:"Terms Worth Keeping",block:1,html:function(){ return ''
+ + '<div class="terms">'
  + '<p><em>Model</em>: a system with learned statistical relationships. A large language model (LLM) processes and generates language sequences. A token is a unit of input or output, sometimes only part of a word.</p>'
  + '<p><em>Prompt and context</em>: the instructions and information supplied for a request. The context window limits the information available to that request.</p>'
  + '<p><em>Context window</em>: how much information the model can use for one request.</p>'
@@ -459,7 +446,17 @@ var SECTIONS = [
  + '<p>Training changes learned parameters. Inference uses a trained model. Input reuse, logging, retention, and further training depend on the service and contract.</p>'
  + '<p><em>Retrieval</em> supplies selected external material to a request. <em>Fine-tuning</em> changes parameters through further training. Neither guarantees accuracy.</p>'
  + '<p>Generated content can contain unsupported claims, omissions, or fabricated citations. Fluency is not evidence of authority. Verify claims against appropriate sources and context.</p>'
- )
+ + '</div>';
+}},
+
+{id:"revise",code:"02",nav:"Revised Definition",gate:"literacy",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"Your Revised Working Definition of AI",block:1,html:function(){ return ''
+ + '<h3>My Revised Working Definition of Artificial Intelligence '+who()+'</h3>'
+ + '<p>Return to your first definition. Add or revise one distinction from the terms we just covered.</p>'
+ + (ANSWERS["f02-def1"] ? '<p class="code">Your first definition: '+esc(ANSWERS["f02-def1"])+'</p>' : '')
+ + ta("f02-def2","Revised working definition",3);
+}},
+
+{id:"tradeoffs",code:"02A",nav:"Trade-Offs",gate:"literacy",title:"Trade-Offs Worth Examining",block:1,html:function(){ return ''
  + ref('Using, Configuring, or Building',''
  + '<p>Buying a product, configuring a workflow around a model, fine-tuning, and training from scratch are different undertakings. Compare ongoing review, security, integration, training, monitoring, and exit costs. Open weights or local hosting do not automatically establish privacy or fitness. Include a non-AI option.</p>'
  )
@@ -477,7 +474,16 @@ var SECTIONS = [
  + '<div class="card"><h4>Automation &lt; &gt; Skill Practice</h4></div>'
  + '</div>'
  + '<h3>Pick One Trade-Off '+who()+'</h3>'
- + ta("f02a-condition","Choose one of the four trade-offs above, for example speed versus verification. Which of its two sides does your work currently favor, and what would have to change for the other side to win?",4);
+ + ta("f02a-condition","Choose one of the four trade-offs above, for example speed versus verification. Which of its two sides does your work currently favor, and what would have to change for the other side to win?",4)
+ + '<h3>One Example I Want to Test Today '+who()+'</h3>'
+ + ta("f02-example","One example I want to test today",3)
+ + '<h3>Baseline '+who()+'</h3><p>How confident are you right now that you can do each of these?</p>'
+ + scale("fpre-c1","Differentiate descriptive, predictive, and generative AI")
+ + scale("fpre-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
+ + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
+ + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
+ + formBlock("pre",["f02-def1","f02-example","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{note:"Anonymous. Sends your definition, example, and ratings to the facilitators."})
+ + livePanel("confidence-pre");
 }},
 
 {id:"empathize",code:"03A",nav:"Empathize",title:"Capture Experience and Compare Conditions",block:1,html:function(){ return ''
@@ -939,7 +945,7 @@ var SECTIONS = [
 
 /* Deck slide labels (bottom-right corner of each slide, Oct 9 facilitator-scripted deck) for each site section. */
 var SLIDES = {
-  orient:"1–5, 20–21", mydef:"6", notice:"7–8, 13, 19", literacy:"9–12, 14–18", empathize:"22–23, 26–27", map:"24–25",
+  orient:"1–5, 20–21", mydef:"6", notice:"7–8", literacy:"9–12", revise:"13", tradeoffs:"14–19", empathize:"22–23, 26–27", map:"24–25",
   choose:"27A–31", mytable:"32–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
   define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–57", ideate2:"58–61", anticipate:"62–63", converge:"62–65",
   prototype:"66, 66A, 67", fieldlab:"68–71", fieldlab2:"72–79", commit:"80–81", retain:"82–84", references:"91"
