@@ -621,17 +621,7 @@ var SECTIONS = [
  + callout("CASP practice parameter","AI should support, rather than supplant, clinical work. Practitioners remain responsible for professional decisions, informed implementation, training, monitoring, and impact (Council of Autism Service Providers, 2025).")
  + '<h3>Our Minimum Viable Governance '+who("rec")+'</h3>'
  + '<p>Tick each item your table can already name an answer or an owner for. What stays blank is your to-do list.</p>'
- + '<div class="checks">'+cb("f07-g1","Named owner")+cb("f07-g2","Approved use and prohibited use")+cb("f07-g3","Data boundary")+cb("f07-g4","Human verification")+cb("f07-g5","Pilot measure")+cb("f07-g6","Error-report path")+cb("f07-g7","Stop threshold")+cb("f07-g8","Retirement/data plan")+'</div>'
- + '<h3>Governance Check: Five Domains <span class="code">07A</span></h3>'
- + '<p>Use this during the governance block and keep it as a reference. A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.</p>'
- + flips([["Privacy and Security","Where does the data go, who can see it, how long is it kept, and how is it deleted?"],
-   ["Model Validation and Scope","Does it work for this task, population, and setting, compared with how the task performs now?"],
-   ["Model and Data Drift","Who watches for changes in data, workflow, or model version, how often, and what triggers a review?"],
-   ["Operational Training and General AI Literacy","Can staff perform the required behavior under a normal workload, as shown by observation and feedback?"],
-   ["Vendor Conversations and Build or Buy","What evidence, data terms, and exit support does the vendor offer, and how does that compare with other options, including no AI?"]],true,3)
- + ta("f07a-open","One unresolved question, the owner who can answer it, and the decision it blocks "+who("rec"),3)
- + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>'
- + deeper('Pick your unresolved question and draft the email asking the person who can answer it. What would you do if the answer is no?');
+ + '<div class="checks">'+cb("f07-g1","Named owner")+cb("f07-g2","Approved use and prohibited use")+cb("f07-g3","Data boundary")+cb("f07-g4","Human verification")+cb("f07-g5","Pilot measure")+cb("f07-g6","Error-report path")+cb("f07-g7","Stop threshold")+cb("f07-g8","Retirement/data plan")+'</div>';
 }},
 
 {id:"safeguard",code:"08",nav:"Safeguard",title:"Privacy, Security, and Confidentiality",lede:"A de-identification claim is only as good as the process, context, and residual re-identification risk.",block:2,html:function(){ return ''
@@ -690,6 +680,17 @@ var SECTIONS = [
  + ["What exact problem and intended use does the system support?","What data were used to develop and evaluate it?","For which populations, settings, languages, and tasks is performance known?","What error measures, uncertainty, limitations, and boundary conditions are documented?","What client or workforce data enter the system, including logs and metadata?","Where are data processed and stored; who are the subprocessors?","Can data or outputs be reused to train models or improve services? Can that be disabled?","What agreement, including a BAA when applicable, governs the service?","How are access, encryption, incident response, deletion, and audit supported?","How are model, prompt, policy, and product changes communicated and versioned?","Can we export our records and terminate use without workflow lock-in?","What monitoring, human override, escalation, rollback, and retirement functions exist?"].map(function(q,i){ return cb("f14-q"+i,q); }).join('')
  + '</div>'
  + callout("Build, buy, or do neither","Compare total implementation burden (i.e., validation, training, oversight, workflow redesign, integration, monitoring, incident response, and exit) rather than subscription price alone.");
+}},
+
+{id:"govcheck",code:"07A",nav:"Governance Check",gate:"govern",title:"Governance Check: Five Domains",lede:"A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.",block:2,html:function(){ return ''
+ + flips([["Privacy and Security","Where does the data go, who can see it, how long is it kept, and how is it deleted?"],
+   ["Model Validation and Scope","Does it work for this task, population, and setting, compared with how the task performs now?"],
+   ["Model and Data Drift","Who watches for changes in data, workflow, or model version, how often, and what triggers a review?"],
+   ["Operational Training and General AI Literacy","Can staff perform the required behavior under a normal workload, as shown by observation and feedback?"],
+   ["Vendor Conversations and Build or Buy","What evidence, data terms, and exit support does the vendor offer, and how does that compare with other options, including no AI?"]],true,3)
+ + ta("f07a-open","One unresolved question, the owner who can answer it, and the decision it blocks "+who("rec"),3)
+ + '<p class="code">Source: NIST AI RMF and Generative AI Profile (section 17).</p>'
+ + deeper('Pick your unresolved question and draft the email asking the person who can answer it. What would you do if the answer is no?');
 }},
 
 {id:"define",code:"05–06",nav:"Use-Case Canvas",title:"Use-Case Canvas",lede:"Describe the ongoing act in context before you describe the technology. Then make the data path and the model’s job observable enough to inspect.",block:2,html:function(){ return ''
@@ -971,7 +972,7 @@ var SECTIONS = [
 /* Deck slide labels (bottom-right corner of each slide, Oct 9 facilitator-scripted deck) for each site section. */
 var SLIDES = {
   orient:"1–5, 20–21", mydef:"6", notice:"7–8", literacy:"9–12", revise:"13", beforebuild:"14–16", tradeoffs:"17–19", empathize:"22–23, 26–27", map:"24–25",
-  sysexample:"27A", choose:"28–31", mytable:"32–34", govern:"35, 39, 41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
+  sysexample:"27A", choose:"28–31", mytable:"32–34", govern:"35, 39", govcheck:"41–42", safeguard:"36–36A", verify:"37", assign:"38", procure:"40",
   define:"43–44", definepractice:"43–51", design:"52, 58", ideate:"52, 52A, 53–57", ideate2:"58–61", anticipate:"62–63", converge:"62–65",
   prototype:"66, 66A, 67", fieldlab:"68–71", fieldlab2:"72–79", commit:"80–81", retain:"82–84", references:"91"
 };
