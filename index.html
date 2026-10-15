@@ -1142,17 +1142,17 @@ var PID = lsGet(LS_PID);
 if(!PID){ PID = "p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); lsSet(LS_PID,PID); }
 var ALL_IDS = SECTIONS.map(function(s){return s.id;});
 var PANELS = [
-  ["confidence-pre","Confidence, Pre (02)","Slide 19, after people send · Trade-Offs tab"],
-  ["demographics","Role and Setting Snapshot (03A)","Slide 22 · Empathize tab"],
+  ["confidence-pre","Confidence, Pre (02)","Slide 20, after people send on 19 · Trade-Offs tab"],
+  ["demographics","Role and Setting Snapshot (03A)","Slide 22, after the one-minute snapshot · Empathize tab"],
   ["interests","Interest Poll (04)","Slide 30 · Choose tab"],
   ["assignment","Table Assignments (04)","Slide 31, after the sort · My Table tab"],
   ["missions","Mission Cards (04)","Slide 33 · My Table tab"],
   ["reports:problem","Problem Statements (04)","Slide 34 · My Table tab"],
-  ["reports:define","Define Statements (05A)","Slide 51 · Define Practice tab"],
-  ["reports:selected","Selected Options (11A)","Slide 65 · Trace and Select tab"],
+  ["reports:define","Define Statements (05A)","Slide 50, before the two table reports · Define Practice tab"],
+  ["reports:selected","Selected Options (11A)","Slide 66, after tables record on 65 · Trace and Select tab"],
   ["reveal","Field Lab Context-Shift Reveal (13A)","Slide 72 · Field Lab Reveal tab"],
   ["reports:fieldlab","Field Lab Reports (13A)","Slide 79 · Field Lab Reveal tab"],
-  ["confidence-post","Confidence, Pre and Post (16)","Slide 84 · Retain tab"]
+  ["confidence-post","Confidence, Pre and Post (16)","Slide 84, after the knowledge check · Retain tab"]
 ];
 var ALL_PANELS = PANELS.map(function(p){return p[0];});
 var REVEAL_KEY = "reveal";
