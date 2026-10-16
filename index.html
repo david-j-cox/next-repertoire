@@ -840,7 +840,7 @@ var SECTIONS = [
 {id:"prototype",code:"13",nav:"Prototype",title:"Build the Smallest Testable Workflow",lede:"A prototype should be cheap enough to change and clear enough to fail informatively.",block:3,html:function(){ return ''
  + ideaStrip(["prepare"])
  + '<h3>Example: The Smallest Testable Version</h3>'
- + '<p>The denial-letter tool from 08 and 11A. The smallest testable version tests the summary step first; suggested fixes wait until summaries prove accurate. No table works on billing, so borrow the structure for your own case. Tap the image to open it full size.</p>'
+ + '<p>The denial-letter tool from 08 and 11A. The smallest testable version tests the summary step first; suggested fixes wait until summaries prove accurate.</p>'
  + '<a href="img/prototype.png" target="_blank" rel="noopener"><img src="img/prototype.png" alt="Prototype for a tool that summarizes payer denial letters. Workflow: one denial letter goes in, the AI summarizes the reason and deadline, a billing specialist checks the summary against the letter, then decides to appeal, fix and resubmit, or accept. Test: one billing specialist for 30 days, switchable off at any time. Benefit measure: minutes per letter compared with last month. Error measure: wrong reason or deadline found in a weekly spot check by a second reviewer. Stop rule: pause if any appeal deadline is missed or more than 1 in 10 summaries is wrong; owner is the billing manager." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>'
  + '<h3>Prototype Elements '+who("rec")+'</h3>'
  + twrap('<colgroup><col style="width:28%"><col style="width:72%"></colgroup>'+thead(["Prototype Element","Decision"])+'<tbody>'
