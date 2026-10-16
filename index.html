@@ -454,7 +454,8 @@ var SECTIONS = [
  + scale("fpre-c1","Identify what an AI system does (describe, predict, generate, or connect) and how to check its output")
  + scale("fpre-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
  + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
- + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency");
+ + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
+ + formBlock("pre",["f02-def1","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{stage:"baseline",note:"Anonymous. Sends your definition and ratings to the facilitators."});
 }},
 
 {id:"notice",code:"02",nav:"AI by Function",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"AI by Function",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
@@ -490,7 +491,8 @@ var SECTIONS = [
  + '<h3>My Revised Working Definition of Artificial Intelligence '+who()+'</h3>'
  + '<p>Return to your first definition. Add or revise one distinction from the terms we just covered.</p>'
  + (ANSWERS["f02-def1"] ? '<p class="code">Your first definition: '+esc(ANSWERS["f02-def1"])+'</p>' : '')
- + ta("f02-def2","Revised working definition",3);
+ + ta("f02-def2","Revised working definition",3)
+ + formBlock("pre",["f02-def2"],{stage:"revised",note:"Anonymous. Sends your revised definition to the facilitators."});
 }},
 
 {id:"beforebuild",code:"02A",nav:"Before You Use AI",title:"Before You Use AI",lede:"Tap a card to see what it means. Tap again to flip it back.",block:1,html:function(){ return ''
@@ -515,7 +517,7 @@ var SECTIONS = [
  + ta("f02a-condition","Choose one of the four trade-offs above, for example speed versus verification. Which of its two sides does your work currently favor, and what would have to change for the other side to win?",4)
  + '<h3>One Example I Want to Test Today '+who()+'</h3>'
  + ta("f02-example","One example I want to test today",3)
- + formBlock("pre",["f02-def1","f02-example","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{note:"Anonymous. Sends your first definition, your confidence ratings from 02 Definition, and this example to the facilitators."})
+ + formBlock("pre",["f02-example"],{stage:"example",note:"Anonymous. Sends this example to the facilitators."})
  + livePanel("confidence-pre");
 }},
 
@@ -877,7 +879,8 @@ var SECTIONS = [
  + '<p>Move at least one token on the board. The System Map is in '+nextLink("fieldlab")+'.</p>'
  + ta("f13a-envelope","What changed in the envelope, and which assumption no longer holds?",3)
  + ta("f13a-after","After the reveal: token moved, design revision, and why it matters",3)
- + '<p>Your measures from before the reveal. Revise them here if the envelope changed what you should track.</p>'
+ + '<p>Your table, purpose, and measures from before the reveal. Revise them here if the envelope changed what you should track.</p>'
+ + '<p class="stem">Table family A–F: '+fill("f13a-table","Table family",4,"A-F")+' &nbsp; Purpose: '+fill("f13a-purpose","Purpose",30,"what should improve")+'</p>'
  + '<p class="stem">Benefit measure: '+fill("f13a-benefit","Benefit measure",20)+' &nbsp; Error/burden measure: '+fill("f13a-errm","Error/burden measure",20)+'</p>'
  + ta("f13a-stop","Stop condition, responsible person, and next step",2)
  + '<h3>Five Stems for the 60-Second Report</h3>'
@@ -950,7 +953,7 @@ var SECTIONS = [
  + scale("fpost-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
  + scale("fpost-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
  + scale("fpost-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
- + formBlock("post",["f02-def2","fpost-c1","fpost-c2","fpost-c3","fpost-c4","f16-k1","f16-k2","f16-k3"],{note:"Anonymous. Includes your revised definition from section 02 and the knowledge check."})
+ + formBlock("post",["fpost-c1","fpost-c2","fpost-c3","fpost-c4","f16-k1","f16-k2","f16-k3"],{note:"Anonymous. Sends your ratings and knowledge check to the facilitators."})
  + livePanel("confidence-post");
 }},
 
@@ -1664,12 +1667,13 @@ function pollSummary(){
   clearTimeout(summaryTimer);
   if(!API_URL) return;
   if(!root.querySelector(".live") && !document.getElementById("seatbox")){ summaryTimer=setTimeout(pollSummary,15000); return; }
-  apiGet({action:"summary"}).then(function(r){ if(r && !r.error){ SUMMARY=r; paintLive(); } }).catch(function(){})
+  apiGet({action:"summary"}).then(function(r){ if(r && !r.error){ r.pre=rated(r.pre); r.post=rated(r.post); SUMMARY=r; paintLive(); } }).catch(function(){})
     .then(function(){ fetchSeat(); summaryTimer = setTimeout(pollSummary, 15000); });
 }
 
 /* response summaries */
 function count(rows,field){ var m={}; rows.forEach(function(r){ var v=(r[field]===undefined||r[field]==="")?"(blank)":String(r[field]); m[v]=(m[v]||0)+1; }); return m; }
+function rated(rows,prefix){ prefix=prefix||""; return (rows||[]).filter(function(r){ return ["c1","c2","c3","c4"].some(function(k){ var v=r[prefix+k]; return v!==undefined && v!==null && v!==""; }); }); }
 function mean(rows,field){ var n=0,s=0; rows.forEach(function(r){ var v=parseFloat(r[field]); if(!isNaN(v)){ n++; s+=v; } }); return n?(s/n).toFixed(1):"–"; }
 function latestPerTable(rows){ var m={}; rows.forEach(function(r){ var t=r.group||r.table||"?"; m[t]=r; }); return m; }
 function kvTable(title,m){ var keys=Object.keys(m).sort(function(a,b){return m[b]-m[a];}); if(!keys.length) return ''; return '<h4>'+title+'</h4>'+twrap('<tbody>'+keys.map(function(k){return '<tr><td>'+esc(k)+'</td><td class="k">'+m[k]+'</td></tr>';}).join('')+'</tbody>'); }
@@ -1688,7 +1692,7 @@ function renderResponses(){
   Object.keys(STAGES).forEach(function(stage){ if(tr.some(function(r){return r.stage===stage;})) out += '<h3>'+STAGES[stage].title+'</h3>'+renderReports(tr,stage); });
 
   /* pre / post */
-  var pre = R.pre||[], post = R.post||[];
+  var pre = rated(R.pre,"fpre-"), post = rated(R.post,"fpost-");
   if(pre.length||post.length) out += '<h3>Confidence</h3>'+renderConfidence(pre,post,true);
 
   /* demographics */
