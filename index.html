@@ -486,14 +486,14 @@ var SECTIONS = [
    ["Scope Error","An answer to a different question, or one applied to the wrong situation.",4]]);
 }},
 
-{id:"revise",code:"02",nav:"Revised Definition",gate:"literacy",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"Your Revised Working Definition of AI",block:1,html:function(){ return ''
+{id:"revise",code:"02",nav:"Revised Definition",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"Your Revised Working Definition of AI",block:1,html:function(){ return ''
  + '<h3>My Revised Working Definition of Artificial Intelligence '+who()+'</h3>'
  + '<p>Return to your first definition. Add or revise one distinction from the terms we just covered.</p>'
  + (ANSWERS["f02-def1"] ? '<p class="code">Your first definition: '+esc(ANSWERS["f02-def1"])+'</p>' : '')
  + ta("f02-def2","Revised working definition",3);
 }},
 
-{id:"beforebuild",code:"02A",nav:"Before You Use AI",gate:"literacy",title:"Before You Use AI",lede:"Tap a card to see what it means. Tap again to flip it back.",block:1,html:function(){ return ''
+{id:"beforebuild",code:"02A",nav:"Before You Use AI",title:"Before You Use AI",lede:"Tap a card to see what it means. Tap again to flip it back.",block:1,html:function(){ return ''
  + '<div class="legend"><span data-cat="1">Ways to Use AI</span><span data-cat="2">Resources</span><span data-cat="3">Protecting Skill</span></div>'
  + flips([["Buy a Product","Use a finished tool as the vendor built it.",1],
    ["Configure a Workflow","Connect an existing model to your own forms, documents, and steps.",1],
@@ -506,7 +506,7 @@ var SECTIONS = [
    ["Never-Skilling","Never gaining fluency with a needed skill because opportunities to practice never occur.",3]],true);
 }},
 
-{id:"tradeoffs",code:"02A",nav:"Trade-Offs",gate:"literacy",title:"Trade-Offs Worth Examining",lede:"Tap a card to see what the trade-off means. Tap again to flip it back.",block:1,html:function(){ return ''
+{id:"tradeoffs",code:"02A",nav:"Trade-Offs",title:"Trade-Offs Worth Examining",lede:"Tap a card to see what the trade-off means. Tap again to flip it back.",block:1,html:function(){ return ''
  + flips([["Speed ↔<br>Verification","Faster output can leave less time to check it. More checking slows the work."],
    ["Access ↔<br>Privacy","Giving a tool more data can make it more useful and expose more of that data."],
    ["Scale ↔<br>Local&nbsp;Fit","A tool built for many settings may not fit your clients, staff, or workflow."],
@@ -519,7 +519,7 @@ var SECTIONS = [
  + livePanel("confidence-pre");
 }},
 
-{id:"route",code:"01",nav:"Our Route",gate:"orient",title:"Our Route",block:1,html:function(){ return ''
+{id:"route",code:"01",nav:"Our Route",title:"Our Route",block:1,html:function(){ return ''
  + '<ul class="route">'
  + '<li><span class="t">00:00–00:27</span><span>Introduction and AI overview</span></li>'
  + '<li><span class="t">00:27–00:42</span><span>Capture, map, and compare professional repertoires</span></li>'
@@ -535,7 +535,7 @@ var SECTIONS = [
  + '</ul>';
 }},
 
-{id:"outcomes",code:"01",nav:"By the End",gate:"orient",title:"By the End of the Workshop, You Will Be Able to …",block:1,html:function(){ return ''
+{id:"outcomes",code:"01",nav:"By the End",title:"By the End of the Workshop, You Will Be Able to …",block:1,html:function(){ return ''
  + '<ol>'
  + '<li>Differentiate descriptive, predictive, and generative AI by what each system receives, does, produces, and leaves for a professional to decide.</li>'
  + '<li>Analyze an AI-augmented ABA workflow using an act-in-context canvas that makes stakeholders, data boundaries, scope, decision rights, and feedback loops explicit.</li>'
@@ -589,7 +589,7 @@ var SECTIONS = [
  + formBlock("quadrant",["f03-q1","f03-q2","f03-q3","f03-q4"],{note:"Optional. Anonymous."});
 }},
 
-{id:"sysexample",code:"04",nav:"System Example",gate:"choose",title:"What It Takes to Run One System",block:1,html:function(){ return ''
+{id:"sysexample",code:"04",nav:"System Example",title:"What It Takes to Run One System",block:1,html:function(){ return ''
  + '<p>Before choosing a problem, look at what one working system needed. This one flags clients at risk of poor progress before their authorization comes up for renewal. Tap the image to open it full size.</p>'
  + '<a href="img/architecture.png" target="_blank" rel="noopener"><img src="img/architecture.png" alt="Architecture of a system that flags clients at risk before reauthorization. Assessments, clinical records, and scheduling data are cleaned and scored, fed to prediction models with drift monitors, and turned into a risk score and ranked client list for clients whose authorizations end in 120 days. The training and compliance team plans support with BCBAs. Roles: BCBAs, software engineer, data engineer, data scientist, clinical leadership, and the training and compliance team." loading="lazy" style="width:100%;border-radius:8px;border:1px solid var(--line);background:#fff"></a>';
 }},
@@ -609,7 +609,7 @@ var SECTIONS = [
  + livePanel("interests");
 }},
 
-{id:"mytable",code:"04",nav:"My Table",gate:"choose",title:"Your Table and Problem Statement",lede:"After the break, find your table here, then write your table’s problem statement.",block:1,html:function(){ return ''
+{id:"mytable",code:"04",nav:"My Table",title:"Your Table and Problem Statement",lede:"After the break, find your table here, then write your table’s problem statement.",block:1,html:function(){ return ''
  + '<div id="seatbox">'+seatHtml()+'</div>'
  + '<h3>My Table</h3>'
  + '<div class="field"><label for="f04-table">Which table did you join?</label><select id="f04-table"><option value="">Choose a table</option>'
@@ -700,7 +700,7 @@ var SECTIONS = [
  + callout("Build, buy, or do neither","Compare total implementation burden (i.e., validation, training, oversight, workflow redesign, integration, monitoring, incident response, and exit) rather than subscription price alone.");
 }},
 
-{id:"govcheck",code:"07A",nav:"Governance Check",gate:"govern",title:"Governance Check: Five Domains",lede:"A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.",block:2,html:function(){ return ''
+{id:"govcheck",code:"07A",nav:"Governance Check",title:"Governance Check: Five Domains",lede:"A missing answer can be a reason to delay use. Name the person or team who can supply evidence or authority.",block:2,html:function(){ return ''
  + flips([["Privacy and Security","Where does the data go, who can see it, how long is it kept, and how is it deleted?"],
    ["Model Validation and Scope","Does it work for this task, population, and setting, compared with how the task performs now?"],
    ["Model and Data Drift","Who watches for changes in data, workflow, or model version, how often, and what triggers a review?"],
@@ -774,7 +774,7 @@ var SECTIONS = [
  + deeper('Add a fourth option that removes the task entirely. Who loses practice if the tool does this work?');
 }},
 
-{id:"ideate2",code:"11A",nav:"Ideation Rep 2",gate:"ideate",title:"Rep 2: Behavioral Arrangements",lede:"Same table, same use case, same options from Rep 1. Now design the behavior that makes each option work.",block:3,html:function(){ return ''
+{id:"ideate2",code:"11A",nav:"Ideation Rep 2",title:"Rep 2: Behavioral Arrangements",lede:"Same table, same use case, same options from Rep 1. Now design the behavior that makes each option work.",block:3,html:function(){ return ''
  + ideaStrip(["rep2"])
  + '<p>Your Rep 1 options are in '+nextLink("ideate")+'.</p>'
  + '<h3>Rep 2 · OBM Arrangements '+who("rec")+'</h3>'
@@ -870,7 +870,7 @@ var SECTIONS = [
  + callout("Next","When the presenter cues the reveal, go to "+nextLink("fieldlab2")+".");
 }},
 
-{id:"fieldlab2",code:"13A",nav:"Field Lab Reveal",gate:"fieldlab",title:"Reveal, Revise, and Report",lede:"Open your envelope, find what no longer holds, and revise the design you mapped.",block:3,html:function(){ return ''
+{id:"fieldlab2",code:"13A",nav:"Field Lab Reveal",title:"Reveal, Revise, and Report",lede:"Open your envelope, find what no longer holds, and revise the design you mapped.",block:3,html:function(){ return ''
  + '<h3>The Reveal</h3>'
  + contextShift()
  + '<h3>Revise '+who("rec")+'</h3>'
