@@ -361,6 +361,21 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .live-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:.3rem}
 .live .tablewrap{background:var(--surface)}
 .live .card{background:var(--surface)}
+.conf{display:grid;gap:.9rem;padding:.4rem 0}
+.conf-key{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.conf-key i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.conf-row .lbl{font-size:.95rem;margin-bottom:.3rem}
+.conf-bar{display:grid;grid-template-columns:1fr 7.5rem;align-items:center;gap:12px;margin:.25rem 0}
+.conf-track{position:relative;height:18px;border-radius:4px;background:var(--surface-2);background-image:repeating-linear-gradient(to right,transparent 0,transparent calc(20% - 1px),var(--line) calc(20% - 1px),var(--line) 20%)}
+.conf-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--lock)}
+.conf-bar.post .conf-fill{background:var(--accent)}
+.conf-rng{position:absolute;top:50%;height:2px;margin-top:-1px;background:var(--ink)}
+.conf-rng::before,.conf-rng::after{content:"";position:absolute;top:-5px;width:2px;height:12px;background:var(--ink)}
+.conf-rng::before{left:-1px}.conf-rng::after{right:-1px}
+.conf-val{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+.conf-val small{color:var(--muted);font-size:.72rem}
+.conf-axis{display:grid;grid-template-columns:1fr 7.5rem;gap:12px}
+.conf-axis div{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
 .mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:.8rem 0}
 .mapfoot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.4rem 0 1rem}
 .zone{border:1px solid var(--line);border-radius:8px;padding:.6rem;background:var(--paper);display:flex;flex-direction:column;gap:.35rem}
@@ -1633,12 +1648,24 @@ function renderConfidence(pre,post,prefix){
   pre = pre||[];
   var withPost = post!==null && post!==undefined;
   if(!pre.length && (!withPost || !post.length)) return '<p class="code">No responses yet.</p>';
-  var head = withPost ? ["Confidence, 1–5","Pre (n="+pre.length+")","Post (n="+post.length+")"]
-                      : ["Confidence, 1–5","Pre (n="+pre.length+")"];
-  return twrap(thead(head)+'<tbody>'+OBJS.map(function(o){
-    return '<tr><td class="k">'+o[1]+'</td><td>'+mean(pre,prefix?"fpre-"+o[0]:o[0])+'</td>'
-      + (withPost ? '<td>'+mean(post,prefix?"fpost-"+o[0]:o[0])+'</td>' : '')+'</tr>';
-  }).join('')+'</tbody>');
+  function bar(rows,field,cls,name){
+    var v = rows.map(function(r){ return parseFloat(r[field]); }).filter(function(x){ return !isNaN(x); });
+    if(!v.length) return '<div class="conf-bar '+cls+'"><div class="conf-track"></div><span class="conf-val">'+name+' –</span></div>';
+    var m = v.reduce(function(a,b){return a+b;},0)/v.length, lo = Math.min.apply(null,v), hi = Math.max.apply(null,v);
+    var pct = function(x){ return (x/5*100).toFixed(1)+'%'; };
+    return '<div class="conf-bar '+cls+'" title="'+name+': mean '+m.toFixed(1)+', range '+lo+'–'+hi+'"><div class="conf-track">'
+      + '<div class="conf-fill" style="width:'+pct(m)+'"></div>'
+      + (hi>lo ? '<div class="conf-rng" style="left:'+pct(lo)+';width:'+((hi-lo)/5*100).toFixed(1)+'%"></div>' : '')
+      + '</div><span class="conf-val">'+name+' '+m.toFixed(1)+' <small>('+lo+'–'+hi+')</small></span></div>';
+  }
+  var key = '<div class="conf-key"><span><i style="background:var(--lock)"></i>Pre, n='+pre.length+'</span>'
+    + (withPost ? '<span><i style="background:var(--accent)"></i>Post, n='+post.length+'</span>' : '')
+    + '<span>Bar = average · Line = lowest to highest</span></div>';
+  return '<div class="conf">'+key+OBJS.map(function(o){
+    return '<div class="conf-row"><div class="lbl">'+o[1]+'</div>'
+      + bar(pre,prefix?"fpre-"+o[0]:o[0],"pre","Pre")
+      + (withPost ? bar(post,prefix?"fpost-"+o[0]:o[0],"post","Post") : '')+'</div>';
+  }).join('')+'<div class="conf-axis"><div><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div><span></span></div></div>';
 }
 function renderInterests(rows){
   if(!rows.length) return '<p class="code">No responses yet.</p>';
