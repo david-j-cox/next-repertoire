@@ -242,6 +242,11 @@ details{border:1px solid var(--line);border-radius:8px;margin:.6rem 0;background
 .ztok .tok img{width:30px;height:30px}
 .ztok .tok span{font-size:.5rem}
 .zone[data-zonebox]{cursor:pointer}
+.tray .tok,.ztok .tok{touch-action:none;-webkit-user-select:none;user-select:none}
+.zone.drop{outline:2px dashed var(--accent);outline-offset:-2px;background:var(--surface)}
+.tok-ghost{position:fixed;z-index:1000;pointer-events:none;width:52px;height:52px;margin:-26px 0 0 -26px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.tok-ghost img{width:100%;height:100%}
+body.dragging{cursor:grabbing}
 .misscard{width:100%;border-radius:8px;margin:.4rem 0 .8rem;border:1px solid var(--line)}
 details.ref{background:transparent;border-style:dashed}
 details.ref > summary{font-weight:500;font-size:.88rem;color:var(--muted)}
@@ -878,7 +883,7 @@ var SECTIONS = [
  + callout("Keep envelopes sealed","Wait for the presenter to cue the reveal. The foil marks the boundary, not a score. Use sticky notes rather than wet-erase markers.")
  + '<p>Your table tent shows WORKING, NEED A PROMPT, or READY TO REPORT. While you wait, keep going on your best assumption.</p>'
  + '<h3>System Map '+who("rec")+'</h3>'
- + '<p>The same six zones as the printed board. Write what happens at each step of the workflow you already designed, then place your tokens: tap a token, then tap the zone it belongs in. Tap a placed token to remove it.</p>'
+ + '<p>The same six zones as the printed board. Write what happens at each step of the workflow you already designed, then place your tokens: drag a token onto the zone it belongs in, or tap a token and then tap the zone.</p>'
  + tokenTray()
  + '<div class="mapgrid">'
  + MAPZONES.map(function(z,i){ return '<div class="zone z'+i+'" data-zonebox="'+i+'"><div class="zhead"><span class="zn">'+(i+1)+'</span><span class="zt">'+z[0]+'</span></div>'+taBare("f13a-z"+i,"System Map / "+z[0],3)+'<div class="zq">'+z[1]+'</div>'+zoneTokens(i)+'</div>'; }).join('')
@@ -981,7 +986,6 @@ var SECTIONS = [
 }},
 
 {id:"references",code:"17",nav:"References",title:"Selected References and Practice Anchors",block:3,html:function(){ return ''
- + ref('Show the Reference List',''
  + '<ul style="max-width:none;font-size:.92rem">'
  + '<li>Behavior Analyst Certification Board. (2020). <em>Ethics code for behavior analysts.</em> <a href="https://www.bacb.com/ethics-information/ethics-codes/" target="_blank" rel="noopener">bacb.com/ethics-information/ethics-codes</a></li>'
  + '<li>Behavior Analyst Certification Board. (2026). <em>Authorized Continuing Education provider handbook.</em> <a href="https://www.bacb.com/continuing-education-providers/" target="_blank" rel="noopener">bacb.com/continuing-education-providers</a></li>'
@@ -995,7 +999,6 @@ var SECTIONS = [
  + '<li>Stanford d.school. (n.d.). <em>Design thinking bootleg.</em> <a href="https://dschool.stanford.edu/tools/design-thinking-bootleg" target="_blank" rel="noopener">dschool.stanford.edu</a></li>'
  + '<li>International Energy Agency. (2025). <em>Energy and AI.</em> <a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">iea.org/reports/energy-and-ai</a></li>'
  + '</ul>'
- )
  + callout("Scope note","This workbook is a reusable educational tool. It does not substitute for clinical judgment, organizational policy, payer requirements, professional standards, privacy and security review, or legal advice.");
 }}
 ];
@@ -1023,16 +1026,16 @@ function saveTokens(list){
 }
 function trayNote(){
   if(SEL_TOKEN) return 'Placing ' + TOKEN_KINDS[SEL_TOKEN].label + '. Tap each zone it belongs in. Tap the coin again to stop.';
-  return 'Tap a coin, then tap the zones it belongs in. A zone takes at most one of each kind. Tap a placed coin to remove it.';
+  return 'Drag a coin onto a zone, or tap a coin and then tap zones. A zone takes at most one of each kind. Drag a placed coin to another zone to move it, or tap it to remove it.';
 }
 function paletteHtml(t,i){
   var k=TOKEN_KINDS[t.k], sel=(SEL_TOKEN===t.k);
   return '<button type="button" class="tok'+(sel?' sel':'')+'" data-kind="'+t.k+'" aria-pressed="'+sel+'"'
-   + ' title="'+esc(k.label)+' - tap, then tap a zone"><img src="'+k.img+'" alt="'+esc(k.label)+'" draggable="false"><span>'+k.label+'</span></button>';
+   + ' title="'+esc(k.label)+' - drag onto a zone, or tap, then tap a zone"><img src="'+k.img+'" alt="'+esc(k.label)+'" draggable="false"><span>'+k.label+'</span></button>';
 }
 function placedHtml(idx,pl){
   var k=TOKEN_KINDS[pl.k];
-  return '<button type="button" class="tok" data-placed="'+idx+'" title="'+esc(k.label)+' - tap to remove">'
+  return '<button type="button" class="tok" data-placed="'+idx+'" title="'+esc(k.label)+' - drag to move, tap to remove">'
    + '<img src="'+k.img+'" alt="'+esc(k.label)+'" draggable="false"><span>'+k.label+'</span></button>';
 }
 function tokenTray(){
@@ -1841,24 +1844,62 @@ function repaintTokens(){
   });
   wireTokens();
 }
+var TOK_DRAG = null, TOK_NOCLICK = 0;
+function zoneAt(x,y){ var el=document.elementFromPoint ? document.elementFromPoint(x,y) : null; return el && el.closest ? el.closest("[data-zonebox]") : null; }
+function dragTokens(b){
+  b.onpointerdown=function(ev){
+    if(ev.button>0) return;
+    TOK_DRAG={b:b, x:ev.clientX, y:ev.clientY, on:false, kind:b.getAttribute("data-kind"), placed:b.getAttribute("data-placed"), zone:null, ghost:null, scroll:0};
+    try{ b.setPointerCapture(ev.pointerId); }catch(e){}
+  };
+  b.onpointermove=function(ev){
+    var d=TOK_DRAG; if(!d || d.b!==b) return;
+    if(!d.on){
+      if(Math.abs(ev.clientX-d.x)+Math.abs(ev.clientY-d.y)<6) return;
+      d.on=true; document.body.classList.add("dragging");
+      var img=b.querySelector("img"); d.ghost=document.createElement("div"); d.ghost.className="tok-ghost";
+      d.ghost.innerHTML='<img src="'+(img?img.getAttribute("src"):"")+'" alt="">'; document.body.appendChild(d.ghost);
+      d.timer=setInterval(function(){ if(d.scroll) window.scrollBy(0,d.scroll); },16);
+    }
+    ev.preventDefault();
+    d.ghost.style.left=ev.clientX+"px"; d.ghost.style.top=ev.clientY+"px";
+    var h=window.innerHeight||0; d.scroll = ev.clientY<70 ? -12 : (h && ev.clientY>h-70 ? 12 : 0);
+    var z=zoneAt(ev.clientX,ev.clientY);
+    if(z!==d.zone){ if(d.zone) d.zone.classList.remove("drop"); d.zone=z; if(z) z.classList.add("drop"); }
+  };
+  b.onpointerup=b.onpointercancel=function(ev){
+    var d=TOK_DRAG; if(!d || d.b!==b) return; TOK_DRAG=null;
+    if(!d.on) return;
+    clearInterval(d.timer); document.body.classList.remove("dragging");
+    if(d.ghost) d.ghost.remove(); if(d.zone) d.zone.classList.remove("drop");
+    TOK_NOCLICK=Date.now();
+    if(ev.type==="pointercancel") return;
+    var z=zoneAt(ev.clientX,ev.clientY); if(!z) return;
+    var zi=z.getAttribute("data-zonebox"), list=placements(), k=d.kind;
+    if(d.placed!==null){ var i=parseInt(d.placed,10); k=list[i]&&list[i].k; if(!k) return; list.splice(i,1); }
+    if(!list.some(function(pl){ return pl.k===k && String(pl.z)===String(zi); })) list.push({k:k, z:zi});
+    saveTokens(list); repaintTokens();
+  };
+}
 function wireTokens(){
   if(!document.getElementById("tok-tray")) return;
+  root.querySelectorAll("[data-kind],[data-placed]").forEach(dragTokens);
   root.querySelectorAll("[data-kind]").forEach(function(b){
-    b.onclick=function(ev){ ev.stopPropagation();
+    b.onclick=function(ev){ ev.stopPropagation(); if(Date.now()-TOK_NOCLICK<250) return;
       var k=b.getAttribute("data-kind");
       SEL_TOKEN = (SEL_TOKEN===k) ? null : k;
       repaintTokens();
     };
   });
   root.querySelectorAll("[data-placed]").forEach(function(b){
-    b.onclick=function(ev){ ev.stopPropagation();
+    b.onclick=function(ev){ ev.stopPropagation(); if(Date.now()-TOK_NOCLICK<250) return;
       var i=parseInt(b.getAttribute("data-placed"),10);
       var list=placements(); list.splice(i,1); saveTokens(list); repaintTokens();
     };
   });
   root.querySelectorAll("[data-zonebox]").forEach(function(z){
     z.onclick=function(ev){
-      if(!SEL_TOKEN) return;
+      if(!SEL_TOKEN || Date.now()-TOK_NOCLICK<250) return;
       if(ev.target.closest && ev.target.closest("textarea,input,select,button,a")) return;
       var zi=z.getAttribute("data-zonebox"), list=placements();
       if(list.some(function(pl){ return pl.k===SEL_TOKEN && String(pl.z)===String(zi); })) return;
