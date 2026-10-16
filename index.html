@@ -374,6 +374,14 @@ input[type=password]{width:100%;font:inherit;font-size:.95rem;color:var(--ink);b
 .conf-rng::before{left:-1px}.conf-rng::after{right:-1px}
 .conf-val{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
 .conf-val small{color:var(--muted);font-size:.72rem}
+.cbars{display:grid;gap:.45rem;padding:.3rem 0}
+.cbar .lbl{font-size:.9rem;margin-bottom:.15rem}
+.cbar .row{display:grid;grid-template-columns:1fr 5.5rem;align-items:center;gap:10px}
+.cbar .trk{position:relative;height:14px;border-radius:3px;background:var(--surface-2);display:flex;overflow:hidden}
+.cbar .seg{height:100%}
+.cbar .s0{background:var(--accent)}.cbar .s1{background:var(--accent);opacity:.55}.cbar .s2{background:var(--accent);opacity:.35}
+.cbar .num{font-family:var(--mono);font-size:.78rem;white-space:nowrap}
+.cbar .num small{color:var(--muted);font-size:.7rem}
 .conf-axis{display:grid;grid-template-columns:1fr 7.5rem;gap:12px}
 .conf-axis div{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
 .mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:.8rem 0}
@@ -1670,12 +1678,16 @@ function renderConfidence(pre,post,prefix){
 function renderInterests(rows){
   if(!rows.length) return '<p class="code">No responses yet.</p>';
   var first=count(rows,"first"), second=count(rows,"second"), third=count(rows,"third");
-  return twrap(thead(["Table","First Choice","Second Choice","Third Choice"])+'<tbody>'+TABLES.map(function(t){ return '<tr><td class="k">'+t.id+' · '+t.name+'</td><td>'+(first[t.id]||0)+'</td><td>'+(second[t.id]||0)+'</td><td>'+(third[t.id]||0)+'</td></tr>'; }).join('')+'</tbody>')
-    + kvTable("Expected role", count(rows,"role"));
+  var max=0; TABLES.forEach(function(t){ var n=(first[t.id]||0)+(second[t.id]||0)+(third[t.id]||0); if(n>max) max=n; });
+  var seg=function(n,i){ return n ? '<div class="seg s'+i+'" style="width:'+(n/max*100).toFixed(1)+'%"></div>' : ''; };
+  return '<div class="conf-key"><span><i style="background:var(--accent)"></i>First choice</span><span><i style="background:var(--accent);opacity:.55"></i>Second</span><span><i style="background:var(--accent);opacity:.35"></i>Third</span></div>'
+    + '<div class="cbars">'+TABLES.map(function(t){ var a=first[t.id]||0,b=second[t.id]||0,c=third[t.id]||0;
+      return '<div class="cbar"><div class="lbl">'+t.id+' · '+t.name+'</div><div class="row"><div class="trk">'+seg(a,0)+seg(b,1)+seg(c,2)+'</div><span class="num">'+a+' <small>· '+b+' · '+c+'</small></span></div></div>'; }).join('')+'</div>'
+    + countBars("Expected role", count(rows,"role"));
 }
 function renderDemographics(rows){
   if(!rows.length) return '<p class="code">No responses yet.</p>';
-  return '<div class="cards">'+[["role","Role"],["setting","Setting"],["years","Years in field"],["org","Organization size"],["ai","Current AI use"]].map(function(f){ return '<div class="card">'+kvTable(f[1],count(rows,f[0]))+'</div>'; }).join('')+'</div>';
+  return '<div class="cards">'+[["role","Role"],["setting","Setting"],["years","Years in field"],["org","Organization size"],["ai","Current AI use"]].map(function(f){ return '<div class="card">'+countBars(f[1],count(rows,f[0]))+'</div>'; }).join('')+'</div>';
 }
 function paintLive(){
   var panels = root.querySelectorAll(".live"); if(!panels.length || !SUMMARY) return;
@@ -1703,7 +1715,9 @@ function count(rows,field){ var m={}; rows.forEach(function(r){ var v=(r[field]=
 function rated(rows,prefix){ prefix=prefix||""; return (rows||[]).filter(function(r){ return ["c1","c2","c3","c4"].some(function(k){ var v=r[prefix+k]; return v!==undefined && v!==null && v!==""; }); }); }
 function mean(rows,field){ var n=0,s=0; rows.forEach(function(r){ var v=parseFloat(r[field]); if(!isNaN(v)){ n++; s+=v; } }); return n?(s/n).toFixed(1):"–"; }
 function latestPerTable(rows){ var m={}; rows.forEach(function(r){ var t=r.group||r.table||"?"; m[t]=r; }); return m; }
-function kvTable(title,m){ var keys=Object.keys(m).sort(function(a,b){return m[b]-m[a];}); if(!keys.length) return ''; return '<h4>'+title+'</h4>'+twrap('<tbody>'+keys.map(function(k){return '<tr><td>'+esc(k)+'</td><td class="k">'+m[k]+'</td></tr>';}).join('')+'</tbody>'); }
+function countBars(title,m){ var keys=Object.keys(m).sort(function(a,b){return m[b]-m[a];}); if(!keys.length) return '';
+  var tot=0, max=0; keys.forEach(function(k){ tot+=m[k]; if(m[k]>max) max=m[k]; });
+  return (title?'<h4>'+title+'</h4>':'')+'<div class="cbars">'+keys.map(function(k){ return '<div class="cbar"><div class="lbl">'+esc(k==="(blank)"?"No answer":k)+'</div><div class="row"><div class="trk"><div class="seg s0" style="width:'+(m[k]/tot*100).toFixed(1)+'%"></div></div><span class="num">'+m[k]+' <small>('+Math.round(m[k]/tot*100)+'%)</small></span></div></div>'; }).join('')+'</div>'; }
 function renderResponses(){
   var d = ADMIN_DATA;
   if(!d) return '<p class="code">No data loaded yet.</p>';
