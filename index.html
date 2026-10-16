@@ -455,7 +455,8 @@ var SECTIONS = [
  + scale("fpre-c2","Analyze an AI-augmented workflow with the act-in-context canvas")
  + scale("fpre-c3","Evaluate a use case against privacy, validation, scope, drift, training, vendor, and build-or-buy considerations")
  + scale("fpre-c4","Produce a 30-day prototype with one technical safeguard and one OBM contingency")
- + formBlock("pre",["f02-def1","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{stage:"baseline",note:"Anonymous. Sends your definition and ratings to the facilitators."});
+ + formBlock("pre",["f02-def1","fpre-c1","fpre-c2","fpre-c3","fpre-c4"],{stage:"baseline",note:"Anonymous. Sends your definition and ratings to the facilitators."})
+ + livePanel("confidence-pre");
 }},
 
 {id:"notice",code:"02",nav:"AI by Function",after:{id:"mydef",fields:["f02-def1"],msg:"Write your current definition first. Then come back here."},title:"AI by Function",lede:"For each system, ask: What goes in? What transformation occurs? What comes out? Who acts next?",block:1,html:function(){ return ''
@@ -517,8 +518,7 @@ var SECTIONS = [
  + ta("f02a-condition","Choose one of the four trade-offs above, for example speed versus verification. Which of its two sides does your work currently favor, and what would have to change for the other side to win?",4)
  + '<h3>One Example I Want to Test Today '+who()+'</h3>'
  + ta("f02-example","One example I want to test today",3)
- + formBlock("pre",["f02-example"],{stage:"example",note:"Anonymous. Sends this example to the facilitators."})
- + livePanel("confidence-pre");
+ + formBlock("pre",["f02-example"],{stage:"example",note:"Anonymous. Sends this example to the facilitators."});
 }},
 
 {id:"route",code:"01",nav:"Our Route",title:"Our Route",block:1,html:function(){ return ''
@@ -1148,7 +1148,7 @@ var PID = lsGet(LS_PID);
 if(!PID){ PID = "p-"+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); lsSet(LS_PID,PID); }
 var ALL_IDS = SECTIONS.map(function(s){return s.id;});
 var PANELS = [
-  ["confidence-pre","Confidence, Pre (02)","Slide 20, after people send on 19 · Trade-Offs tab"],
+  ["confidence-pre","Confidence, Pre (02)","Slide 6, after people submit their ratings · Definition tab"],
   ["demographics","Role and Setting Snapshot (03A)","Slide 22, after the one-minute snapshot · Empathize tab"],
   ["interests","Interest Poll (04)","Slide 30 · Choose tab"],
   ["assignment","Table Assignments (04)","Slide 31, after the sort · My Table tab"],
